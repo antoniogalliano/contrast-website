@@ -2,129 +2,180 @@
 
 import { motion } from "framer-motion";
 
-const ACCENT = "#d90cb7";
+// Star field — static positions seeded so they don't shift on re-render
+const STARS = [
+  { x: 5.2, y: 12.4, r: 1.2 }, { x: 11.7, y: 38.1, r: 0.8 }, { x: 18.3, y: 7.6, r: 1.0 },
+  { x: 24.9, y: 55.2, r: 0.6 }, { x: 31.4, y: 22.8, r: 1.4 }, { x: 37.8, y: 71.3, r: 0.9 },
+  { x: 44.1, y: 15.9, r: 0.7 }, { x: 50.6, y: 44.7, r: 1.1 }, { x: 57.2, y: 83.4, r: 0.8 },
+  { x: 63.5, y: 30.1, r: 1.3 }, { x: 70.0, y: 61.8, r: 0.6 }, { x: 76.4, y: 9.3, r: 1.0 },
+  { x: 82.9, y: 48.5, r: 0.9 }, { x: 89.3, y: 27.6, r: 1.2 }, { x: 94.8, y: 67.2, r: 0.7 },
+  { x: 8.6, y: 79.5, r: 1.1 }, { x: 15.1, y: 52.3, r: 0.8 }, { x: 21.7, y: 91.6, r: 0.6 },
+  { x: 28.2, y: 35.7, r: 1.3 }, { x: 34.6, y: 68.4, r: 0.9 }, { x: 41.3, y: 19.2, r: 1.0 },
+  { x: 47.8, y: 87.1, r: 0.7 }, { x: 54.4, y: 42.9, r: 1.4 }, { x: 60.9, y: 74.6, r: 0.8 },
+  { x: 67.5, y: 11.3, r: 1.1 }, { x: 74.0, y: 56.8, r: 0.6 }, { x: 80.6, y: 33.5, r: 1.2 },
+  { x: 87.2, y: 88.9, r: 0.9 }, { x: 93.7, y: 21.4, r: 0.7 }, { x: 2.8, y: 45.6, r: 1.0 },
+  { x: 48.3, y: 3.7, r: 0.8 }, { x: 72.9, y: 95.2, r: 0.6 }, { x: 16.4, y: 17.8, r: 1.3 },
+  { x: 38.7, y: 93.1, r: 0.9 }, { x: 55.8, y: 28.4, r: 1.1 }, { x: 91.2, y: 51.7, r: 0.7 },
+];
 
 export default function CtaBanner() {
   return (
     <section
       style={{
-        padding: "100px 40px",
-        background: "#0a0a0a",
         position: "relative",
+        width: "100%",
+        minHeight: 508,
         overflow: "hidden",
+        background: "#0a0a0a",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        paddingTop: 115,
+        paddingBottom: 100,
       }}
     >
-      {/* Star field background */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-        {Array.from({ length: 60 }).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.4)",
-              opacity: Math.random() * 0.6 + 0.2,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Gradient backdrop */}
+      {/* ── Gradient blobs ── */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "radial-gradient(ellipse at 50% 50%, rgba(118,12,217,0.2) 0%, rgba(217,12,183,0.1) 40%, transparent 70%)",
+          overflow: "hidden",
           pointerEvents: "none",
         }}
-      />
+      >
+        {/* Blob 1 — violet to magenta, rotated 180°, blurred */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "-387px",
+            transform: "translate(-50%, 0) rotate(180deg)",
+            width: 1279,
+            height: 765,
+            borderRadius: 1146,
+            background:
+              "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
+            filter: "blur(92.75px)",
+            opacity: 0.65,
+          }}
+        />
+        {/* Blob 2 — color-dodge layer */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "-335px",
+            transform: "translate(-50%, 0) rotate(180deg)",
+            width: 1386,
+            height: 447,
+            borderRadius: 1146,
+            background:
+              "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
+            filter: "blur(69.65px)",
+            mixBlendMode: "color-dodge",
+          }}
+        />
+      </div>
 
-      <div
+      {/* ── Star field ── */}
+      <svg
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {STARS.map((s, i) => (
+          <circle
+            key={i}
+            cx={`${s.x}%`}
+            cy={`${s.y}%`}
+            r={s.r}
+            fill="rgba(255,255,255,0.55)"
+          />
+        ))}
+      </svg>
+
+      {/* ── "WE BELIEVE IN" ── */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
         style={{
-          maxWidth: 760,
-          margin: "0 auto",
-          textAlign: "center",
           position: "relative",
           zIndex: 1,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontWeight: 200,
+          fontSize: 45,
+          lineHeight: "43.931px",
+          letterSpacing: "14.4px",
+          textTransform: "uppercase",
+          color: "#ffffff",
+          textAlign: "center",
+          margin: 0,
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          {/* Stars row */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 32 }}>
-            {[...Array(5)].map((_, i) => (
-              <svg key={i} width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M8 1L9.85 5.78L15 6.64L11.5 10.04L12.36 15L8 12.77L3.64 15L4.5 10.04L1 6.64L6.15 5.78L8 1Z"
-                  fill={ACCENT}
-                />
-              </svg>
-            ))}
-          </div>
+        We believe in
+      </motion.p>
 
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 52px)",
-              fontWeight: 600,
-              color: "#ffffff",
-              lineHeight: 1.2,
-              letterSpacing: "-0.01em",
-              margin: "0 0 24px",
-            }}
-          >
-            Ready to Turn Your Product into a Growth Engine?
-          </h2>
-          <p
-            style={{
-              fontSize: "clamp(15px, 1.2vw, 18px)",
-              color: "#b0b0b0",
-              lineHeight: 1.7,
-              fontFamily: "var(--font-geist), sans-serif",
-              fontWeight: 300,
-              margin: "0 0 40px",
-            }}
-          >
-            Join the teams who&apos;ve used behavioral science + AI-powered design to break through
-            their growth plateaus.
-          </p>
-          <a
-            href="#contact"
-            className="btn-gradient-border"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "14px 32px",
-              borderRadius: 9999,
-              fontSize: 15,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-              fontFamily: "var(--font-urbanist), sans-serif",
-            }}
-          >
-            Start Growing
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        </motion.div>
-      </div>
+      {/* ── "Constant learning" — gradient-masked large text ── */}
+      <motion.h2
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+        style={{
+          position: "relative",
+          zIndex: 1,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontWeight: 700,
+          fontSize: "clamp(64px, 8.5vw, 112px)",
+          lineHeight: "0.91",
+          letterSpacing: "-2.24px",
+          textAlign: "center",
+          margin: "8px 0 0",
+          // Gradient text fill
+          background:
+            "linear-gradient(135deg, #ffffff 30%, rgba(217,12,183,0.6) 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        Constant learning
+      </motion.h2>
+
+      {/* ── CTA button ── */}
+      <motion.a
+        href="#contact"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+        className="btn-gradient-border"
+        style={{
+          position: "relative",
+          zIndex: 1,
+          marginTop: 56,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "12px 24px",
+          borderRadius: 52,
+          textDecoration: "none",
+          fontSize: 14,
+          fontWeight: 600,
+          letterSpacing: "0.14px",
+          color: "#ffffff",
+          fontFamily: "var(--font-urbanist), sans-serif",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Let&apos;s Build Your UX Growth Plan
+        {/* Arrow icon */}
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </motion.a>
     </section>
   );
 }
