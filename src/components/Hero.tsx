@@ -78,11 +78,11 @@ export default function Hero() {
           willChange: "transform, opacity",
         }}
       >
-        World Class UI/UX
+        AI Can Generate a Design.
         <br />
-        &amp; Product Clarity for
+        It Can&apos;t Tell You If It&apos;s the
         <br />
-        SaaS and Startups
+        Right One.
       </motion.h1>
 
       {/* Subtitle */}
