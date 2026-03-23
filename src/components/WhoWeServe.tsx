@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ACCENT = "#d90cb7";
+const S = 48.054; // isometric cube face size (matches Figma exactly)
 
-/* ─────────────────────────────────────────────
-   CARD 1 — Isometric cube grid
-   Pink highlighted hero cube + surrounding dim cubes
-───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   CARD 1 — Established Tech Companies
+   Isometric cube grid with pink hero cube
+═══════════════════════════════════════════ */
 function IsoCube({
   x, y, size, stroke, fill, tint = 0, strokeWidth = 0.8, delay = 0, hovered = false,
 }: {
@@ -78,61 +79,153 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   CARD 2 — Dashed wireframe cubes
-───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   CARD 2 — Startups Building MVPs
+   Pixel-perfect from Figma node 1:2623
+
+   Default: 7 dashed #4e4e4e wireframe cubes + 3 gradient accent lines
+   Hover:   7 solid #d90cb7 cubes with gradient fills + magenta aura + gather animation
+═══════════════════════════════════════════ */
+
+// Exact cube positions from Figma node tree (inset left→dtx, top→dty)
+const MVP_CUBES = [
+  { dtx: 55.05, dty: 122.97, htx: 41.61, hty: 96.11  }, // center-bottom  (1:2663 / 1:2764)
+  { dtx: 55.05, dty:  61.48, htx: 41.61, hty: 48.05  }, // center-middle  (1:2667 / 1:2768)
+  { dtx: 55.05, dty:   0,    htx: 41.61, hty:  0      }, // center-top     (1:2671 / 1:2772)
+  { dtx:  0,    dty:  37.45, htx:  0,    hty: 24.02   }, // left-top       (1:2675 / 1:2776)
+  { dtx:  0,    dty:  98.95, htx:  0,    hty: 72.08   }, // left-bottom    (1:2679 / 1:2780)
+  { dtx: 110.1, dty:  37.45, htx: 83.23, hty: 24.02   }, // right-top      (1:2683 / 1:2784)
+  { dtx: 110.1, dty:  98.94, htx: 83.23, hty: 72.07   }, // right-bottom   (1:2687 / 1:2788)
+];
+
 function IllustrationMVP({ hovered }: { hovered: boolean }) {
-  const S = 48.0538;
-  const cubeData = [
-    { dtx: 97.5305, dty: 123.469, htx: 84.0972, hty: 96.6055 },
-    { dtx: 97.5305, dty: 61.9844, htx: 84.0972, hty: 48.5508 },
-    { dtx: 97.5305, dty: 0.5,     htx: 84.0972, hty: 0.5      },
-    { dtx: 42.4817, dty: 37.9531, htx: 42.4819, hty: 24.5234  },
-    { dtx: 42.4817, dty: 99.4453, htx: 42.4819, hty: 72.5781  },
-    { dtx: 152.579, dty: 37.9531, htx: 125.714, hty: 24.5234  },
-    { dtx: 152.579, dty: 99.4375, htx: 125.714, hty: 72.5703  },
-  ];
+  // Stagger: cubes closest to center animate first
+  const centerX = 79, centerY = 80;
+  const stagger = MVP_CUBES.map(({ dtx, dty }) => {
+    const dist = Math.hypot(dtx - centerX, dty - centerY);
+    return Math.round((dist / 120) * 80); // 0–80ms stagger
+  });
+
   return (
-    <svg viewBox="0 0 196 221" style={{ width: "100%", maxWidth: 170, height: "auto" }} fill="none">
+    <svg
+      viewBox="-50 -10 295 260"
+      style={{ width: "100%", maxWidth: 210, height: "auto" }}
+      fill="none"
+      overflow="visible"
+    >
       <defs>
-        <linearGradient id="mvp-top-g2" x1="1" y1="0" x2="0" y2="0" gradientUnits="objectBoundingBox">
-          <stop stopColor={ACCENT} stopOpacity="0" /><stop offset="1" stopColor={ACCENT} />
+        {/* Top face: right→left pink gradient (Figma Gradient A: -89.5°) */}
+        <linearGradient id="mvp-top" x1="1" y1="0.5" x2="0" y2="0.5" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   stopColor={ACCENT} stopOpacity="0" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="1" />
         </linearGradient>
-        <linearGradient id="mvp-side-g2" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop stopColor={ACCENT} stopOpacity="0" /><stop offset="1" stopColor={ACCENT} />
+        {/* Side faces: top→bottom pink gradient (Figma Gradient B: 187°) */}
+        <linearGradient id="mvp-side" x1="0.5" y1="0" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   stopColor={ACCENT} stopOpacity="0" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0.9" />
         </linearGradient>
-        <linearGradient id="mvp-ln0b" x1="154.552" y1="37.518" x2="194.441" y2="60.128" gradientUnits="userSpaceOnUse">
-          <stop stopColor={ACCENT} /><stop offset="1" stopColor={ACCENT} stopOpacity="0" />
+        {/* Decorative accent lines — pink fading to transparent */}
+        <linearGradient id="ln-r" x1="153" y1="38" x2="200" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor={ACCENT} stopOpacity="0.85" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="mvp-ln1b" x1="0.746" y1="61.155" x2="35.52" y2="40.818" gradientUnits="userSpaceOnUse">
-          <stop stopColor={ACCENT} /><stop offset="1" stopColor={ACCENT} stopOpacity="0" />
+        <linearGradient id="ln-l" x1="10" y1="43" x2="-40" y2="43" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor={ACCENT} stopOpacity="0.85" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="mvp-ln2b" x1="33.246" y1="191.359" x2="7.79" y2="177.368" gradientUnits="userSpaceOnUse">
-          <stop stopColor={ACCENT} /><stop offset="1" stopColor={ACCENT} stopOpacity="0" />
+        <linearGradient id="ln-b" x1="17" y1="176" x2="17" y2="220" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor={ACCENT} stopOpacity="0.85" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <motion.ellipse cx={90} cy={212} rx={68} ry={13} fill={ACCENT}
-        animate={{ opacity: hovered ? 0.55 : 0 }} transition={{ duration: 0.5 }} />
-      <motion.g animate={{ opacity: hovered ? 0 : 1 }} transition={{ duration: 0.3 }}>
-        <line x1="193.8"  y1="61.2585" x2="153.911" y2="38.6493" stroke="url(#mvp-ln0b)" strokeWidth="1.6" />
-        <line x1="36.177" y1="41.941"  x2="1.402"   y2="62.277"  stroke="url(#mvp-ln1b)" strokeWidth="1.6" />
-        <line x1="8.416"  y1="176.229" x2="33.872"  y2="190.22"  stroke="url(#mvp-ln2b)" strokeWidth="1.6" />
+
+      {/* ── Decorative accent lines (Default only, fade out on hover) ──
+          Figma: Line276 rotate:-150.46°, Line277 rotate:149.68°, Line278 rotate:28.79° */}
+      <motion.g
+        animate={{ opacity: hovered ? 0 : 1 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        {/* Line276 — upper-right, from (173, 48) outward */}
+        <line
+          x1="153" y1="38" x2="197" y2="15"
+          stroke={`url(#ln-r)`} strokeWidth="1.6" strokeLinecap="round"
+        />
+        {/* Line277 — upper-left, from (10, 43) outward */}
+        <line
+          x1="10" y1="43" x2="-32" y2="62"
+          stroke={`url(#ln-l)`} strokeWidth="1.6" strokeLinecap="round"
+        />
+        {/* Line278 — lower-left, from (15, 182) outward */}
+        <line
+          x1="15" y1="182" x2="32" y2="205"
+          stroke={`url(#ln-b)`} strokeWidth="1.6" strokeLinecap="round"
+        />
       </motion.g>
-      {cubeData.map(({ dtx, dty, htx, hty }, i) => {
-        const dx = htx - dtx, dy = hty - dty;
-        const ltx = dtx - S * 0.866025, lty = dty + S * 0.5, rty = dty + S;
+
+      {/* ── Magenta aura ellipse (Hover only, under the cube cluster) ──
+          Figma node 1:2702: 261×55px at left:84, top:438 (relative to card)
+          In SVG coords, this sits just below the bottom cube */}
+      <motion.ellipse
+        cx={79} cy={218} rx={75} ry={18}
+        fill={ACCENT}
+        animate={{ opacity: hovered ? 0.55 : 0, scaleX: hovered ? 1 : 0.6 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        style={{ transformOrigin: "79px 218px" }}
+      />
+
+      {/* ── 7 isometric cubes ──
+          Each cube: 3 rects (top, left, right) with matrix transforms
+          Animate from default position → hover position via parent motion.g */}
+      {MVP_CUBES.map(({ dtx, dty, htx, hty }, i) => {
+        const dx = htx - dtx;
+        const dy = hty - dty;
+        const ltx = dtx - S * 0.866025;
+        const lty = dty + S * 0.5;
+        const rty = dty + S;
         const stroke = hovered ? ACCENT : "#4e4e4e";
         const dash = hovered ? undefined : "2 2";
-        const t = "stroke 0.45s ease, fill-opacity 0.45s ease";
+        const fillTransition = "fill-opacity 0.4s ease, stroke 0.4s ease, stroke-dasharray 0.4s ease";
+
         return (
-          <motion.g key={i} animate={{ x: hovered ? dx : 0, y: hovered ? dy : 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
-            <rect width={S} height={S} transform={`matrix(0.866025 0.5 -0.866025 0.5 ${dtx} ${dty})`}
-              fill="url(#mvp-top-g2)" fillOpacity={hovered ? 1 : 0} stroke={stroke} strokeDasharray={dash} style={{ transition: t }} />
-            <rect width={S} height={S} transform={`matrix(0.866025 0.5 0 1 ${ltx} ${lty})`}
-              fill="url(#mvp-side-g2)" fillOpacity={hovered ? 1 : 0} stroke={stroke} strokeDasharray={dash} style={{ transition: t }} />
-            <rect width={S} height={S} transform={`matrix(0.866025 -0.5 0 1 ${dtx} ${rty})`}
-              fill="url(#mvp-side-g2)" fillOpacity={hovered ? 1 : 0} stroke={stroke} strokeDasharray={dash} style={{ transition: t }} />
+          <motion.g
+            key={i}
+            animate={{ x: hovered ? dx : 0, y: hovered ? dy : 0 }}
+            transition={{
+              duration: 0.55,
+              ease: [0.22, 1, 0.36, 1],
+              delay: stagger[i] / 1000,
+            }}
+          >
+            {/* Top face */}
+            <rect
+              width={S} height={S}
+              transform={`matrix(0.866025 0.5 -0.866025 0.5 ${dtx} ${dty})`}
+              fill="url(#mvp-top)"
+              fillOpacity={hovered ? 1 : 0}
+              stroke={stroke}
+              strokeDasharray={dash}
+              style={{ transition: fillTransition }}
+            />
+            {/* Left face */}
+            <rect
+              width={S} height={S}
+              transform={`matrix(0.866025 0.5 0 1 ${ltx} ${lty})`}
+              fill="url(#mvp-side)"
+              fillOpacity={hovered ? 0.85 : 0}
+              stroke={stroke}
+              strokeDasharray={dash}
+              style={{ transition: fillTransition }}
+            />
+            {/* Right face */}
+            <rect
+              width={S} height={S}
+              transform={`matrix(0.866025 -0.5 0 1 ${dtx} ${rty})`}
+              fill="url(#mvp-side)"
+              fillOpacity={hovered ? 0.7 : 0}
+              stroke={stroke}
+              strokeDasharray={dash}
+              style={{ transition: fillTransition }}
+            />
           </motion.g>
         );
       })}
@@ -140,43 +233,193 @@ function IllustrationMVP({ hovered }: { hovered: boolean }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   CARD 3 — Concentric rounded rects + accent ring + center circle
-   Matches Figma node 1:1077 exactly
-───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   CARD 3 — Scaling SaaS Companies
+   Concentric rounded rects + accent ring + center circle
+═══════════════════════════════════════════ */
 function IllustrationNested() {
   return (
     <svg viewBox="0 0 331 331" style={{ width: "100%", maxWidth: 280, height: "auto" }} fill="none">
-      {/* Outer dim frames */}
-      <rect x="2"   y="2"   width="327" height="327" rx="40" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      <rect x="28"  y="28"  width="275" height="275" rx="30" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-      <rect x="55"  y="55"  width="221" height="221" rx="22" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
-      {/* Accent inner frame — #d90cb7 */}
-      <rect x="83"  y="83"  width="165" height="165" rx="28" stroke={ACCENT} strokeWidth="1.2" fill="none" />
-      {/* Soft glow inside accent frame */}
-      <rect x="83"  y="83"  width="165" height="165" rx="28" fill={ACCENT} fillOpacity="0.04" />
-      {/* Center circle — accent */}
+      <rect x="2"  y="2"  width="327" height="327" rx="40" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+      <rect x="28" y="28" width="275" height="275" rx="30" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+      <rect x="55" y="55" width="221" height="221" rx="22" stroke="rgba(255,255,255,0.09)" strokeWidth="1" />
+      <rect x="83" y="83" width="165" height="165" rx="28" stroke={ACCENT} strokeWidth="1.2" fill="none" />
+      <rect x="83" y="83" width="165" height="165" rx="28" fill={ACCENT} fillOpacity="0.04" />
       <circle cx="165" cy="165" r="32" stroke={ACCENT} strokeWidth="1.2" fill="none" />
       <circle cx="165" cy="165" r="32" fill={ACCENT} fillOpacity="0.06" />
-      {/* Center dot */}
       <circle cx="165" cy="165" r="5.5" fill={ACCENT} opacity="0.75" />
     </svg>
   );
 }
 
-/* ─────────────────────────────────────────────
-   Card data — Figma exact copy
-───────────────────────────────────────────── */
-const cards = [
+/* ═══════════════════════════════════════════
+   Startup card — dedicated component
+   Pixel-perfect to Figma node 1:2623
+   Default ↔ Hover smart animation via Framer Motion
+═══════════════════════════════════════════ */
+function StartupCard({ index }: { index: number }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7, delay: index * 0.12, ease: "easeOut" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        height: 661,
+        background: "#0a0a0a",
+        borderRadius: 16,
+        overflow: "hidden",
+        backdropFilter: "blur(8.5px)",
+        WebkitBackdropFilter: "blur(8.5px)",
+        flex: "1 1 0",
+        minWidth: 0,
+        cursor: "default",
+      }}
+    >
+      {/* ── Border: animates #383838 → #d90cb7 ── */}
+      <motion.div
+        animate={{ opacity: hovered ? 0 : 1 }}
+        transition={{ duration: 0.35 }}
+        style={{
+          position: "absolute", inset: 0, borderRadius: 16,
+          border: "1px solid #383838", pointerEvents: "none", zIndex: 10,
+        }}
+      />
+      <motion.div
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.35 }}
+        style={{
+          position: "absolute", inset: 0, borderRadius: 16,
+          border: `1px solid ${ACCENT}`,
+          boxShadow: `0 0 40px rgba(217,12,183,0.12), inset 0 1px 0 rgba(217,12,183,0.18)`,
+          pointerEvents: "none", zIndex: 10,
+        }}
+      />
+
+      {/* ── Header text — absolute, left:28 top:31 width:341 (Figma exact) ── */}
+      <div style={{
+        position: "absolute", left: 28, top: 31, width: 341, zIndex: 5,
+        display: "flex", flexDirection: "column", gap: 4,
+      }}>
+        <p style={{
+          margin: 0, fontSize: 20, fontWeight: 600,
+          color: "#e8e8e8", lineHeight: "normal",
+          fontFamily: "var(--font-urbanist), sans-serif",
+        }}>
+          Startups Building MVPs
+        </p>
+        <p style={{
+          margin: 0, fontSize: 14, fontWeight: 400,
+          color: "#848484", lineHeight: "normal",
+          fontFamily: "var(--font-geist), sans-serif",
+        }}>
+          Ship fast and ship smart. Those aren&apos;t opposites.
+        </p>
+      </div>
+
+      {/* ── Globe / hemisphere — large dark radial gradient at the bottom ──
+          Figma: 659×514px, Default centered, Hover left:-115px
+          We approximate with a radial gradient div */}
+      <div style={{
+        position: "absolute",
+        width: 659, height: 514,
+        top: 446,
+        left: "calc(50% - 329.5px + 2px)", // centered (both states nearly identical)
+        zIndex: 1,
+        pointerEvents: "none",
+      }}>
+        {/* Globe: large dark ellipse, fades up from bottom */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at 50% 35%, rgba(20,20,20,0.0) 0%, rgba(10,10,10,0.7) 45%, #0a0a0a 70%)",
+          borderRadius: "50%",
+        }} />
+      </div>
+
+      {/* ── Subtract / bottom glow layer (Hover only, mix-blend-mode: plus-lighter) ── */}
+      <motion.div
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          width: 659, height: 260,
+          left: -115, top: 446,
+          mixBlendMode: "plus-lighter",
+          background: "radial-gradient(ellipse at 50% 100%, rgba(217,12,183,0.45) 0%, rgba(140,0,160,0.18) 45%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      />
+
+      {/* ── Blur overlay at very bottom (both states, matches Figma blur rect) ── */}
+      <div style={{
+        position: "absolute",
+        width: 532, height: 97,
+        left: -75, top: 558,
+        background: "#0a0a0a",
+        filter: "blur(25px)",
+        pointerEvents: "none",
+        zIndex: 4,
+      }} />
+
+      {/* ── SVG illustration — centered in card ── */}
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 220,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 3,
+      }}>
+        <IllustrationMVP hovered={hovered} />
+      </div>
+
+      {/* ── Plus button (Hover only) — bottom:27 right:27, 40×40px ──
+          Figma node 1:2326: rounded-full, border rgba(255,255,255,0.2), "+" icon rotate 45° → "×" */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            style={{
+              position: "absolute", bottom: 27, right: 27, zIndex: 6,
+              width: 40, height: 40, borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.2)",
+              background: "rgba(10,10,10,0.4)",
+              backdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            {/* The Figma icon is a "+" rotated 45° — renders as "×" */}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   Cards 1 & 3 — generic AudienceCard
+═══════════════════════════════════════════ */
+const SIDE_CARDS = [
   {
     title: "Established Tech Companies",
     body: "Your product has proven itself. Now it's time to make it exceptional.",
     type: "cubes" as const,
-  },
-  {
-    title: "Startups Building MVPs",
-    body: "Ship fast and ship smart. Those aren't opposites.",
-    type: "mvp" as const,
   },
   {
     title: "Scaling SaaS Companies",
@@ -185,13 +428,8 @@ const cards = [
   },
 ];
 
-/* ─────────────────────────────────────────────
-   Single card — exact Figma specs:
-   437–438px × 661px, pad 28px h / 32px top, gap 42px flex
-───────────────────────────────────────────── */
-function AudienceCard({ card, index }: { card: typeof cards[0]; index: number }) {
+function AudienceCard({ card, index }: { card: typeof SIDE_CARDS[0]; index: number }) {
   const [hovered, setHovered] = useState(false);
-  const isStartup = card.type === "mvp";
 
   return (
     <motion.div
@@ -228,24 +466,18 @@ function AudienceCard({ card, index }: { card: typeof cards[0]; index: number })
         opacity: hovered ? 1 : 0, transition: "opacity 0.45s ease",
       }} />
 
-      {/* Text block — padding: 32px top, 28px sides */}
+      {/* Text block — 32px top, 28px sides */}
       <div style={{ padding: "32px 28px 0", position: "relative", zIndex: 2 }}>
         <h3 style={{
-          fontSize: 20,
-          fontWeight: 600,
-          color: "#e8e8e8",
-          margin: "0 0 12px",
-          lineHeight: 1.3,
+          fontSize: 20, fontWeight: 600, color: "#e8e8e8",
+          margin: "0 0 12px", lineHeight: 1.3,
           fontFamily: "var(--font-urbanist), sans-serif",
         }}>
           {card.title}
         </h3>
         <p style={{
-          fontSize: 14,
-          fontWeight: 400,
-          color: "#b0b0b0",
-          margin: 0,
-          lineHeight: 1.6,
+          fontSize: 14, fontWeight: 400, color: "#b0b0b0",
+          margin: 0, lineHeight: 1.6,
           fontFamily: "var(--font-geist), sans-serif",
         }}>
           {card.body}
@@ -254,64 +486,27 @@ function AudienceCard({ card, index }: { card: typeof cards[0]; index: number })
 
       {/* Illustration */}
       <div style={{
-        flex: 1,
-        display: "flex",
-        alignItems: isStartup ? "flex-end" : "center",
-        justifyContent: "center",
-        padding: isStartup ? "32px 28px 52px" : "32px 28px 32px",
-        position: "relative",
-        zIndex: 2,
+        flex: 1, display: "flex",
+        alignItems: "center", justifyContent: "center",
+        padding: "32px 28px 32px",
+        position: "relative", zIndex: 2,
       }}>
         {card.type === "cubes"  && <IllustrationCubes hovered={hovered} />}
-        {card.type === "mvp"    && <IllustrationMVP   hovered={hovered} />}
         {card.type === "nested" && <IllustrationNested />}
       </div>
-
-      {/* Startup: dome + glow */}
-      {isStartup && (
-        <>
-          <motion.div
-            animate={{ opacity: hovered ? 1 : 0 }}
-            transition={{ duration: 0.55 }}
-            style={{
-              position: "absolute", bottom: 0, left: 0, right: 0, height: "55%",
-              background: "radial-gradient(ellipse at 50% 100%, rgba(217,12,183,0.55) 0%, rgba(180,0,200,0.2) 38%, transparent 72%)",
-              pointerEvents: "none", zIndex: 1,
-            }}
-          />
-          <div style={{
-            position: "absolute", bottom: 0, left: 0, right: 0, height: "30%",
-            overflow: "hidden", pointerEvents: "none", zIndex: 3,
-          }}>
-            <div style={{
-              position: "absolute", left: "-20%", width: "140%", bottom: 0, height: "250%",
-              borderRadius: "50%",
-              background: "radial-gradient(ellipse at 50% 15%, rgba(65,65,65,0.15) 0%, rgba(30,30,30,0.38) 15%, rgba(10,10,10,0.88) 35%, #0a0a0a 55%)",
-              boxShadow: hovered ? "0 -8px 40px rgba(217,12,183,0.14)" : "none",
-              transition: "box-shadow 0.5s ease",
-            }} />
-            <div style={{
-              position: "absolute", left: "-20%", width: "140%", bottom: 0, height: "250%",
-              borderRadius: "50%",
-              border: `1px solid ${hovered ? "rgba(217,12,183,0.2)" : "rgba(255,255,255,0.04)"}`,
-              transition: "border-color 0.5s ease", pointerEvents: "none",
-            }} />
-          </div>
-        </>
-      )}
     </motion.div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   Section export
-───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   Section
+═══════════════════════════════════════════ */
 export default function WhoWeServe() {
   return (
     <section id="services" style={{ padding: "120px 40px 0", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
 
-        {/* Heading — Figma: 64px, SemiBold, -0.64px, centered */}
+        {/* Heading — Figma: Urbanist SemiBold 64px, -0.64px letter-spacing, centered */}
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -332,11 +527,11 @@ export default function WhoWeServe() {
           Built for Teams Ready to Grow
         </motion.h2>
 
-        {/* 3-card row — Figma gap: ~24px */}
+        {/* 3-card row — gap 24px (Figma exact) */}
         <div className="audience-cards" style={{ display: "flex", gap: 24 }}>
-          {cards.map((card, i) => (
-            <AudienceCard key={card.title} card={card} index={i} />
-          ))}
+          <AudienceCard card={SIDE_CARDS[0]} index={0} />
+          <StartupCard index={1} />
+          <AudienceCard card={SIDE_CARDS[1]} index={2} />
         </div>
       </div>
 
