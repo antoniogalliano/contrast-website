@@ -106,9 +106,11 @@ export default function Hero() {
           willChange: "transform, opacity",
         }}
       >
-        Our frameworks use psychology, behavior science, and user
+        Any team can use AI tools to create. The difference is knowing what to build,
         <br />
-        triggers to increase conversions, adoption, and retention
+        why it works, and how to turn it into outcomes.
+        <br />
+        That&apos;s not a tool. That&apos;s what we do.
       </motion.p>
 
       {/* CTA Button */}
