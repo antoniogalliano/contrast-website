@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 100.531 144.933" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="cube02">
+<rect id="top-face" width="56.9651" height="56.9651" transform="matrix(0.866025 0.5 -0.866025 0.5 50.1993 0.5)" stroke="var(--stroke-0, #4E4E4E)"/>
+<rect id="left-face" width="56.9651" height="56.9651" transform="matrix(0.866025 0.5 0 1 0.865306 28.9766)" stroke="var(--stroke-0, #4E4E4E)"/>
+<rect id="right-face" width="56.9651" height="56.9651" transform="matrix(0.866025 -0.5 0 1 50.1993 57.4609)" stroke="var(--stroke-0, #4E4E4E)"/>
+<line id="Line 275" x1="100.031" y1="85.9414" x2="100.031" y2="144.933" stroke="var(--stroke-0, #383838)"/>
+</g>
+</svg>
