@@ -83,6 +83,29 @@ function WorkCard({
         }}
       />
 
+      {/* Image placeholder */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          borderRadius: 8,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          height: project.size === "large" ? 180 : 130,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect x="2" y="6" width="32" height="24" rx="3" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
+          <circle cx="12" cy="15" r="3.5" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
+          <path d="M2 26L10 17L16 23L22 14L34 26" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+        </svg>
+      </div>
+
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* Client */}
         <p

@@ -127,20 +127,14 @@ export default function SuccessStoriesSection() {
               />
 
               <div style={{ position: "relative", zIndex: 1 }}>
-                {/* Client label */}
-                <p
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "2.5px",
-                    textTransform: "uppercase",
-                    color: ACCENT,
-                    marginBottom: 24,
-                    fontFamily: "var(--font-urbanist), sans-serif",
-                  }}
-                >
-                  {stat.client}
-                </p>
+                {/* Client logo */}
+                <div style={{ marginBottom: 24, height: 28, display: "flex", alignItems: "center" }}>
+                  <img
+                    src={`/logos/${stat.client.toLowerCase()}.svg`}
+                    alt={stat.client}
+                    style={{ height: 22, width: "auto", objectFit: "contain", display: "block" }}
+                  />
+                </div>
 
                 {/* Counter */}
                 <div style={{ display: "flex", alignItems: "flex-end", gap: 4, marginBottom: 8 }}>

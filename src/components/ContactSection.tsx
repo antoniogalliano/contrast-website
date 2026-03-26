@@ -3,391 +3,238 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const ACCENT = "#d90cb7";
-
+// ── Helpers ────────────────────────────────────────────────────────────────
+const DAY_LABELS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
 ];
+function getDaysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate(); }
+function getFirstDay(y: number, m: number)    { return new Date(y, m, 1).getDay(); }
 
-function getDaysInMonth(year: number, month: number) {
-  return new Date(year, month + 1, 0).getDate();
-}
-function getFirstDayOfMonth(year: number, month: number) {
-  return new Date(year, month, 1).getDay();
-}
+// ── Calendar ───────────────────────────────────────────────────────────────
+function Calendar() {
+  const now = new Date();
+  const [month, setMonth] = useState(now.getMonth());
+  const [year,  setYear]  = useState(now.getFullYear());
+  const [selected, setSelected] = useState<number | null>(null);
 
-export default function ContactSection() {
-  const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const totalDays = getDaysInMonth(year, month);
+  const startDay  = getFirstDay(year, month);
 
-  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-  const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+  const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y-1); } else setMonth(m => m-1); setSelected(null); };
+  const nextMonth = () => { if (month === 11){ setMonth(0);  setYear(y => y+1); } else setMonth(m => m+1); setSelected(null); };
 
-  const prevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((y) => y - 1);
-    } else {
-      setCurrentMonth((m) => m - 1);
+  // Build 7 columns
+  const cols: (number | null)[][] = Array.from({ length: 7 }, () => []);
+  let dayCount = 1;
+  for (let row = 0; dayCount <= totalDays; row++) {
+    for (let col = 0; col < 7; col++) {
+      if (row === 0 && col < startDay) { cols[col].push(null); }
+      else if (dayCount <= totalDays) { cols[col].push(dayCount++); }
     }
-    setSelectedDay(null);
-  };
-  const nextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear((y) => y + 1);
-    } else {
-      setCurrentMonth((m) => m + 1);
-    }
-    setSelectedDay(null);
-  };
+  }
 
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const blanks = Array.from({ length: firstDay }, (_, i) => i);
+  const todayNum  = now.getDate();
+  const isThisMonth = month === now.getMonth() && year === now.getFullYear();
 
   return (
-    <section id="contact" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
-      <div style={{ maxWidth: 1360, margin: "0 auto" }}>
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          style={{ textAlign: "center", marginBottom: 64 }}
-        >
-          <p
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: "3.9px",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.5)",
-              marginBottom: 20,
-              fontFamily: "var(--font-urbanist), sans-serif",
-            }}
-          >
-            Let's Talk
-          </p>
-          <h2
-            style={{
-              fontSize: "clamp(32px, 4.5vw, 56px)",
-              fontWeight: 600,
-              color: "#ffffff",
-              lineHeight: 1.2,
-              letterSpacing: "-0.01em",
-              margin: "0 auto 20px",
-              maxWidth: 640,
-            }}
-          >
-            Book a Free Strategy Call
-          </h2>
-          <p
-            style={{
-              fontSize: "clamp(15px, 1.2vw, 18px)",
-              color: "#b0b0b0",
-              fontFamily: "var(--font-geist), sans-serif",
-              fontWeight: 300,
-              lineHeight: 1.6,
-              maxWidth: 500,
-              margin: "0 auto",
-            }}
-          >
-            30 minutes. No fluff. We&apos;ll identify your biggest UX growth opportunity and how to
-            act on it.
-          </p>
-        </motion.div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
+      {/* Month nav */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+        <button onClick={prevMonth} style={{ all: "unset", cursor: "pointer", width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img src="/contact/prev.svg" alt="Previous" style={{ width: 38, height: 38 }} />
+        </button>
+        <span style={{ fontFamily: "var(--font-urbanist)", fontWeight: 400, fontSize: 16, color: "#ffffff", textAlign: "center", whiteSpace: "nowrap", lineHeight: 1.5 }}>
+          {MONTHS[month]} {year}
+        </span>
+        <button onClick={nextMonth} style={{ all: "unset", cursor: "pointer", width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img src="/contact/next.svg" alt="Next" style={{ width: 38, height: 38 }} />
+        </button>
+      </div>
 
-        {/* Booking card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          style={{
-            maxWidth: 860,
-            margin: "0 auto",
-            borderRadius: 20,
-            border: "1px solid #383838",
-            background: "#0a0a0a",
-            overflow: "hidden",
-            display: "flex",
-          }}
-          className="booking-card"
-        >
-          {/* Left panel */}
-          <div
-            style={{
-              flex: "0 0 auto",
-              width: 320,
-              padding: "40px 36px",
-              borderRight: "1px solid #383838",
-              display: "flex",
-              flexDirection: "column",
-              gap: 24,
-            }}
-            className="booking-left"
-          >
-            {/* Logo */}
-            <div>
-              <span
-                style={{
-                  fontSize: 20,
-                  fontWeight: 800,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: "#ffffff",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                }}
-              >
-                Contrast.
-              </span>
-            </div>
-
-            <div>
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  margin: "0 0 8px",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                }}
-              >
-                UX Growth Strategy Call
-              </h3>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "#b0b0b0",
-                  lineHeight: 1.6,
-                  margin: 0,
-                  fontFamily: "var(--font-geist), sans-serif",
-                  fontWeight: 300,
-                }}
-              >
-                30 min · Video call
-              </p>
-            </div>
-
-            <div style={{ height: 1, background: "#383838" }} />
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[
-                "Identify your #1 UX growth lever",
-                "See the Hero Framework in action",
-                "Get a custom action plan — free",
-              ].map((item) => (
-                <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <span
+      {/* Days — 7 column layout */}
+      <div style={{ display: "flex", gap: 8, width: "100%", alignItems: "flex-start" }}>
+        {cols.map((colDays, colIdx) => (
+          <div key={colIdx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
+            {/* Day header */}
+            <span style={{ fontFamily: "var(--font-urbanist)", fontWeight: 400, fontSize: 12, color: "#ffffff", textTransform: "uppercase", lineHeight: "12px", textAlign: "center", width: 44 }}>
+              {DAY_LABELS[colIdx]}
+            </span>
+            {/* Date buttons */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+              {colDays.map((d, i) => {
+                if (d === null) return <div key={i} style={{ width: 44, height: 44 }} />;
+                const isPast    = isThisMonth && d < todayNum;
+                const isToday   = isThisMonth && d === todayNum;
+                const isSel     = selected === d;
+                const isAvail   = !isPast;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => isAvail && setSelected(d)}
                     style={{
-                      width: 16,
-                      height: 16,
-                      borderRadius: "50%",
-                      background: `rgba(217,12,183,0.15)`,
-                      border: `1px solid ${ACCENT}`,
+                      all: "unset",
+                      position: "relative",
+                      width: 44,
+                      height: 44,
+                      borderRadius: 999,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                      marginTop: 1,
-                    }}
-                  >
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                      <path
-                        d="M1.5 4L3.5 6L6.5 2"
-                        stroke={ACCENT}
-                        strokeWidth="1.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "#e8e8e8",
-                      lineHeight: 1.5,
-                      fontFamily: "var(--font-geist), sans-serif",
-                    }}
-                  >
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right panel — calendar */}
-          <div style={{ flex: 1, padding: "40px 36px", display: "flex", flexDirection: "column", gap: 24 }}>
-            {/* Month nav */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <button
-                onClick={prevMonth}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  border: "1px solid #383838",
-                  background: "none",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <span
-                style={{
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                }}
-              >
-                {MONTHS[currentMonth]} {currentYear}
-              </span>
-              <button
-                onClick={nextMonth}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  border: "1px solid #383838",
-                  background: "none",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M5 3L9 7L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Day labels */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
-              {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-                <div
-                  key={d}
-                  style={{
-                    textAlign: "center",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#888888",
-                    padding: "4px 0",
-                    fontFamily: "var(--font-urbanist), sans-serif",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  {d}
-                </div>
-              ))}
-            </div>
-
-            {/* Day grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
-              {blanks.map((b) => (
-                <div key={`blank-${b}`} />
-              ))}
-              {days.map((day) => {
-                const isToday =
-                  day === today.getDate() &&
-                  currentMonth === today.getMonth() &&
-                  currentYear === today.getFullYear();
-                const isSelected = selectedDay === day;
-                const isPast =
-                  new Date(currentYear, currentMonth, day) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-                return (
-                  <button
-                    key={day}
-                    onClick={() => !isPast && setSelectedDay(day)}
-                    style={{
-                      height: 38,
-                      borderRadius: 8,
-                      border: isSelected
-                        ? `1px solid ${ACCENT}`
+                      cursor: isAvail ? "pointer" : "default",
+                      background: isSel
+                        ? "rgba(217,12,183,0.18)"
                         : isToday
-                          ? "1px solid rgba(255,255,255,0.2)"
-                          : "1px solid transparent",
-                      background: isSelected
-                        ? `rgba(217,12,183,0.15)`
-                        : "none",
-                      color: isPast ? "#444" : isSelected ? ACCENT : "#ffffff",
-                      fontSize: 13,
-                      fontWeight: isToday || isSelected ? 600 : 400,
-                      fontFamily: "var(--font-urbanist), sans-serif",
-                      cursor: isPast ? "default" : "pointer",
-                      transition: "all 0.15s",
+                          ? "rgba(217,12,183,0.08)"
+                          : "transparent",
+                      transition: "background 0.15s",
                     }}
                   >
-                    {day}
+                    {/* Dot for today */}
+                    {isToday && (
+                      <span style={{ position: "absolute", left: 20, top: 31.5, width: 4, height: 4, background: "rgba(255,255,255,0.61)", borderRadius: 2 }} />
+                    )}
+                    <span style={{
+                      fontFamily: "var(--font-urbanist)",
+                      fontWeight: isSel || isToday ? 700 : 400,
+                      fontSize: 16,
+                      color: isPast
+                        ? "rgba(255,255,255,0.2)"
+                        : isSel || isToday
+                          ? "#d90cb7"
+                          : "rgba(255,255,255,0.61)",
+                      lineHeight: 1.5,
+                      textAlign: "center",
+                    }}>
+                      {d}
+                    </span>
                   </button>
                 );
               })}
             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-            {/* Timezone + confirm */}
-            <div style={{ borderTop: "1px solid #383838", paddingTop: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <circle cx="7" cy="7" r="5.5" stroke="#888888" strokeWidth="1" />
-                  <path d="M7 1.5C7 1.5 5 4 5 7C5 10 7 12.5 7 12.5" stroke="#888888" strokeWidth="1" />
-                  <path d="M1.5 7H12.5" stroke="#888888" strokeWidth="1" />
-                </svg>
-                <span style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-geist), sans-serif" }}>
-                  Your local time zone
-                </span>
+// ── Main component ─────────────────────────────────────────────────────────
+export default function ContactSection() {
+  return (
+    <section id="contact" style={{ padding: "120px 40px 300px", background: "#0a0a0a" }}>
+      <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", justifyContent: "center" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          style={{ position: "relative", width: 800, display: "flex", flexDirection: "column", gap: 55, alignItems: "center" }}
+        >
+          {/* ── Background glows ── */}
+          <div style={{ position: "absolute", left: 132.5, bottom: 0, width: 535, height: 32, pointerEvents: "none", mixBlendMode: "plus-lighter", zIndex: 0 }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: 153.675, filter: "blur(28.8px)", background: "linear-gradient(to right, rgba(217,12,183,0.27), rgba(217,12,183,0.75) 53%, rgba(118,12,217,0.75))" }} />
+          </div>
+          <div style={{ position: "absolute", left: "50%", top: 237, transform: "translateX(-50%)", width: 769, height: 289, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", mixBlendMode: "plus-lighter", zIndex: 0 }}>
+            <div style={{ flexShrink: 0, transform: "rotate(90deg)" }}>
+              <div style={{ width: 289, height: 769, borderRadius: 607.666, filter: "blur(178.645px)", background: "linear-gradient(to bottom, rgba(217,12,183,0.27), rgba(217,12,183,0.75) 53.103%, rgba(118,12,217,0.75))" }} />
+            </div>
+          </div>
+
+          {/* ── Heading ── */}
+          <div style={{ width: 548, display: "flex", flexDirection: "column", gap: 19, alignItems: "center", textAlign: "center", position: "relative", zIndex: 1 }}>
+            <h2 style={{ margin: 0, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 35, color: "#ffffff", letterSpacing: "-0.35px", width: "100%", lineHeight: "normal" }}>
+              30 Minutes. Real Clarity
+            </h2>
+            <p style={{ margin: 0, fontFamily: "var(--font-geist), sans-serif", fontWeight: 400, fontSize: 16, color: "#b0b0b0", opacity: 0.8, width: "100%", lineHeight: 1.5 }}>
+              Book a call and let&apos;s talk. No pitch, just an honest conversation about your product and how we can help.
+            </p>
+          </div>
+
+          {/* ── Booking card ── */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              width: "100%",
+              height: 592,
+              borderRadius: 16,
+              border: "1px solid #d90cb7",
+              overflow: "hidden",
+              boxShadow: "0px 1px 8px 0px rgba(0,0,0,0.08)",
+              background: "rgb(10,10,10)",
+            }}
+          >
+            {/* Vertical divider */}
+            <div style={{ position: "absolute", left: 399, top: -1, width: 1, height: 592, background: "rgba(56,56,56,0.8)" }} />
+
+            {/* Troubleshooting — plain text link, bottom-right of card */}
+            <span style={{ position: "absolute", bottom: 23, right: 24, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 14, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap", lineHeight: 1.5, cursor: "pointer" }}>
+              Troubleshooting
+            </span>
+
+            {/* ── LEFT PANEL ── */}
+            <div style={{ position: "absolute", left: 23, top: 23, width: 352, height: 544, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start" }}>
+              {/* Top */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%" }}>
+                {/* Title block */}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
+                    Contrast Studio
+                  </span>
+                  <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 28, color: "#ffffff", lineHeight: 1.5 }}>
+                    UX Growth Strategy
+                  </span>
+                </div>
+                {/* Details */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <img src="/contact/clock.svg" alt="" aria-hidden="true" style={{ width: 20, height: 20 }} />
+                    <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>30 min</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <img src="/contact/phone.svg" alt="" aria-hidden="true" style={{ width: 20, height: 20 }} />
+                    <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>Video call</span>
+                  </div>
+                </div>
+                {/* Description */}
+                <p style={{ margin: 0, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 16, color: "#ffffff", lineHeight: 1.5, width: "100%" }}>
+                  A focused 30-minute call to identify your biggest UX growth opportunity and walk away with a clear next step — no pitch, just real clarity.
+                </p>
               </div>
-              <a
-                href="mailto:hello@contrastux.com"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "10px 20px",
-                  borderRadius: 9999,
-                  background: ACCENT,
-                  color: "#ffffff",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  border: "none",
-                }}
-              >
-                {selectedDay
-                  ? `Book ${MONTHS[currentMonth].slice(0, 3)} ${selectedDay}`
-                  : "Book a Call"}
-              </a>
+              {/* Bottom links */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 14, width: "100%", whiteSpace: "nowrap" }}>
+                <span style={{ color: "#d90cb7", lineHeight: 1.5, cursor: "pointer" }}>Cookie settings</span>
+                <span style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.5, cursor: "pointer" }}>Report abuse</span>
+              </div>
+            </div>
+
+            {/* ── RIGHT PANEL ── */}
+            <div style={{ position: "absolute", left: 424, top: 23, width: 351, display: "flex", flexDirection: "column", gap: 32, alignItems: "flex-start" }}>
+              {/* Calendar heading */}
+              <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 20, color: "#ffffff", lineHeight: 1.5, width: "100%" }}>
+                Select a Date &amp; Time
+              </span>
+
+              <Calendar />
+
+              {/* Timezone */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
+                <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 16, color: "#ffffff", lineHeight: 1.5 }}>Time zone</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <img src="/contact/globe.svg" alt="" aria-hidden="true" style={{ width: 14, height: 14 }} />
+                  <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 14, color: "#ffffff", lineHeight: 1.5, whiteSpace: "nowrap" }}>
+                    Your local time zone
+                  </span>
+                  <img src="/contact/chevron.svg" alt="" aria-hidden="true" style={{ width: 8, height: 8, marginLeft: 4 }} />
+                </div>
+              </div>
+
             </div>
           </div>
         </motion.div>
       </div>
-
-      <style jsx global>{`
-        @media (max-width: 700px) {
-          .booking-card {
-            flex-direction: column !important;
-          }
-          .booking-left {
-            width: 100% !important;
-            border-right: none !important;
-            border-bottom: 1px solid #383838 !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

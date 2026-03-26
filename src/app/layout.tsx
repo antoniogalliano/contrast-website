@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${urbanist.variable} ${geist.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased" style={{ background: "#0a0a0a" }}>{children}</body>
     </html>
   );
 }

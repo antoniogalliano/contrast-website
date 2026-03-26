@@ -1,105 +1,171 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useRef } from "react";
 
-const services = [
-  { label: "UX Strategy", highlight: false },
-  { label: "Embedded Design Team", highlight: true },
-  { label: "The Hero Framework Workshop", highlight: true },
-  { label: "Product BI & Analytics", highlight: false },
-  { label: "Product Design", highlight: false },
-  { label: "Fractional UX Direction", highlight: false },
-  { label: "Development", highlight: false },
-  { label: "Team Training", highlight: false },
+type ServiceCard = {
+  label: string;
+  icon: string;
+  iconW: number; // rendered width in px; height is auto (preserves aspect ratio)
+};
+
+// iconW matches Figma's rendered icon size within the 48px container
+const ROW1: ServiceCard[] = [
+  { label: "UX Strategy",                 icon: "/services/ux-strategy.svg",     iconW: 29 },
+  { label: "Embedded Design Team",         icon: "/services/embedded-design.svg", iconW: 35 },
+  { label: "The Hero Framework Workshop",  icon: "/services/hero-framework.svg",  iconW: 29 },
+  { label: "Product BI and Analytics",     icon: "/services/product-bi.svg",      iconW: 40 },
 ];
 
-const ACCENT = "#d90cb7";
+const ROW2: ServiceCard[] = [
+  { label: "Product Design",              icon: "/services/product-design.svg",  iconW: 36 },
+  { label: "Fractional UX Direction",     icon: "/services/fractional-ux.svg",   iconW: 22 },
+  { label: "Development",                 icon: "/services/development.svg",     iconW: 22 },
+  { label: "Team Training",              icon: "/services/team-training.svg",   iconW: 28 },
+];
+
+function Card({ card, delay }: { card: ServiceCard; delay: number }) {
+  const [hovered, setHovered] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  // Border is the 1px gap between outer (gradient) and inner (#0a0a0a) div
+  const borderBg = hovered
+    ? `radial-gradient(circle 120px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    : "rgba(56,56,56,0.62)";
+
+  // Inner spotlight glow follows mouse (offset by 1px for the border)
+  const spotlightBg = `radial-gradient(circle 140px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.15) 0%, transparent 70%)`;
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
+      style={{
+        flex: "1 1 0",
+        minWidth: 0,
+        padding: 1,
+        borderRadius: 13,
+        background: borderBg,
+        // No transition when hovered so spotlight tracks instantly; fade back on leave
+        transition: hovered ? "none" : "background 0.4s ease",
+        cursor: "default",
+      }}
+    >
+      <div
+        style={{
+          padding: "32px 28px",
+          borderRadius: 12,
+          background: "#0a0a0a",
+          backdropFilter: "blur(8.5px)",
+          WebkitBackdropFilter: "blur(8.5px)",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 16,
+          overflow: "hidden",
+          position: "relative",
+          height: "100%",
+        }}
+      >
+        {/* Inner mouse-follow spotlight glow */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            opacity: hovered ? 1 : 0,
+            transition: hovered ? "opacity 0.2s ease" : "opacity 0.4s ease",
+            background: spotlightBg,
+          }}
+        />
+
+        {/* Icon — 48×48px container, icon centered at natural Figma size */}
+        <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img
+            src={card.icon}
+            alt=""
+            aria-hidden="true"
+            style={{ width: card.iconW, height: "auto" }}
+          />
+        </div>
+
+        {/* Label */}
+        <p
+          style={{
+            flex: "1 0 0",
+            margin: 0,
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontWeight: 600,
+            fontSize: 18,
+            lineHeight: "normal",
+            color: "#ffffff",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          {card.label}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        gap: 16,
+        alignItems: "stretch",
+      }}
+    >
+      {cards.map((card, i) => (
+        <Card key={card.label} card={card} delay={baseDelay + i * 0.07} />
+      ))}
+    </div>
+  );
+}
 
 export default function ServicesSection() {
   return (
     <section style={{ padding: "0 40px 120px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
-        {/* Divider with label */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 24,
-            marginBottom: 32,
-          }}
-        >
-          <div style={{ flex: 1, height: 1, background: "rgba(56,56,56,0.62)" }} />
+
+        {/* Section label */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
           <span
             style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
               fontSize: 15,
               fontWeight: 700,
               letterSpacing: "3.9px",
               textTransform: "uppercase",
               color: "rgba(255,255,255,0.7)",
-              fontFamily: "var(--font-urbanist), sans-serif",
               whiteSpace: "nowrap",
             }}
           >
             Our Services
           </span>
-          <div style={{ flex: 1, height: 1, background: "rgba(56,56,56,0.62)" }} />
         </div>
 
-        {/* Services grid — 4 columns */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 16,
-          }}
-          className="services-grid"
-        >
-          {services.map((svc, i) => (
-            <motion.div
-              key={svc.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: i * 0.06, ease: "easeOut" }}
-              style={{
-                padding: "28px 28px",
-                borderRadius: 12,
-                border: svc.highlight
-                  ? `1px solid ${ACCENT}`
-                  : "1px solid #383838",
-                background: svc.highlight
-                  ? `rgba(217, 12, 183, 0.05)`
-                  : "rgba(255,255,255,0.02)",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                transition: "border-color 0.3s, background 0.3s",
-                cursor: "default",
-              }}
-            >
-              {/* Dot indicator */}
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  flexShrink: 0,
-                  background: svc.highlight ? ACCENT : "rgba(255,255,255,0.3)",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: svc.highlight ? "#ffffff" : "rgba(255,255,255,0.75)",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  lineHeight: 1.3,
-                }}
-              >
-                {svc.label}
-              </span>
-            </motion.div>
-          ))}
+        {/* 2-row grid */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Row cards={ROW1} baseDelay={0} />
+          <Row cards={ROW2} baseDelay={0.28} />
         </div>
 
         {/* CTA */}
@@ -117,41 +183,23 @@ export default function ServicesSection() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              padding: "12px 28px",
-              borderRadius: 9999,
+              padding: "12px 24px",
+              borderRadius: 52,
               fontSize: 14,
               fontWeight: 600,
               color: "#ffffff",
               textDecoration: "none",
               fontFamily: "var(--font-urbanist), sans-serif",
+              letterSpacing: "0.14px",
             }}
           >
             Find Your Fit
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
         </motion.div>
       </div>
-
-      <style jsx global>{`
-        @media (max-width: 900px) {
-          .services-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
-        @media (max-width: 540px) {
-          .services-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

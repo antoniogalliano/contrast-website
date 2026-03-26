@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Logotype from "./Logotype";
 
 const navLinks = [
   { label: "The Hero Framework", href: "#framework" },
@@ -31,18 +32,8 @@ export default function Header() {
         style={{ maxWidth: 1440, padding: "32px 48px" }}
       >
         {/* Logo */}
-        <a
-          href="/"
-          style={{
-            fontSize: 22,
-            fontWeight: 800,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase" as const,
-            color: "#ffffff",
-            textDecoration: "none",
-          }}
-        >
-          Contrast.
+        <a href="/" aria-label="Contrast home" style={{ display: "block", textDecoration: "none" }}>
+          <Logotype width={120} />
         </a>
 
         {/* Desktop Nav */}

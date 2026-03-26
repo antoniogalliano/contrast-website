@@ -15,11 +15,8 @@ export default function LogoMarquee() {
       style={{
         position: "relative",
         overflow: "hidden",
-        marginTop: -80,
-        padding: "64px 0",
-        background: "#000000",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        height: 160,
+        background: "#0a0a0a",
       }}
     >
       {/* Fade edges */}
@@ -30,7 +27,7 @@ export default function LogoMarquee() {
           pointerEvents: "none",
           zIndex: 1,
           background:
-            "linear-gradient(to right, #000 0%, transparent 12%, transparent 88%, #000 100%)",
+            "linear-gradient(to right, #0a0a0a 0%, transparent 8%, transparent 92%, #0a0a0a 100%)",
         }}
       />
 
@@ -39,30 +36,31 @@ export default function LogoMarquee() {
         style={{
           display: "flex",
           width: "max-content",
+          height: "100%",
           animation: "marquee 30s linear infinite",
         }}
       >
-        {/* Two copies for seamless loop */}
-        {[0, 1].map((copy) => (
+        {/* Four copies for seamless loop on wide/ultrawide screens */}
+        {[0, 1, 2, 3].map((copy) => (
           <div
             key={copy}
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 32,
-              paddingRight: 32,
+              height: "100%",
             }}
           >
-            {logos.map((src) => (
+            {logos.map((src, j) => (
               <img
-                key={src}
+                key={`${copy}-${j}`}
                 src={src}
                 alt=""
                 style={{
-                  height: 160,
-                  width: "auto",
-                  opacity: 0.85,
+                  width: 200,
+                  height: 159,
                   flexShrink: 0,
+                  opacity: 0.85,
+                  display: "block",
                 }}
               />
             ))}
@@ -76,7 +74,7 @@ export default function LogoMarquee() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-25%);
           }
         }
       `}</style>
