@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 
 const SLIDE_DURATION = 5000;
 
@@ -32,26 +32,28 @@ const TESTIMONIALS = [
 export default function TestimonialSection() {
   const [current, setCurrent] = useState(0);
   const [slideProgress, setSlideProgress] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [carouselActive, setCarouselActive] = useState(false);
 
   const startRef = useRef<number>(0);
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll progress: 0 when section top hits 80% of viewport, 1 when it hits 20%
+  // Scroll-driven opacity: grey (0.18) as section enters at 80% viewport → white (1) at 20%
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 0.8", "start 0.2"],
   });
 
-  const quoteOpacity = useTransform(scrollYProgress, [0, 1], [0.18, 1]);
+  // Spring-smoothed scroll progress for a silky feel
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 20, restDelta: 0.001 });
+  const quoteOpacity = useTransform(smoothProgress, [0, 1], [0.18, 1]);
 
-  // Once fully revealed, lock in and hand off to carousel
+  // Activate carousel only once fully revealed — no jump back to grey
   useEffect(() => {
     return scrollYProgress.on("change", (v) => {
-      if (v >= 0.98 && !revealed) setRevealed(true);
+      if (v >= 0.99) setCarouselActive(true);
     });
-  }, [scrollYProgress, revealed]);
+  }, [scrollYProgress]);
 
   const goTo = (index: number) => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -60,7 +62,7 @@ export default function TestimonialSection() {
   };
 
   useEffect(() => {
-    if (!revealed) return;
+    if (!carouselActive) return;
     startRef.current = performance.now();
     setSlideProgress(0);
 
@@ -78,7 +80,7 @@ export default function TestimonialSection() {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [current, revealed]);
+  }, [current, carouselActive]);
 
   const t = TESTIMONIALS[current];
 
@@ -96,16 +98,18 @@ export default function TestimonialSection() {
     <section ref={sectionRef} style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", flexDirection: "column", gap: 96 }}>
 
-        {/* Quote — scroll-driven opacity until revealed, then carousel fades */}
-        {!revealed ? (
-          <motion.blockquote style={{ ...quoteStyle, opacity: quoteOpacity }}>
-            {t.quote}
-          </motion.blockquote>
-        ) : (
-          <AnimatePresence mode="wait">
+        {/* Quote */}
+        <AnimatePresence mode="wait">
+          {!carouselActive ? (
+            // Phase 1: scroll-driven opacity, spring-smoothed
+            <motion.blockquote key="scroll" style={{ ...quoteStyle, opacity: quoteOpacity }}>
+              {t.quote}
+            </motion.blockquote>
+          ) : (
+            // Phase 2: carousel fades — always enter from opacity 1 (already white)
             <motion.blockquote
               key={current}
-              initial={{ opacity: 0.18 }}
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
@@ -113,8 +117,8 @@ export default function TestimonialSection() {
             >
               {t.quote}
             </motion.blockquote>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
 
         {/* Author row */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -122,7 +126,7 @@ export default function TestimonialSection() {
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
-              initial={{ opacity: revealed ? 0 : 1 }}
+              initial={{ opacity: carouselActive ? 0 : 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
@@ -183,7 +187,7 @@ export default function TestimonialSection() {
                   flexShrink: 0,
                 }}
               >
-                {i === current && revealed && (
+                {i === current && carouselActive && (
                   <div
                     style={{
                       position: "absolute",

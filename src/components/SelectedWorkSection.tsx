@@ -1,190 +1,267 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useRef } from "react";
 
 const ACCENT = "#d90cb7";
 
-const projects = [
+type Project = {
+  client: string;
+  title: string;
+  tags: string[];
+  result: string;
+  image: string;
+  imagePosition?: string;
+  size: "large" | "medium";
+  href?: string;
+};
+
+const projects: Project[] = [
   {
-    client: "Fiverr",
-    title: "Feature Adoption Redesign",
-    tags: ["UX Strategy", "Product Design"],
-    result: "+12% feature adoption",
+    client: "DAZN",
+    title: "Premium Sports Platform Redesign",
+    tags: ["Web Design & Development", "App Design", "TV App", "Brand Design"],
+    result: "Full-stack redesign",
+    image: "/work/dazn.png",
+    imagePosition: "top center",
     size: "large",
+    href: "/work/dazn",
   },
   {
-    client: "Viably",
-    title: "Conversion Rate Optimization",
-    tags: ["The Hero Framework", "UX Research"],
-    result: "5x conversion boost",
+    client: "Down",
+    title: "Dating App — 0→1 Product Design",
+    tags: ["Web Design & Development", "App Design"],
+    result: "0→1 product design",
+    image: "/work/down.png",
+    imagePosition: "center center",
     size: "large",
+    href: "/work/down",
+  },
+  {
+    client: "Cymbio",
+    title: "B2B Sales Dashboard",
+    tags: ["Web Design & Development"],
+    result: "B2B dashboard design",
+    image: "/work/cymbio.png",
+    imagePosition: "top center",
+    size: "medium",
+    href: "/work/cymbio",
   },
   {
     client: "Designrr",
     title: "Engagement & Retention Overhaul",
-    tags: ["Product Design", "Behavioral UX"],
+    tags: ["Web Design & Development"],
     result: "+97% engagement",
+    image: "/work/designrr.png",
+    imagePosition: "top center",
     size: "medium",
+    href: "/work/designrr",
   },
   {
-    client: "SaaS Platform",
-    title: "Onboarding Flow Redesign",
-    tags: ["UX Strategy", "Development"],
-    result: "-40% drop-off",
-    size: "small",
-  },
-  {
-    client: "FinTech Startup",
-    title: "MVP UX Architecture",
-    tags: ["Startups", "Embedded Design"],
-    result: "Ship-ready in 6 weeks",
-    size: "small",
+    client: "JUSTT",
+    title: "Chargeback Management SaaS",
+    tags: ["Web Design & Development"],
+    result: "SaaS product design",
+    image: "/work/justt.png",
+    imagePosition: "top center",
+    size: "medium",
+    href: "/work/justt",
   },
 ];
 
-function WorkCard({
-  project,
-  index,
-}: {
-  project: (typeof projects)[0];
-  index: number;
-}) {
+function WorkCard({ project, index }: { project: Project; index: number }) {
+  const [hovered, setHovered] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const borderBg = hovered
+    ? `radial-gradient(circle 320px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    : "rgba(56,56,56,0.62)";
+
+  const spotlightBg = `radial-gradient(circle 360px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.12) 0%, transparent 70%)`;
+
+  const imageHeight = project.size === "large" ? 220 : 160;
+
+  const Tag = project.href ? "a" : "div";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.65, delay: index * 0.1, ease: "easeOut" }}
-      style={{
-        borderRadius: 16,
-        border: "1px solid #383838",
-        background: "#0a0a0a",
-        padding: "36px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        gap: 24,
-        minHeight: project.size === "large" ? 320 : 240,
-        position: "relative",
-        overflow: "hidden",
-        cursor: "default",
-        transition: "border-color 0.3s",
-      }}
-      whileHover={{ borderColor: "rgba(217,12,183,0.4)" }}
     >
-      {/* Background hover glow */}
+    <Tag
+      ref={ref as React.RefObject<HTMLDivElement & HTMLAnchorElement>}
+      {...(project.href ? { href: project.href } : {})}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove as React.MouseEventHandler}
+      style={{
+        display: "block",
+        padding: 1,
+        borderRadius: 17,
+        background: borderBg,
+        transition: hovered ? "none" : "background 0.4s ease",
+        cursor: project.href ? "pointer" : "default",
+        textDecoration: "none",
+      }}
+    >
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 80% 20%, rgba(217,12,183,0.06) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Image placeholder */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          width: "100%",
-          borderRadius: 8,
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          height: project.size === "large" ? 180 : 130,
+          borderRadius: 16,
+          background: "#0a0a0a",
+          padding: "32px",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
+          flexDirection: "column",
+          gap: 24,
+          position: "relative",
+          overflow: "hidden",
+          height: "100%",
         }}
       >
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-          <rect x="2" y="6" width="32" height="24" rx="3" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
-          <circle cx="12" cy="15" r="3.5" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
-          <path d="M2 26L10 17L16 23L22 14L34 26" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
-        </svg>
-      </div>
-
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Client */}
-        <p
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            letterSpacing: "2.5px",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.4)",
-            marginBottom: 12,
-            fontFamily: "var(--font-urbanist), sans-serif",
-          }}
-        >
-          {project.client}
-        </p>
-
-        {/* Title */}
-        <h3
-          style={{
-            fontSize: "clamp(18px, 1.5vw, 22px)",
-            fontWeight: 600,
-            color: "#ffffff",
-            lineHeight: 1.3,
-            margin: 0,
-          }}
-        >
-          {project.title}
-        </h3>
-      </div>
-
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Tags */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: "rgba(255,255,255,0.5)",
-                padding: "4px 12px",
-                borderRadius: 100,
-                border: "1px solid rgba(56,56,56,0.8)",
-                fontFamily: "var(--font-urbanist), sans-serif",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Result */}
+        {/* Mouse-follow spotlight */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "10px 16px",
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            opacity: hovered ? 1 : 0,
+            transition: hovered ? "none" : "opacity 0.4s ease",
+            background: spotlightBg,
+            zIndex: 0,
+          }}
+        />
+
+        {/* Image */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            height: imageHeight,
             borderRadius: 10,
-            background: `rgba(217,12,183,0.06)`,
-            border: `1px solid rgba(217,12,183,0.2)`,
-            width: "fit-content",
+            overflow: "hidden",
+            flexShrink: 0,
+            background: "rgba(255,255,255,0.03)",
           }}
         >
-          <span
-            style={{ width: 5, height: 5, borderRadius: "50%", background: ACCENT, flexShrink: 0 }}
-          />
-          <span
+          <img
+            src={project.image}
+            alt={project.client}
             style={{
-              fontSize: 13,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: project.imagePosition ?? "top center",
+              display: "block",
+              transition: "transform 0.5s ease",
+              transform: hovered ? "scale(1.03)" : "scale(1)",
+            }}
+          />
+          {/* Subtle gradient overlay at bottom for text readability */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to bottom, transparent 50%, rgba(10,10,10,0.35) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+
+        {/* Client + Title */}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "2.5px",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.4)",
+              marginBottom: 10,
+              fontFamily: "var(--font-urbanist), sans-serif",
+              margin: "0 0 10px",
+            }}
+          >
+            {project.client}
+          </p>
+          <h3
+            style={{
+              fontSize: "clamp(18px, 1.5vw, 22px)",
               fontWeight: 600,
-              color: ACCENT,
+              color: "#ffffff",
+              lineHeight: 1.3,
+              margin: 0,
               fontFamily: "var(--font-urbanist), sans-serif",
             }}
           >
-            {project.result}
-          </span>
+            {project.title}
+          </h3>
+        </div>
+
+        {/* Tags + Result */}
+        <div style={{ position: "relative", zIndex: 1, marginTop: "auto" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.5)",
+                  padding: "4px 12px",
+                  borderRadius: 100,
+                  border: "1px solid rgba(56,56,56,0.8)",
+                  fontFamily: "var(--font-urbanist), sans-serif",
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 16px",
+              borderRadius: 10,
+              background: "rgba(217,12,183,0.06)",
+              border: "1px solid rgba(217,12,183,0.2)",
+              width: "fit-content",
+            }}
+          >
+            <span
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: ACCENT,
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: ACCENT,
+                fontFamily: "var(--font-urbanist), sans-serif",
+              }}
+            >
+              {project.result}
+            </span>
+          </div>
         </div>
       </div>
+    </Tag>
     </motion.div>
   );
 }
@@ -264,17 +341,17 @@ export default function SelectedWorkSection() {
           className="work-row-2"
         >
           {row1.map((p, i) => (
-            <WorkCard key={p.title} project={p} index={i} />
+            <WorkCard key={p.client} project={p} index={i} />
           ))}
         </div>
 
-        {/* Row 2 — 3 smaller cards */}
+        {/* Row 2 — 3 medium cards */}
         <div
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}
           className="work-row-3"
         >
           {row2.map((p, i) => (
-            <WorkCard key={p.title} project={p} index={i + 2} />
+            <WorkCard key={p.client} project={p} index={i + 2} />
           ))}
         </div>
       </div>

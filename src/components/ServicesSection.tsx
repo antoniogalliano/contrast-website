@@ -37,11 +37,11 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
 
   // Border is the 1px gap between outer (gradient) and inner (#0a0a0a) div
   const borderBg = hovered
-    ? `radial-gradient(circle 120px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    ? `radial-gradient(circle 240px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
     : "rgba(56,56,56,0.62)";
 
   // Inner spotlight glow follows mouse (offset by 1px for the border)
-  const spotlightBg = `radial-gradient(circle 140px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.15) 0%, transparent 70%)`;
+  const spotlightBg = `radial-gradient(circle 280px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.15) 0%, transparent 70%)`;
 
   return (
     <motion.div
@@ -92,13 +92,34 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
           }}
         />
 
-        {/* Icon — 48×48px container, icon centered at natural Figma size */}
-        <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Icon — 48×48px container, glows pink on hover via stacked opacity (no filter interpolation) */}
+        <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+          {/* Base: white icon, fades out on hover */}
           <img
             src={card.icon}
             alt=""
             aria-hidden="true"
-            style={{ width: card.iconW, height: "auto" }}
+            style={{
+              position: "absolute",
+              width: card.iconW,
+              height: "auto",
+              opacity: hovered ? 0 : 1,
+              transition: "opacity 0.3s ease",
+            }}
+          />
+          {/* Pink layer: always fully tinted, fades in on hover */}
+          <img
+            src={card.icon}
+            alt=""
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              width: card.iconW,
+              height: "auto",
+              filter: "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93) drop-shadow(0 0 8px #d90cb7)",
+              opacity: hovered ? 1 : 0,
+              transition: "opacity 0.3s ease",
+            }}
           />
         </div>
 
@@ -142,7 +163,7 @@ function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) 
 
 export default function ServicesSection() {
   return (
-    <section style={{ padding: "0 40px 120px", background: "#0a0a0a" }}>
+    <section style={{ padding: "200px 40px 120px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
 
         {/* Section label */}

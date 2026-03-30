@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
 
-const ACCENT = "#d90cb7";
 const YT_ID = "dXev23xFw4A";
 
 // ── VideoPlayer ───────────────────────────────────────────────────────────────
@@ -74,286 +73,300 @@ function VideoPlayer() {
   );
 }
 
-// ── Brain SVG — gray default, pink on active ──────────────────────────────────
-// CSS filter converts dark gray → #d90cb7 pink on hover
-const PINK_FILTER =
-  "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93)";
+// ── Shared text styles ─────────────────────────────────────────────────────────
+const cardTitle: React.CSSProperties = {
+  fontFamily: "var(--font-urbanist), sans-serif",
+  fontWeight: 600,
+  fontSize: 20,
+  color: "#e8e8e8",
+  margin: 0,
+  lineHeight: "normal",
+};
+const cardDesc: React.CSSProperties = {
+  fontFamily: "var(--font-geist), sans-serif",
+  fontWeight: 400,
+  fontSize: 16,
+  color: "rgba(255,255,255,0.65)",
+  margin: 0,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  lineHeight: "normal",
+};
 
-function BrainSVG({ active }: { active: boolean }) {
-  return (
-    <div style={{ position: "relative", width: 221, height: 179 }}>
-      {/* Gray base layer */}
-      <img
-        src="/method/design-triggers.svg"
-        width={221}
-        height={179}
-        alt=""
-        style={{ display: "block" }}
-      />
-      {/* Pink overlay — fades in on hover/expand */}
-      <img
-        src="/method/design-triggers.svg"
-        width={221}
-        height={179}
-        alt=""
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "block",
-          opacity: active ? 1 : 0,
-          transition: "opacity 0.4s ease",
-          filter: PINK_FILTER,
-        }}
-      />
-    </div>
-  );
-}
-
-// ── Design Triggers Card — 3 states: Default / Hover / Clicked Plus ───────────
+// ── Design Triggers Card ───────────────────────────────────────────────────────
 function DesignTriggersCard({ delay }: { delay: number }) {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const ref = useRef<HTMLDivElement>(null);
   const active = hovered || expanded;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const borderBg = active
+    ? `radial-gradient(circle 360px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    : "rgba(56,56,56,0.62)";
+  const spotlightBg = `radial-gradient(circle 400px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.12) 0%, transparent 70%)`;
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7, delay, ease: "easeOut" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
       style={{
-        position: "relative",
+        padding: 1,
+        borderRadius: 17,
+        background: borderBg,
+        transition: active ? "none" : "background 0.4s ease",
+        cursor: "default",
+      }}
+    >
+      <div style={{
         borderRadius: 16,
-        border: `1px solid ${active ? ACCENT : "#383838"}`,
         background: "#0a0a0a",
         backdropFilter: "blur(8.5px)",
         WebkitBackdropFilter: "blur(8.5px)",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        transition: "border-color 0.35s ease",
-        cursor: "default",
-      }}
-    >
-      {/* ── Dot grid texture — visible on hover/expanded ── */}
-      <div
-        style={{
+        position: "relative",
+      }}>
+        {/* Mouse-follow spotlight — always active on hover */}
+        <div style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.13) 1px, transparent 1px)",
-          backgroundSize: "18px 18px",
-          opacity: active ? 1 : 0,
-          transition: "opacity 0.4s ease",
           pointerEvents: "none",
+          background: spotlightBg,
+          opacity: hovered ? 1 : 0,
+          transition: hovered ? "none" : "opacity 0.4s ease",
           zIndex: 1,
-        }}
-      />
+        }} />
 
-      {/* ── Large purple/pink gradient glow (card-relative, bleeds into text area) ── */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: -80,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 650,
-          height: 306,
-          borderRadius: "50%",
-          background: "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
-          filter: "blur(70px)",
-          opacity: active ? 0.65 : 0,
-          transition: "opacity 0.5s ease",
-          pointerEvents: "none",
-          zIndex: 2,
-        }}
-      />
-
-      {/* ── Color-dodge bright glow ── */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 80,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 415,
-          height: 128,
-          borderRadius: "50%",
-          background: "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
-          filter: "blur(33px)",
-          mixBlendMode: "color-dodge" as React.CSSProperties["mixBlendMode"],
-          opacity: active ? 1 : 0,
-          transition: "opacity 0.4s ease",
-          pointerEvents: "none",
-          zIndex: 3,
-        }}
-      />
-
-      {/* ── Brain SVG — centered at top:95 within the 304px illustration space ── */}
-      <div
-        style={{
-          position: "absolute",
-          top: 95,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 4,
-        }}
-      >
-        <BrainSVG active={active} />
-      </div>
-
-      {/* ── Spacer — reserves the 304px illustration area ── */}
-      <div style={{ height: 304, flexShrink: 0 }} />
-
-      {/* ── Text panel ── */}
-      <div
-        style={{
-          padding: 32,
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          gap: 11,
-          flexShrink: 0,
-          width: "100%",
-          boxSizing: "border-box",
-          zIndex: 5,
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontWeight: 600,
-            fontSize: 20,
-            color: "#e8e8e8",
-            margin: 0,
-            lineHeight: "normal",
-          }}
-        >
-          Design Triggers
-        </p>
-        <p
-          style={{
-            fontFamily: "var(--font-geist), sans-serif",
-            fontWeight: 400,
-            fontSize: 16,
-            color: active ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.65)",
-            margin: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            lineHeight: "normal",
-            transition: "color 0.35s ease",
-          }}
-        >
-          Leverages decision-making psychology to drive engagement.
-        </p>
-
-        {/* Plus / Close button */}
-        <button
-          onClick={() => setExpanded(!expanded)}
-          aria-label={expanded ? "Close" : "Learn more"}
-          style={{
-            position: "absolute",
-            right: 40,
-            top: 40,
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            border: "1px solid rgba(255,255,255,0.4)",
-            background: "transparent",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: active ? 1 : 0,
-            transition: "opacity 0.25s ease",
-          }}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            style={{
-              transform: expanded ? "rotate(45deg)" : "rotate(0deg)",
-              transition: "transform 0.3s ease",
-            }}
+        {/* Illustration area — 304px tall */}
+        <div style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
+          {/* Default illustration — hidden when hovered or expanded */}
+          <motion.div
+            style={{ position: "absolute", top: 95, left: "50%", x: "-50%" }}
+            animate={{ opacity: !hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            <path
-              d="M8 2V14M2 8H14"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
+            <img src="/method/design-triggers.svg" width={221} height={179} alt="" aria-hidden="true" style={{ display: "block" }} />
+          </motion.div>
+          {/* Hover illustration — visible only when hovered and not expanded */}
+          <motion.div
+            style={{ position: "absolute", top: 95, left: "50%", x: "-50%" }}
+            animate={{ opacity: hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <img src="/method/design-triggers-hover.svg" width={221} height={179} alt="" aria-hidden="true" style={{ display: "block" }} />
+          </motion.div>
+          {/* Expanded text — animates in/out when expanded */}
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                key="dt-text"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 16 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                style={{ position: "absolute", inset: 0, padding: 32, pointerEvents: "none" }}
+              >
+                <p style={{ fontFamily: "var(--font-urbanist), sans-serif", fontSize: 18, lineHeight: "26px", color: "#ffffff", margin: 0 }}>
+                  <span style={{ fontWeight: 300 }}>Understanding how users think is the foundation of great design. </span>
+                  <span style={{ fontWeight: 700 }}>With Design Triggers, we apply behavioral psychology and cognitive principles </span>
+                  <span style={{ fontWeight: 300 }}>to craft experiences that naturally guide users toward action. From micro-interactions to information hierarchy, every element is built to reduce friction and inspire engagement.</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-      {/* ── Expanded text overlay (Clicked Plus state) ── */}
-      <div
-        style={{
-          position: "absolute",
-          left: 31,
-          top: 31,
-          right: 31,
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontSize: 19,
-          lineHeight: "27px",
-          color: "#ffffff",
-          zIndex: 10,
-          opacity: expanded ? 1 : 0,
-          transition: "opacity 0.35s ease",
-          pointerEvents: expanded ? "auto" : "none",
-        }}
-      >
-        <span style={{ fontWeight: 300 }}>
-          Understanding how users think is the foundation of great design.{" "}
-        </span>
-        <span style={{ fontWeight: 700 }}>
-          With Design Triggers, we apply behavioral psychology and cognitive principles
-        </span>
-        <span style={{ fontWeight: 300 }}>
-          {" "}to craft experiences that naturally guide users toward action. From
-          micro-interactions to information hierarchy, every element is built to
-          reduce friction and inspire engagement.
-        </span>
+        {/* Text panel — always visible */}
+        <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
+          <p style={cardTitle}>Design Triggers</p>
+          <p style={cardDesc}>Leverages decision-making psychology to drive engagement.</p>
+        </div>
+
+        {/* Plus / Close icon — appears on hover or when expanded */}
+        <AnimatePresence>
+          {active && (
+            <motion.button
+              key="toggle"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              onClick={() => setExpanded(e => !e)}
+              aria-label={expanded ? "Close" : "Learn more"}
+              style={{
+                position: "absolute", bottom: 27, right: 27, zIndex: 8,
+                width: 40, height: 40, borderRadius: "50%",
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(10,10,10,0.4)",
+                backdropFilter: "blur(8px)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                style={{ transform: expanded ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.3s ease" }}
+              >
+                <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
 }
 
-// ── Hero Framework illustration ───────────────────────────────────────────────
-function HeroFrameworkIllustration() {
-  const cx = 160, cy = 110, r = 78;
+// ── Hero Framework Card ───────────────────────────────────────────────────────
+function HeroFrameworkCard({ delay }: { delay: number }) {
+  const [hovered, setHovered] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+  const active = hovered || expanded;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const borderBg = active
+    ? `radial-gradient(circle 360px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    : "rgba(56,56,56,0.62)";
+  const spotlightBg = `radial-gradient(circle 400px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.12) 0%, transparent 70%)`;
+
   return (
-    <svg viewBox="0 0 320 220" fill="none" style={{ width: "100%", height: "auto" }}>
-      <circle cx={cx} cy={cy} r={r} stroke="rgba(255,255,255,0.06)" strokeWidth={0.8} />
-      <circle cx={cx} cy={cy} r={r * 0.75} stroke="rgba(255,255,255,0.07)" strokeWidth={0.8} />
-      <circle cx={cx} cy={cy} r={r * 0.618} stroke="rgba(255,255,255,0.09)" strokeWidth={0.8} />
-      <circle cx={cx} cy={cy} r={r * 0.382} stroke={ACCENT} strokeWidth={1.4} opacity={0.5} />
-      <circle cx={cx} cy={cy} r={r * 0.2} stroke="rgba(255,255,255,0.12)" strokeWidth={0.8} />
-      <line x1={cx - r - 12} y1={cy} x2={cx + r + 12} y2={cy} stroke="rgba(255,255,255,0.05)" strokeWidth={0.8} />
-      <line x1={cx} y1={cy - r - 12} x2={cx} y2={cy + r + 12} stroke="rgba(255,255,255,0.05)" strokeWidth={0.8} />
-      <line x1={cx - r * 0.72} y1={cy - r * 0.72} x2={cx + r * 0.72} y2={cy + r * 0.72} stroke="rgba(255,255,255,0.04)" strokeWidth={0.8} />
-      <line x1={cx + r * 0.72} y1={cy - r * 0.72} x2={cx - r * 0.72} y2={cy + r * 0.72} stroke="rgba(255,255,255,0.04)" strokeWidth={0.8} />
-      <polygon
-        points={`${cx},${cy - r * 0.52} ${cx - 5},${cy} ${cx},${cy + r * 0.26} ${cx + 5},${cy}`}
-        fill={ACCENT} opacity={0.75}
-      />
-      {[0, 90, 180, 270].map((deg) => {
-        const a = (deg * Math.PI) / 180;
-        return (
-          <line key={deg}
-            x1={cx + Math.cos(a - Math.PI / 2) * (r - 6)} y1={cy + Math.sin(a - Math.PI / 2) * (r - 6)}
-            x2={cx + Math.cos(a - Math.PI / 2) * (r + 6)} y2={cy + Math.sin(a - Math.PI / 2) * (r + 6)}
-            stroke="rgba(255,255,255,0.2)" strokeWidth={1.2}
-          />
-        );
-      })}
-      <circle cx={cx} cy={cy} r={4} fill={ACCENT} />
-    </svg>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, delay: delay, ease: "easeOut" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
+      style={{
+        padding: 1,
+        borderRadius: 17,
+        background: borderBg,
+        transition: active ? "none" : "background 0.4s ease",
+        cursor: "default",
+      }}
+    >
+      <div style={{
+        borderRadius: 16,
+        background: "#0a0a0a",
+        backdropFilter: "blur(8.5px)",
+        WebkitBackdropFilter: "blur(8.5px)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}>
+        {/* Mouse-follow spotlight — always active on hover */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: spotlightBg,
+          opacity: hovered ? 1 : 0,
+          transition: hovered ? "none" : "opacity 0.4s ease",
+          zIndex: 1,
+        }} />
+
+        {/* Illustration area — 304px tall */}
+        <div style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
+          {/* Default illustration — hidden when hovered or expanded */}
+          <motion.div
+            style={{ position: "absolute", top: 54, left: "50%", x: "-50%", width: 248, height: 248 }}
+            animate={{ opacity: !hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <img src="/method/hero-framework.svg" width={248} height={248} alt="" aria-hidden="true" style={{ display: "block", width: "100%", height: "100%" }} />
+          </motion.div>
+          {/* Hover illustration — visible only when hovered and not expanded */}
+          <motion.div
+            style={{ position: "absolute", top: 54, left: "50%", x: "-50%", width: 248, height: 248 }}
+            animate={{ opacity: hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <img src="/method/hero-framework-hover.svg" width={248} height={248} alt="" aria-hidden="true" style={{ display: "block", width: "100%", height: "100%" }} />
+          </motion.div>
+          {/* Expanded text — animates in/out when expanded */}
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                key="hf-text"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 16 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                style={{ position: "absolute", inset: 0, padding: 32, pointerEvents: "none" }}
+              >
+                <p style={{ fontFamily: "var(--font-urbanist), sans-serif", fontSize: 18, lineHeight: "26px", color: "#ffffff", margin: 0 }}>
+                  <span style={{ fontWeight: 300 }}>The Hero Framework helps teams bridge the gap between business goals and human motivation. </span>
+                  <span style={{ fontWeight: 700 }}>We collaborate with founders and product teams to uncover what truly drives their users </span>
+                  <span style={{ fontWeight: 300 }}>— then turn those insights into clear, story-driven product experiences.</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Text panel — always visible */}
+        <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
+          <p style={cardTitle}>The Hero Framework</p>
+          <p style={cardDesc}>Aligns product vision with user needs.</p>
+        </div>
+
+        {/* Plus / Close icon — appears on hover or when expanded */}
+        <AnimatePresence>
+          {active && (
+            <motion.button
+              key="toggle"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              onClick={() => setExpanded(e => !e)}
+              aria-label={expanded ? "Close" : "Learn more"}
+              style={{
+                position: "absolute", bottom: 27, right: 27, zIndex: 8,
+                width: 40, height: 40, borderRadius: "50%",
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(10,10,10,0.4)",
+                backdropFilter: "blur(8px)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                style={{ transform: expanded ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.3s ease" }}
+              >
+                <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 }
 
@@ -413,46 +426,7 @@ export default function MethodSection() {
           <DesignTriggersCard delay={0} />
 
           {/* Hero Framework */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            style={{
-              padding: "40px",
-              borderRadius: 16,
-              border: "1px solid #383838",
-              background: "#0a0a0a",
-              display: "flex",
-              flexDirection: "column",
-              gap: 24,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <HeroFrameworkIllustration />
-            </div>
-            <div>
-              <h3 style={{
-                fontSize: "clamp(20px, 1.6vw, 26px)",
-                fontWeight: 600,
-                color: "#ffffff",
-                margin: "0 0 12px",
-                lineHeight: 1.2,
-              }}>
-                The Hero Framework
-              </h3>
-              <p style={{
-                fontSize: 15,
-                color: "#b0b0b0",
-                lineHeight: 1.7,
-                margin: 0,
-                fontFamily: "var(--font-geist), sans-serif",
-                fontWeight: 300,
-              }}>
-                Your product story mapped to what users actually need.
-              </p>
-            </div>
-          </motion.div>
+          <HeroFrameworkCard delay={0.15} />
         </div>
 
         {/* Video card */}
@@ -462,62 +436,69 @@ export default function MethodSection() {
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
           style={{
-            padding: "48px",
+            padding: 52,
             borderRadius: 16,
             border: "1px solid #383838",
             background: "#0a0a0a",
             display: "flex",
-            alignItems: "center",
-            gap: 48,
+            alignItems: "stretch",
+            justifyContent: "space-between",
+            gap: 40,
             position: "relative",
             overflow: "hidden",
           }}
           className="method-video-card"
         >
+          {/* Left column — text top, button bottom */}
           <div style={{
-            position: "absolute",
-            right: -80,
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: 400,
-            height: 400,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(118,12,217,0.18) 0%, rgba(217,12,183,0.12) 50%, transparent 75%)",
-            filter: "blur(60px)",
-            pointerEvents: "none",
-          }} />
+            flex: "0 0 auto",
+            width: 332,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative",
+            zIndex: 1,
+          }}>
+            {/* Text group */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <p style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.5)",
+                  margin: 0,
+                  fontFamily: "var(--font-urbanist), sans-serif",
+                }}>
+                  Video
+                </p>
+                <h3 style={{
+                  fontSize: "clamp(32px, 3.5vw, 50px)",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  lineHeight: 1.06,
+                  letterSpacing: "-0.5px",
+                  margin: 0,
+                  fontFamily: "var(--font-urbanist), sans-serif",
+                }}>
+                  The 3-Minute Breakdown
+                </h3>
+              </div>
+              <p style={{
+                fontSize: 15,
+                color: "#b0b0b0",
+                lineHeight: 1.7,
+                margin: 0,
+                fontFamily: "var(--font-geist), sans-serif",
+                fontWeight: 300,
+                opacity: 0.85,
+              }}>
+                See how the Hero Framework transforms product metrics in under 3 minutes. Real results, real clients, real methodology.
+              </p>
+            </div>
 
-          <div style={{ flex: "0 0 auto", maxWidth: 420, position: "relative", zIndex: 1 }}>
-            <p style={{
-              fontSize: 12,
-              fontWeight: 700,
-              letterSpacing: "3px",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.5)",
-              marginBottom: 16,
-              fontFamily: "var(--font-urbanist), sans-serif",
-            }}>
-              Video
-            </p>
-            <h3 style={{
-              fontSize: "clamp(22px, 2vw, 32px)",
-              fontWeight: 600,
-              color: "#ffffff",
-              lineHeight: 1.2,
-              margin: "0 0 16px",
-            }}>
-              The 3-Minute Breakdown
-            </h3>
-            <p style={{
-              fontSize: 15,
-              color: "#b0b0b0",
-              lineHeight: 1.7,
-              margin: "0 0 32px",
-              fontFamily: "var(--font-geist), sans-serif",
-              fontWeight: 300,
-            }}>
-              See how the Hero Framework transforms product metrics in under 3 minutes. Real results, real clients, real methodology.
-            </p>
+            {/* Button — pinned to bottom */}
             <a
               href="#"
               className="btn-gradient-border"
@@ -532,11 +513,12 @@ export default function MethodSection() {
                 color: "#ffffff",
                 textDecoration: "none",
                 fontFamily: "var(--font-urbanist), sans-serif",
+                alignSelf: "flex-start",
               }}
             >
               Watch Now
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
           </div>
