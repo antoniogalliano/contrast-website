@@ -71,7 +71,7 @@ export default function TestimonialSection() {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 0.85", "start 0.15"],
+    offset: ["start 0.8", "start 0.2"],
   });
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
 
