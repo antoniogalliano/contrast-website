@@ -11,17 +11,17 @@ function ArrowIcon() {
   );
 }
 
-// Social icons — from Figma 1:1549, each 30×27.273px, gap 8px
+// Social icons — Instagram, LinkedIn, YouTube — 30×27.273px, gap 8px
 function SocialIcons() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      {/* X (Twitter) — 30×27.273px */}
-      <a href="#" aria-label="X (Twitter)"
+      {/* Instagram — 30×27.273px */}
+      <a href="https://www.instagram.com/contrast_ux" aria-label="Instagram" target="_blank" rel="noopener noreferrer"
         style={{ display: "block", width: 30, height: 27.273, position: "relative", flexShrink: 0, opacity: 0.85, transition: "opacity 0.2s" }}
         onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
         onMouseLeave={e => (e.currentTarget.style.opacity = "0.85")}
       >
-        <img src="/social/x-twitter.svg" alt="X" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
+        <img src="/social/instagram.svg" alt="Instagram" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       </a>
       {/* LinkedIn — 30×27.273px */}
       <a href="#" aria-label="LinkedIn"
