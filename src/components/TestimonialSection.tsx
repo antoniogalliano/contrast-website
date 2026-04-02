@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
 
 const SLIDE_DURATION = 5000;
 
@@ -29,26 +29,71 @@ const TESTIMONIALS = [
   },
 ];
 
+// Arrow SVG — left or right
+function Arrow({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      {direction === "left"
+        ? <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        : <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      }
+    </svg>
+  );
+}
+
+function NavButton({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: 44,
+        height: 44,
+        borderRadius: "50%",
+        border: `1px solid ${hovered ? "#d90cb7" : "rgba(255,255,255,0.18)"}`,
+        background: hovered ? "rgba(217,12,183,0.08)" : "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        color: hovered ? "#d90cb7" : "rgba(255,255,255,0.6)",
+        transition: "border-color 0.25s ease, background 0.25s ease, color 0.25s ease",
+        flexShrink: 0,
+      }}
+    >
+      <Arrow direction={direction} />
+    </button>
+  );
+}
+
 export default function TestimonialSection() {
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent]           = useState(0);
   const [slideProgress, setSlideProgress] = useState(0);
   const [carouselActive, setCarouselActive] = useState(false);
+  const [revealedCount, setRevealedCount]   = useState(0);
 
-  const startRef = useRef<number>(0);
-  const rafRef = useRef<number | null>(null);
+  const startRef   = useRef<number>(0);
+  const rafRef     = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll-driven opacity: grey (0.18) as section enters at 80% viewport → white (1) at 20%
+  // Scroll progress: section enters at 85% viewport → its top reaches 15%
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 0.8", "start 0.2"],
+    offset: ["start 0.85", "start 0.15"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
+
+  // Word-by-word reveal driven by scroll
+  const words = TESTIMONIALS[0].quote.split(" ");
+  useMotionValueEvent(smoothProgress, "change", (v) => {
+    if (!carouselActive) {
+      setRevealedCount(Math.round(v * words.length));
+    }
   });
 
-  // Spring-smoothed scroll progress for a silky feel
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 20, restDelta: 0.001 });
-  const quoteOpacity = useTransform(smoothProgress, [0, 1], [0.18, 1]);
-
-  // Activate carousel only once fully revealed — no jump back to grey
+  // Lock into carousel once fully revealed
   useEffect(() => {
     return scrollYProgress.on("change", (v) => {
       if (v >= 0.99) setCarouselActive(true);
@@ -60,6 +105,8 @@ export default function TestimonialSection() {
     setCurrent(index);
     setSlideProgress(0);
   };
+  const goPrev = () => goTo((current - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+  const goNext = () => goTo((current + 1) % TESTIMONIALS.length);
 
   useEffect(() => {
     if (!carouselActive) return;
@@ -77,21 +124,18 @@ export default function TestimonialSection() {
     };
 
     rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [current, carouselActive]);
 
   const t = TESTIMONIALS[current];
 
-  const quoteStyle: React.CSSProperties = {
+  const quoteBase: React.CSSProperties = {
     margin: 0,
     fontFamily: "var(--font-urbanist), sans-serif",
     fontWeight: 500,
     fontSize: "clamp(28px, 3.5vw, 50px)",
     lineHeight: 1.176,
     letterSpacing: "-0.01em",
-    color: "#ffffff",
   };
 
   return (
@@ -101,19 +145,29 @@ export default function TestimonialSection() {
         {/* Quote */}
         <AnimatePresence mode="wait">
           {!carouselActive ? (
-            // Phase 1: scroll-driven opacity, spring-smoothed
-            <motion.blockquote key="scroll" style={{ ...quoteStyle, opacity: quoteOpacity }}>
-              {t.quote}
-            </motion.blockquote>
+            // Scroll phase: word-by-word reveal
+            <p key="scroll-reveal" style={quoteBase}>
+              {words.map((word, i) => (
+                <span
+                  key={i}
+                  style={{
+                    color: i < revealedCount ? "#ffffff" : "rgba(255,255,255,0.18)",
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  {word}{i < words.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </p>
           ) : (
-            // Phase 2: carousel fades — always enter from opacity 1 (already white)
+            // Carousel phase: fade between testimonials
             <motion.blockquote
               key={current}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              style={quoteStyle}
+              style={{ ...quoteBase, color: "#ffffff" }}
             >
               {t.quote}
             </motion.blockquote>
@@ -123,6 +177,7 @@ export default function TestimonialSection() {
         {/* Author row */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
 
+          {/* Author */}
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
@@ -136,8 +191,7 @@ export default function TestimonialSection() {
                 src={t.photo}
                 alt={t.name}
                 style={{
-                  width: 131,
-                  height: 126,
+                  width: 131, height: 126,
                   borderRadius: 16,
                   border: "1px solid #242323",
                   objectFit: "cover",
@@ -148,20 +202,16 @@ export default function TestimonialSection() {
                 <p style={{
                   margin: 0,
                   fontFamily: "var(--font-urbanist), sans-serif",
-                  fontWeight: 400,
-                  fontSize: 29,
-                  color: "#ffffff",
-                  lineHeight: "43.931px",
+                  fontWeight: 400, fontSize: 29,
+                  color: "#ffffff", lineHeight: "43.931px",
                 }}>
                   {t.name}
                 </p>
                 <p style={{
                   margin: 0,
                   fontFamily: "var(--font-urbanist), sans-serif",
-                  fontWeight: 400,
-                  fontSize: 29,
-                  color: "#888888",
-                  lineHeight: "43.931px",
+                  fontWeight: 400, fontSize: 29,
+                  color: "#888888", lineHeight: "43.931px",
                 }}>
                   {t.title}
                 </p>
@@ -169,39 +219,41 @@ export default function TestimonialSection() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Pagination */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-            {TESTIMONIALS.map((_, i) => (
-              <div
-                key={i}
-                onClick={() => goTo(i)}
-                style={{
-                  position: "relative",
-                  height: 4,
-                  width: i === current ? 76 : 8,
-                  borderRadius: 45,
-                  background: "rgba(255,255,255,0.3)",
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-                  flexShrink: 0,
-                }}
-              >
-                {i === current && carouselActive && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
+          {/* Controls: arrows + pagination */}
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexShrink: 0 }}>
+            <NavButton direction="left" onClick={goPrev} />
+
+            {/* Pagination dots */}
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              {TESTIMONIALS.map((_, i) => (
+                <div
+                  key={i}
+                  onClick={() => goTo(i)}
+                  style={{
+                    position: "relative",
+                    height: 4,
+                    width: i === current ? 76 : 8,
+                    borderRadius: 45,
+                    background: "rgba(255,255,255,0.3)",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                    transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {i === current && carouselActive && (
+                    <div style={{
+                      position: "absolute", top: 0, left: 0, bottom: 0,
                       width: `${slideProgress * 100}%`,
                       background: "#ffffff",
                       borderRadius: 45,
-                    }}
-                  />
-                )}
-              </div>
-            ))}
+                    }} />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <NavButton direction="right" onClick={goNext} />
           </div>
 
         </div>
