@@ -135,7 +135,7 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
             width:   hovered ? s.h.w : s.d.w,
             height:  hovered ? s.h.h : s.d.h,
             opacity: hovered ? s.hOp : s.dOp,
-            stroke:  hovered ? "#d90cb7" : "#292929",
+            stroke:  hovered ? "#d90cb7" : "#4e4e4e",
           }}
           animate={{
             x:       hovered ? s.h.x : s.d.x,
@@ -143,24 +143,26 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
             width:   hovered ? s.h.w : s.d.w,
             height:  hovered ? s.h.h : s.d.h,
             opacity: hovered ? s.hOp : s.dOp,
-            stroke:  hovered ? "#d90cb7" : "#292929",
+            stroke:  hovered ? "#d90cb7" : "#4e4e4e",
           }}
           transition={{ duration: dur, ease }}
           fill="none"
+          strokeWidth={0.8}
         />
       ))}
       <motion.circle
         cx="169.279" cy="142.24"
         initial={{
-          r:     hovered ? 21.5291 : 19.9297,
-          stroke: hovered ? "#d90cb7" : "#292929",
+          r:      hovered ? 21.5291 : 19.9297,
+          stroke: hovered ? "#d90cb7" : "#4e4e4e",
           fill:   hovered ? "#0a0a0a" : "none",
         }}
         animate={{
           r:      hovered ? 21.5291 : 19.9297,
-          stroke: hovered ? "#d90cb7" : "#292929",
+          stroke: hovered ? "#d90cb7" : "#4e4e4e",
           fill:   hovered ? "#0a0a0a" : "none",
         }}
+        strokeWidth={0.8}
         transition={{ duration: dur, ease }}
       />
     </svg>
