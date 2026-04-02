@@ -77,7 +77,7 @@ export default function Header() {
             textDecoration: "none",
           }}
         >
-          Free UX growth plan
+          Book a call
           <svg
             width="14"
             height="14"
@@ -177,7 +177,7 @@ export default function Header() {
               textDecoration: "none",
             }}
           >
-            Free UX growth plan
+            Book a call
             <svg
               width="14"
               height="14"

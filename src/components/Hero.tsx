@@ -139,7 +139,7 @@ export default function Hero() {
           willChange: "transform, opacity",
         }}
       >
-        Free UX growth plan
+        Book a call
         <svg
           width="15"
           height="15"
