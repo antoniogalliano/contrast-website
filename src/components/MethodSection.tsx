@@ -497,30 +497,6 @@ export default function MethodSection() {
                 See how the Hero Framework transforms product metrics in under 3 minutes. Real results, real clients, real methodology.
               </p>
             </div>
-
-            {/* Button — pinned to bottom */}
-            <a
-              href="#"
-              className="btn-gradient-border"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "12px 24px",
-                borderRadius: 9999,
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#ffffff",
-                textDecoration: "none",
-                fontFamily: "var(--font-urbanist), sans-serif",
-                alignSelf: "flex-start",
-              }}
-            >
-              Watch Now
-              <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
-                <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
           </div>
 
           <VideoPlayer />
