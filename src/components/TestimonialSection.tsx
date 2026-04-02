@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
-
-const SLIDE_DURATION = 5000;
 
 const TESTIMONIALS = [
   {
@@ -29,7 +27,6 @@ const TESTIMONIALS = [
   },
 ];
 
-// Arrow SVG — left or right
 function Arrow({ direction }: { direction: "left" | "right" }) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -49,14 +46,11 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        width: 44,
-        height: 44,
+        width: 44, height: 44,
         borderRadius: "50%",
         border: `1px solid ${hovered ? "#d90cb7" : "rgba(255,255,255,0.18)"}`,
         background: hovered ? "rgba(217,12,183,0.08)" : "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: "flex", alignItems: "center", justifyContent: "center",
         cursor: "pointer",
         color: hovered ? "#d90cb7" : "rgba(255,255,255,0.6)",
         transition: "border-color 0.25s ease, background 0.25s ease, color 0.25s ease",
@@ -70,62 +64,28 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
 
 export default function TestimonialSection() {
   const [current, setCurrent]           = useState(0);
-  const [slideProgress, setSlideProgress] = useState(0);
-  const [carouselActive, setCarouselActive] = useState(false);
-  const [revealedCount, setRevealedCount]   = useState(0);
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [hasNavigated, setHasNavigated]   = useState(false);
 
-  const startRef   = useRef<number>(0);
-  const rafRef     = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll progress: section enters at 85% viewport → its top reaches 15%
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 0.85", "start 0.15"],
   });
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
 
-  // Word-by-word reveal driven by scroll
   const words = TESTIMONIALS[0].quote.split(" ");
   useMotionValueEvent(smoothProgress, "change", (v) => {
-    if (!carouselActive) {
-      setRevealedCount(Math.round(v * words.length));
-    }
+    setRevealedCount(Math.round(v * words.length));
   });
 
-  // Lock into carousel once fully revealed
-  useEffect(() => {
-    return scrollYProgress.on("change", (v) => {
-      if (v >= 0.99) setCarouselActive(true);
-    });
-  }, [scrollYProgress]);
-
   const goTo = (index: number) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    setHasNavigated(true);
     setCurrent(index);
-    setSlideProgress(0);
   };
   const goPrev = () => goTo((current - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   const goNext = () => goTo((current + 1) % TESTIMONIALS.length);
-
-  useEffect(() => {
-    if (!carouselActive) return;
-    startRef.current = performance.now();
-    setSlideProgress(0);
-
-    const tick = (now: number) => {
-      const p = Math.min((now - startRef.current) / SLIDE_DURATION, 1);
-      setSlideProgress(p);
-      if (p < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setCurrent((c) => (c + 1) % TESTIMONIALS.length);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [current, carouselActive]);
 
   const t = TESTIMONIALS[current];
 
@@ -144,8 +104,8 @@ export default function TestimonialSection() {
 
         {/* Quote */}
         <AnimatePresence mode="wait">
-          {!carouselActive ? (
-            // Scroll phase: word-by-word reveal
+          {!hasNavigated ? (
+            // Scroll-driven word-by-word reveal on first testimonial
             <p key="scroll-reveal" style={quoteBase}>
               {words.map((word, i) => (
                 <span
@@ -160,13 +120,13 @@ export default function TestimonialSection() {
               ))}
             </p>
           ) : (
-            // Carousel phase: fade between testimonials
+            // After manual navigation: fade in full white
             <motion.blockquote
               key={current}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
               style={{ ...quoteBase, color: "#ffffff" }}
             >
               {t.quote}
@@ -181,7 +141,7 @@ export default function TestimonialSection() {
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
-              initial={{ opacity: carouselActive ? 0 : 1 }}
+              initial={{ opacity: hasNavigated ? 0 : 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
@@ -219,37 +179,25 @@ export default function TestimonialSection() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Controls: arrows + pagination */}
+          {/* Controls: arrows + pagination dots */}
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexShrink: 0 }}>
             <NavButton direction="left" onClick={goPrev} />
 
-            {/* Pagination dots */}
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               {TESTIMONIALS.map((_, i) => (
                 <div
                   key={i}
                   onClick={() => goTo(i)}
                   style={{
-                    position: "relative",
                     height: 4,
                     width: i === current ? 76 : 8,
                     borderRadius: 45,
-                    background: "rgba(255,255,255,0.3)",
+                    background: i === current ? "#ffffff" : "rgba(255,255,255,0.3)",
                     cursor: "pointer",
-                    overflow: "hidden",
-                    transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                    transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease",
                     flexShrink: 0,
                   }}
-                >
-                  {i === current && carouselActive && (
-                    <div style={{
-                      position: "absolute", top: 0, left: 0, bottom: 0,
-                      width: `${slideProgress * 100}%`,
-                      background: "#ffffff",
-                      borderRadius: 45,
-                    }} />
-                  )}
-                </div>
+                />
               ))}
             </div>
 
