@@ -12,19 +12,26 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 ═══════════════════════════════════════════ */
 function IllustrationCubes({ hovered }: { hovered: boolean }) {
   const S  = 56.965;
-  const Sw = S * 0.866025;
+  const Sw = S * 0.866025; // 49.333
   const GRAY = "#4e4e4e";
   const px = 148, py = 0;
   const TALL = 320;
 
-  const pngTop = `${(57 + 5) / 360 * 100}%`;
-  const pngW   = `${98.667 / 310 * 100}%`;
-  const png04L = `${(0   + 5) / 310 * 100}%`;
-  const png02L = `${(198 + 5) / 310 * 100}%`;
+  // 6 gray wireframe cubes — matching Figma node 3:2089 exactly
+  // columns: left = px-2Sw, center = px, right = px+2Sw
+  // rows:    top = py+S,   mid = py+2S, mid2 = py+3S, low = py+4S
+  const GRAY_CUBES = [
+    { x: px - 2*Sw, y: py + S,     op: 1.0 },  // cube04 — left top
+    { x: px,        y: py + 2*S,   op: 0.9 },  // cube06 — center
+    { x: px + 2*Sw, y: py + S,     op: 1.0 },  // cube02 — right top
+    { x: px - 2*Sw, y: py + 3*S,   op: 0.65 }, // cube03 — left bottom
+    { x: px,        y: py + 4*S,   op: 0.55 }, // cube05 — center low
+    { x: px + 2*Sw, y: py + 3*S,   op: 0.65 }, // cube01 — right bottom
+  ];
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 296, margin: "0 auto" }}>
-      <svg viewBox="-5 -5 310 360" style={{ width: "100%", height: "auto" }} fill="none" overflow="visible">
+      <svg viewBox="-5 -5 310 380" style={{ width: "100%", height: "auto" }} fill="none" overflow="visible">
         <defs>
           <linearGradient id="c1-top" x1="1" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
             <stop offset="0%"   stopColor={ACCENT} stopOpacity="0" />
@@ -40,21 +47,18 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
           </linearGradient>
         </defs>
 
-        {/* Gray wireframes — fade out on hover */}
-        <motion.g animate={{ opacity: hovered ? 0 : 1 }} transition={{ duration: 0.35 }}>
-          {[
-            { x: 148, y: 114 },
-            { x: 49,  y: 171 },
-            { x: 247, y: 171 },
-            { x: 148, y: 228 },
-          ].map(({ x, y }) => (
-            <g key={`${x}-${y}`}>
-              <rect width={S} height={S} transform={`matrix(0.866025 0.5 -0.866025 0.5 ${x} ${y})`} fill="none" stroke={GRAY} strokeWidth={0.8} />
-              <rect width={S} height={S} transform={`matrix(0.866025 0.5 0 1 ${x - Sw} ${y + S * 0.5})`} fill="none" stroke={GRAY} strokeWidth={0.8} />
-              <rect width={S} height={S} transform={`matrix(0.866025 -0.5 0 1 ${x} ${y + S})`} fill="none" stroke={GRAY} strokeWidth={0.8} />
-            </g>
-          ))}
-        </motion.g>
+        {/* 6 gray wireframe cubes — fade out on hover */}
+        {GRAY_CUBES.map(({ x, y, op }, i) => (
+          <motion.g
+            key={i}
+            animate={{ opacity: hovered ? 0 : op }}
+            transition={{ duration: 0.35 }}
+          >
+            <rect width={S} height={S} transform={`matrix(0.866025 0.5 -0.866025 0.5 ${x} ${y})`}           fill="none" stroke={GRAY} strokeWidth={0.8} />
+            <rect width={S} height={S} transform={`matrix(0.866025 0.5 0 1 ${x - Sw} ${y + S * 0.5})`}      fill="none" stroke={GRAY} strokeWidth={0.8} />
+            <rect width={S} height={S} transform={`matrix(0.866025 -0.5 0 1 ${x} ${y + S})`}                fill="none" stroke={GRAY} strokeWidth={0.8} />
+          </motion.g>
+        ))}
 
         {/* Pink main cube */}
         <rect
@@ -80,28 +84,11 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
         />
       </svg>
 
-      {/* PNG cubes — fade out on hover */}
-      <motion.img
-        src="/cube04.png" alt=""
-        initial={{ opacity: 1 }}
-        animate={{ opacity: hovered ? 0 : 1 }}
-        transition={{ duration: 0.3 }}
-        style={{ position: "absolute", left: png04L, top: pngTop, width: pngW, height: "auto" }}
-      />
-      <motion.img
-        src="/cube02.png" alt=""
-        initial={{ opacity: 1 }}
-        animate={{ opacity: hovered ? 0 : 1 }}
-        transition={{ duration: 0.3 }}
-        style={{ position: "absolute", left: png02L, top: pngTop, width: pngW, height: "auto" }}
-      />
-
-      {/* Bottom blur */}
+      {/* Bottom fade */}
       <div style={{
         position: "absolute", bottom: 0, left: "-20%",
-        width: "140%", height: "30%",
-        background: "#0a0a0a",
-        filter: "blur(30px)",
+        width: "140%", height: "35%",
+        background: "linear-gradient(to top, #0a0a0a 40%, transparent)",
         pointerEvents: "none",
       }} />
     </div>
