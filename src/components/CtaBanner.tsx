@@ -2,60 +2,6 @@
 
 import { motion } from "framer-motion";
 
-// Wave is 2× container width so it loops seamlessly with translateX(-50%)
-const W = 2800;
-const H = 508;
-
-// Approximate a sine wave with cubic beziers (k = 4/3 * tan(π/8) ≈ 0.5523)
-function wavePath(y: number, amp: number, period: number, fillEdge: "top" | "bottom"): string {
-  const k    = 0.5523;
-  const half = period / 2;
-  let d      = `M 0 ${y}`;
-  let sign   = 1;
-  for (let x = 0; x < W; x += half) {
-    const cp = half * k;
-    d += ` C ${x + cp} ${y - amp * sign} ${x + half - cp} ${y - amp * sign} ${x + half} ${y}`;
-    sign *= -1;
-  }
-  const edge = fillEdge === "bottom" ? H : 0;
-  d += ` L ${W} ${edge} L 0 ${edge} Z`;
-  return d;
-}
-
-// 5 layered waves: different y-positions, amplitudes, colours, speeds
-const WAVES = [
-  {
-    y: 210, amp: 52, period: 680,
-    fill: "url(#wg1)", blur: 22,
-    speed: 22, dir: "left" as const, delay: 0,
-    fillEdge: "bottom" as const,
-  },
-  {
-    y: 300, amp: 42, period: 920,
-    fill: "url(#wg2)", blur: 28,
-    speed: 30, dir: "right" as const, delay: -9,
-    fillEdge: "bottom" as const,
-  },
-  {
-    y: 155, amp: 36, period: 580,
-    fill: "url(#wg3)", blur: 14,
-    speed: 17, dir: "left" as const, delay: -4,
-    fillEdge: "top" as const,
-  },
-  {
-    y: 360, amp: 48, period: 760,
-    fill: "url(#wg4)", blur: 24,
-    speed: 26, dir: "right" as const, delay: -13,
-    fillEdge: "bottom" as const,
-  },
-  {
-    y: 240, amp: 26, period: 460,
-    fill: "url(#wg5)", blur: 10,
-    speed: 13, dir: "left" as const, delay: -2,
-    fillEdge: "top" as const,
-  },
-];
-
 export default function CtaBanner() {
   return (
     <section
@@ -72,17 +18,19 @@ export default function CtaBanner() {
         paddingBottom: 300,
       }}
     >
-      {/* ── Background container ── */}
+      {/* ── Background gradient container ── */}
       <div
         style={{
           position: "absolute",
-          left: 0, top: 0,
-          width: "100%", height: 508,
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: 508,
           overflow: "hidden",
           pointerEvents: "none",
         }}
       >
-        {/* Blob 1 */}
+        {/* Blob 1 — large violet→pink pill */}
         <div style={{
           position: "absolute", left: "50%", top: -387,
           transform: "translate(calc(-50% + 22.86px), 0) rotate(180deg)",
@@ -90,7 +38,7 @@ export default function CtaBanner() {
           background: "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
           filter: "blur(92.75px)", opacity: 0.65,
         }} />
-        {/* Blob 2 — color-dodge */}
+        {/* Blob 2 — color-dodge brightening layer */}
         <div style={{
           position: "absolute", left: "50%", top: -335,
           transform: "translate(calc(-50% + 22.86px), 0) rotate(180deg)",
@@ -105,53 +53,6 @@ export default function CtaBanner() {
             width: "auto", height: "auto", display: "block",
           }} />
         </div>
-
-        {/* ── Gradient wave field ── */}
-        <svg
-          style={{ position: "absolute", top: 0, left: 0, width: W, height: H }}
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-        >
-          <defs>
-            {/* Pink — fills downward */}
-            <linearGradient id="wg1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(217,12,183,0.32)" />
-              <stop offset="100%" stopColor="rgba(217,12,183,0)" />
-            </linearGradient>
-            {/* Deep purple — fills downward */}
-            <linearGradient id="wg2" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(118,12,217,0.28)" />
-              <stop offset="100%" stopColor="rgba(118,12,217,0)" />
-            </linearGradient>
-            {/* Rose/white — fills upward */}
-            <linearGradient id="wg3" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="rgba(255,100,220,0.18)" />
-              <stop offset="100%" stopColor="rgba(255,100,220,0)" />
-            </linearGradient>
-            {/* Violet — fills downward */}
-            <linearGradient id="wg4" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(160,20,240,0.22)" />
-              <stop offset="100%" stopColor="rgba(160,20,240,0)" />
-            </linearGradient>
-            {/* White shimmer — fills upward */}
-            <linearGradient id="wg5" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-            </linearGradient>
-          </defs>
-
-          {WAVES.map((w, i) => (
-            <path
-              key={i}
-              d={wavePath(w.y, w.amp, w.period, w.fillEdge)}
-              fill={w.fill}
-              style={{
-                filter: `blur(${w.blur}px)`,
-                animation: `wave-flow-${w.dir} ${w.speed}s ${w.delay}s linear infinite`,
-              }}
-            />
-          ))}
-        </svg>
       </div>
 
       {/* ── "WE BELIEVE IN" ── */}
