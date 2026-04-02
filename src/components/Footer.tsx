@@ -24,7 +24,7 @@ function SocialIcons() {
         <img src="/social/instagram.svg" alt="Instagram" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       </a>
       {/* LinkedIn — 30×27.273px */}
-      <a href="#" aria-label="LinkedIn"
+      <a href="https://www.linkedin.com/company/contrastux" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"
         style={{ display: "block", width: 30, height: 27.273, position: "relative", flexShrink: 0, opacity: 0.85, transition: "opacity 0.2s" }}
         onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
         onMouseLeave={e => (e.currentTarget.style.opacity = "0.85")}
@@ -32,7 +32,7 @@ function SocialIcons() {
         <img src="/social/linkedin.svg" alt="LinkedIn" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       </a>
       {/* YouTube — 30×27.273px, radius 1.364px, inner frame 19.091px centered */}
-      <a href="#" aria-label="YouTube"
+      <a href="https://www.youtube.com/@contrastux" aria-label="YouTube" target="_blank" rel="noopener noreferrer"
         style={{ display: "block", width: 30, height: 27.273, position: "relative", flexShrink: 0, borderRadius: 1.364, overflow: "clip", opacity: 0.85, transition: "opacity 0.2s" }}
         onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
         onMouseLeave={e => (e.currentTarget.style.opacity = "0.85")}
