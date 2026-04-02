@@ -207,24 +207,5 @@ export default function CtaBanner() {
         </svg>
       </motion.a>
     </section>
-
-    <style jsx global>{`
-      @keyframes star-float-0 {
-        0%, 100% { transform: translateY(0px);   opacity: 0.55; }
-        50%       { transform: translateY(-5px);  opacity: 1;    }
-      }
-      @keyframes star-float-1 {
-        0%, 100% { transform: translateY(0px);   opacity: 0.4;  }
-        50%       { transform: translateY(-7px);  opacity: 0.9;  }
-      }
-      @keyframes star-float-2 {
-        0%, 100% { transform: translateY(0px);   opacity: 0.65; }
-        50%       { transform: translateY(-4px);  opacity: 1;    }
-      }
-      @keyframes star-float-3 {
-        0%, 100% { transform: translateY(0px);   opacity: 0.35; }
-        50%       { transform: translateY(-6px);  opacity: 0.85; }
-      }
-    `}</style>
   );
 }
