@@ -124,7 +124,7 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
   const dur = 0.5;
 
   return (
-    <svg viewBox="0 0 339 282" style={{ width: "100%", maxWidth: 280, height: "auto" }} fill="none">
+    <svg viewBox="0 0 339 282" style={{ width: "100%", maxWidth: 360, height: "auto" }} fill="none">
       {RECTS.map((s, i) => (
         <motion.rect
           key={i}
