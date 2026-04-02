@@ -64,8 +64,7 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
 
 export default function TestimonialSection() {
   const [current, setCurrent]           = useState(0);
-  const [revealedCount, setRevealedCount] = useState(0);
-  const [hasNavigated, setHasNavigated]   = useState(false);
+  const [revealProgress, setRevealProgress] = useState(0);
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -75,19 +74,18 @@ export default function TestimonialSection() {
   });
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
 
-  const words = TESTIMONIALS[0].quote.split(" ");
+  // Store 0–1 progress so any testimonial can use it
   useMotionValueEvent(smoothProgress, "change", (v) => {
-    setRevealedCount(Math.round(v * words.length));
+    setRevealProgress(v);
   });
 
-  const goTo = (index: number) => {
-    setHasNavigated(true);
-    setCurrent(index);
-  };
+  const goTo = (index: number) => setCurrent(index);
   const goPrev = () => goTo((current - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   const goNext = () => goTo((current + 1) % TESTIMONIALS.length);
 
   const t = TESTIMONIALS[current];
+  const words = t.quote.split(" ");
+  const revealedCount = Math.round(revealProgress * words.length);
 
   const quoteBase: React.CSSProperties = {
     margin: 0,
@@ -102,36 +100,28 @@ export default function TestimonialSection() {
     <section ref={sectionRef} style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", flexDirection: "column", gap: 96 }}>
 
-        {/* Quote */}
+        {/* Quote — always word-by-word, fades when switching slides */}
         <AnimatePresence mode="wait">
-          {!hasNavigated ? (
-            // Scroll-driven word-by-word reveal on first testimonial
-            <p key="scroll-reveal" style={quoteBase}>
-              {words.map((word, i) => (
-                <span
-                  key={i}
-                  style={{
-                    color: i < revealedCount ? "#ffffff" : "rgba(255,255,255,0.18)",
-                    transition: "color 0.2s ease",
-                  }}
-                >
-                  {word}{i < words.length - 1 ? " " : ""}
-                </span>
-              ))}
-            </p>
-          ) : (
-            // After manual navigation: fade in full white
-            <motion.blockquote
-              key={current}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.45, ease: "easeOut" }}
-              style={{ ...quoteBase, color: "#ffffff" }}
-            >
-              {t.quote}
-            </motion.blockquote>
-          )}
+          <motion.p
+            key={current}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            style={quoteBase}
+          >
+            {words.map((word, i) => (
+              <span
+                key={i}
+                style={{
+                  color: i < revealedCount ? "#ffffff" : "rgba(255,255,255,0.18)",
+                  transition: "color 0.2s ease",
+                }}
+              >
+                {word}{i < words.length - 1 ? " " : ""}
+              </span>
+            ))}
+          </motion.p>
         </AnimatePresence>
 
         {/* Author row */}
@@ -141,7 +131,7 @@ export default function TestimonialSection() {
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
-              initial={{ opacity: hasNavigated ? 0 : 1 }}
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
