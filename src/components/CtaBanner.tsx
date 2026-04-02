@@ -104,20 +104,29 @@ export default function CtaBanner() {
           />
         </div>
 
-        {/* ── Star field (contained within background clip) ── */}
+        {/* ── Star field — floating animated dots ── */}
         <svg
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
           preserveAspectRatio="xMidYMid slice"
         >
-          {STARS.map((s, i) => (
-            <circle
-              key={i}
-              cx={`${s.x}%`}
-              cy={`${s.y}%`}
-              r={s.r}
-              fill="rgba(255,255,255,0.55)"
-            />
-          ))}
+          {STARS.map((s, i) => {
+            const duration = 3.5 + (i % 7) * 0.6;
+            const delay = -(i * 0.43 % duration);
+            const floatAmt = 3 + (i % 4);
+            return (
+              <circle
+                key={i}
+                cx={`${s.x}%`}
+                cy={`${s.y}%`}
+                r={s.r}
+                fill="rgba(255,255,255,0.7)"
+                style={{
+                  animation: `star-float-${i % 4} ${duration}s ${delay}s ease-in-out infinite`,
+                  transformOrigin: `${s.x}% ${s.y}%`,
+                }}
+              />
+            );
+          })}
         </svg>
       </div>
 
@@ -198,5 +207,24 @@ export default function CtaBanner() {
         </svg>
       </motion.a>
     </section>
+
+    <style jsx global>{`
+      @keyframes star-float-0 {
+        0%, 100% { transform: translateY(0px);   opacity: 0.55; }
+        50%       { transform: translateY(-5px);  opacity: 1;    }
+      }
+      @keyframes star-float-1 {
+        0%, 100% { transform: translateY(0px);   opacity: 0.4;  }
+        50%       { transform: translateY(-7px);  opacity: 0.9;  }
+      }
+      @keyframes star-float-2 {
+        0%, 100% { transform: translateY(0px);   opacity: 0.65; }
+        50%       { transform: translateY(-4px);  opacity: 1;    }
+      }
+      @keyframes star-float-3 {
+        0%, 100% { transform: translateY(0px);   opacity: 0.35; }
+        50%       { transform: translateY(-6px);  opacity: 0.85; }
+      }
+    `}</style>
   );
 }
