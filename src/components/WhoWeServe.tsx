@@ -87,7 +87,7 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
       {/* Bottom fade */}
       <div style={{
         position: "absolute", bottom: 0, left: "-20%",
-        width: "140%", height: "35%",
+        width: "140%", height: "calc(35% + 60px)",
         background: "linear-gradient(to top, #0a0a0a 40%, transparent)",
         pointerEvents: "none",
       }} />
