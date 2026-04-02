@@ -29,7 +29,7 @@ export default function Header() {
     >
       <div
         className="mx-auto flex items-center justify-between"
-        style={{ maxWidth: 1440, padding: "32px 48px" }}
+        style={{ maxWidth: 1440, padding: "0 48px", height: 90 }}
       >
         {/* Logo */}
         <a href="/" aria-label="Contrast home" style={{ display: "block", textDecoration: "none" }}>
