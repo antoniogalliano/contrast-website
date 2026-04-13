@@ -1,7 +1,220 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 
+// ── Per-letter blur+fade+y reveal (viewport-triggered) ───────────────────────
+function RevealText({
+  text,
+  delay = 0,
+  stagger = 0.032,
+  style,
+  className,
+}: {
+  text: string;
+  delay?: number;
+  stagger?: number;
+  style?: React.CSSProperties;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.5 });
+  const chars = text.split("");
+
+  return (
+    <span ref={ref} style={{ display: "inline", ...style }} className={className}>
+      {chars.map((char, i) => (
+        <motion.span
+          key={i}
+          style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : undefined }}
+          initial={{ opacity: 0, y: 28, filter: "blur(18px)" }}
+          animate={inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{
+            duration: 0.65,
+            delay: delay + i * stagger,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+const PHRASES = ["Constant Learning", "Clear Thinking", "Intentional Design"];
+
+// ── Sparkle field ─────────────────────────────────────────────────────────────
+function SparkleField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const COUNT = 200;
+
+    type Star = {
+      x: number; y: number;
+      vx: number; vy: number;
+      size: number;
+      baseOpacity: number;
+      phase: number;       // twinkle phase offset
+      twinkleSpeed: number;
+      driftX: number;      // per-star chaos frequency
+      driftY: number;
+    };
+
+    const make = (): Star => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.12,
+      vy: (Math.random() - 0.5) * 0.10,
+      size: Math.random() * 1.4 + 0.25,
+      baseOpacity: Math.random() * 0.65 + 0.08, // 0.08 → 0.73
+      phase: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 0.007 + 0.002,
+      driftX: Math.random() * 0.013 + 0.004,
+      driftY: Math.random() * 0.009 + 0.003,
+    });
+
+    const stars: Star[] = Array.from({ length: COUNT }, make);
+    let frame = 0;
+    let animId: number;
+
+    const draw = () => {
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+
+      for (const s of stars) {
+        // Chaotic slow drift: base velocity + per-star sinusoidal wobble
+        s.x += s.vx + Math.sin(frame * s.driftX + s.phase) * 0.06;
+        s.y += s.vy + Math.cos(frame * s.driftY + s.phase * 1.4) * 0.05;
+
+        if (s.x < -2) s.x = W + 2;
+        if (s.x > W + 2) s.x = -2;
+        if (s.y < -2) s.y = H + 2;
+        if (s.y > H + 2) s.y = -2;
+
+        // Slow twinkle: opacity oscillates between ~40% and 100% of baseOpacity
+        const twinkle = 0.55 + 0.45 * Math.sin(frame * s.twinkleSpeed + s.phase);
+        const alpha = s.baseOpacity * twinkle;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    />
+  );
+}
+
+// ── Cycling headline ─────────────────────────────────────────────────────────
+function CyclingHeadline() {
+  const [index, setIndex] = useState(0);
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.2 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    const id = setInterval(() => setIndex(i => (i + 1) % PHRASES.length), 4800);
+    return () => clearInterval(id);
+  }, [inView]);
+
+  const chars = PHRASES[index].split("");
+  const STAGGER = 0.028;
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "relative", zIndex: 2,
+        margin: "48px 0 0",
+        width: "100%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}
+    >
+      <AnimatePresence mode="wait">
+        <h2
+          key={index}
+          className="cta-headline"
+          style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontWeight: 700,
+            fontSize: "clamp(64px, 8.5vw, 112px)",
+            lineHeight: 1,
+            letterSpacing: "-2.24px",
+            color: "#ffffff",
+            margin: 0,
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
+          {chars.map((char, i) => (
+            <motion.span
+              key={`${index}-${i}`}
+              style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : undefined }}
+              initial={{ opacity: 0, filter: "blur(22px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(22px)" }}
+              transition={{
+                duration: 0.55,
+                delay: i * STAGGER,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
+        </h2>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
 export default function CtaBanner() {
   return (
     <section
@@ -18,6 +231,9 @@ export default function CtaBanner() {
         paddingBottom: 300,
       }}
     >
+      {/* ── Sparkle field ── */}
+      <SparkleField />
+
       {/* ── Background gradient container ── */}
       <div
         style={{
@@ -28,6 +244,7 @@ export default function CtaBanner() {
           height: 508,
           overflow: "hidden",
           pointerEvents: "none",
+          zIndex: 1,
         }}
       >
         {/* Blob 1 — large violet→pink pill */}
@@ -53,41 +270,32 @@ export default function CtaBanner() {
             width: "auto", height: "auto", display: "block",
           }} />
         </div>
+        {/* Smooth fade to dark at bottom — eliminates hard gradient edge */}
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: 220,
+          background: "linear-gradient(to bottom, transparent, #0a0a0a)",
+          pointerEvents: "none",
+        }} />
       </div>
 
       {/* ── "WE BELIEVE IN" ── */}
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+      <p
+        className="cta-label"
         style={{
-          position: "relative", zIndex: 1,
+          position: "relative", zIndex: 2,
           fontFamily: "var(--font-urbanist), sans-serif",
           fontWeight: 300, fontSize: 45, lineHeight: "43.931px",
           letterSpacing: "14.4px", textTransform: "uppercase",
           color: "#ffffff", textAlign: "center", margin: 0,
+          width: "100%",
         }}
       >
-        We believe in
-      </motion.p>
+        <RevealText text="We believe in" stagger={0.045} />
+      </p>
 
-      {/* ── "Constant learning" ── */}
-      <motion.h2
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-        style={{
-          position: "relative", zIndex: 1,
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontWeight: 700, fontSize: "clamp(64px, 8.5vw, 112px)",
-          lineHeight: 1, letterSpacing: "-2.24px",
-          textAlign: "center", margin: "8px 0 0", color: "#ffffff",
-        }}
-      >
-        Constant learning
-      </motion.h2>
+      {/* ── Cycling headline ── */}
+      <CyclingHeadline />
 
       {/* ── CTA button ── */}
       <motion.a
@@ -98,7 +306,7 @@ export default function CtaBanner() {
         transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
         className="btn-gradient-border"
         style={{
-          position: "relative", zIndex: 1,
+          position: "relative", zIndex: 2,
           marginTop: 56, display: "inline-flex", alignItems: "center", gap: 8,
           padding: "12px 24px", borderRadius: 52, textDecoration: "none",
           fontSize: 14, fontWeight: 600, letterSpacing: "0.14px",
@@ -111,6 +319,18 @@ export default function CtaBanner() {
           <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </motion.a>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .cta-label {
+            font-size: 22px !important;
+            letter-spacing: 7.2px !important;
+            line-height: 1.3 !important;
+          }
+          .cta-headline {
+            font-size: clamp(45px, 11.5vw, 78px) !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
