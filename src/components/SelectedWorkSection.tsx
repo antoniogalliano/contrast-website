@@ -179,8 +179,10 @@ function PanelLayer({
           </motion.div>
         </div>
 
-        {/* Gradient */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.28) 40%, rgba(10,10,10,0.90) 100%)", zIndex: 1 }} />
+        {/* Gradient overlays — bottom fade + full edge vignette to mask image borders */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, rgba(10,10,10,0.18) 0%, rgba(10,10,10,0.22) 35%, rgba(10,10,10,0.88) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to right, rgba(10,10,10,0.6) 0%, transparent 18%, transparent 82%, rgba(10,10,10,0.6) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, transparent 14%)" }} />
 
         {/* Number — top left */}
         <motion.div style={{
