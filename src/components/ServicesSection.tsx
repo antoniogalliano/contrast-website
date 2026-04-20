@@ -147,6 +147,7 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
 function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) {
   return (
     <div
+      className="services-row"
       style={{
         display: "flex",
         flexDirection: "row",
@@ -163,6 +164,7 @@ function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) 
 
 export default function ServicesSection() {
   return (
+    <>
     <section style={{ padding: "200px 40px 120px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
 
@@ -222,5 +224,18 @@ export default function ServicesSection() {
         </motion.div>
       </div>
     </section>
+
+    <style jsx global>{`
+      @media (max-width: 768px) {
+        .services-row {
+          flex-direction: column !important;
+        }
+        .services-row > div {
+          flex: 1 1 auto !important;
+          min-width: 0 !important;
+        }
+      }
+    `}</style>
+    </>
   );
 }

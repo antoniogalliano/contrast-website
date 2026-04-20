@@ -76,9 +76,9 @@ export default function Footer() {
           </div>
 
           {/* Row 2: Nav links (left) + Book a Call button (right) */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="footer-nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             {/* Nav */}
-            <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <nav className="footer-nav" style={{ display: "flex", alignItems: "center", gap: 24 }}>
               {["The Hero Framework", "Work", "Our services", "Contact"].map((label) => (
                 <a
                   key={label}
@@ -135,7 +135,7 @@ export default function Footer() {
         <div style={{ height: 1, background: "#383838" }} />
 
         {/* ── Legal row ── */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="footer-legal" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <p
             style={{
               margin: 0,
@@ -166,6 +166,27 @@ export default function Footer() {
           </p>
         </div>
       </div>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .footer-nav-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 20px !important;
+          }
+          .footer-nav {
+            flex-wrap: wrap !important;
+            gap: 12px 20px !important;
+          }
+          .footer-legal {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+          }
+          .footer-legal p {
+            width: auto !important;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

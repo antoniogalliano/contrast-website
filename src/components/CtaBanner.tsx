@@ -164,7 +164,7 @@ function CyclingHeadline() {
   }, [inView]);
 
   const chars = PHRASES[index].split("");
-  const STAGGER = 0.028;
+  const STAGGER = 0.047;
 
   return (
     <div
@@ -200,7 +200,7 @@ function CyclingHeadline() {
               animate={{ opacity: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0, filter: "blur(22px)" }}
               transition={{
-                duration: 0.55,
+                duration: 0.93,
                 delay: i * STAGGER,
                 ease: [0.22, 1, 0.36, 1],
               }}

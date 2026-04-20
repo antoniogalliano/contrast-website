@@ -45,3 +45,30 @@ body {
   box-shadow: 0px 6px 32px -8px rgba(255, 255, 255, 0.2);
 }
 
+/* ── View Transitions — work case page navigation ───────────────────────────
+   Both the home-page work panel and the work-case hero show the same
+   full-screen image at the same position.  A crossfade on the root means
+   at the 50% midpoint both images are at 0.5 opacity — same pixel values
+   stack to 100%, so the image looks frozen while the UI dissolves.
+────────────────────────────────────────────────────────────────────────── */
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: 480ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+}
+::view-transition-new(root) {
+  animation: 480ms cubic-bezier(0, 0, 0.2, 1) both vt-fade-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
+}
+

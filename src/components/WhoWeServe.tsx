@@ -10,12 +10,12 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
    CARD 1 — Established Tech Companies
    Isometric cube with tower-grow hover
 ═══════════════════════════════════════════ */
-function IllustrationCubes({ hovered }: { hovered: boolean }) {
+function IllustrationCubes({ hovered, hideGradient = false }: { hovered: boolean; hideGradient?: boolean }) {
   const S  = 56.965;
   const Sw = S * 0.866025; // 49.333
   const GRAY = "#4e4e4e";
   const px = 148, py = 0;
-  const TALL = 320;
+  const TALL = 360;
 
   // 6 gray wireframe cubes — matching Figma node 3:2089 exactly
   // columns: left = px-2Sw, center = px, right = px+2Sw
@@ -47,12 +47,18 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
           </linearGradient>
         </defs>
 
-        {/* 6 gray wireframe cubes — fade out on hover */}
+        {/* 6 gray wireframe cubes — slide down + fade out on hover */}
         {GRAY_CUBES.map(({ x, y, op }, i) => (
           <motion.g
             key={i}
-            animate={{ opacity: hovered ? 0 : op }}
-            transition={{ duration: 0.35 }}
+            animate={{
+              opacity: hovered ? 0 : op,
+              y: hovered ? 500 : 0,
+            }}
+            transition={{
+              opacity: { duration: 0.39, ease: "easeIn" },
+              y:       { duration: 0.715, ease: [0.22, 1, 0.36, 1] },
+            }}
           >
             <rect width={S} height={S} transform={`matrix(0.866025 0.5 -0.866025 0.5 ${x} ${y})`}           fill="none" stroke={GRAY} strokeWidth={0.8} />
             <rect width={S} height={S} transform={`matrix(0.866025 0.5 0 1 ${x - Sw} ${y + S * 0.5})`}      fill="none" stroke={GRAY} strokeWidth={0.8} />
@@ -72,7 +78,7 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
           animate={{ height: hovered ? TALL : S }}
           transform={`matrix(0.866025 0.5 0 1 ${px - Sw} ${py + S * 0.5})`}
           fill="url(#c1-left)" stroke={ACCENT} strokeWidth={0.8}
-          transition={{ duration: 0.55, ease: EASE }}
+          transition={{ duration: 0.715, ease: EASE }}
         />
         <motion.rect
           width={S}
@@ -80,17 +86,20 @@ function IllustrationCubes({ hovered }: { hovered: boolean }) {
           animate={{ height: hovered ? TALL - 6 : S }}
           transform={`matrix(0.866025 -0.5 0 1 ${px} ${py + S})`}
           fill="url(#c1-right)" stroke={ACCENT} strokeWidth={0.8}
-          transition={{ duration: 0.55, ease: EASE }}
+          transition={{ duration: 0.715, ease: EASE }}
         />
       </svg>
 
-      {/* Bottom fade */}
-      <div style={{
-        position: "absolute", bottom: 0, left: "-20%",
-        width: "140%", height: "calc(35% + 60px)",
-        background: "linear-gradient(to top, #0a0a0a 40%, transparent)",
-        pointerEvents: "none",
-      }} />
+      {/* Bottom fade — hidden in expanded panel where full tower should be visible */}
+      {!hideGradient && (
+        <div style={{
+          position: "absolute", bottom: 0, left: "-20%",
+          width: "140%", height: "calc(55% + 80px)",
+          background: "linear-gradient(to top, #0a0a0a 45%, transparent)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }} />
+      )}
     </div>
   );
 }
@@ -134,7 +143,7 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
           }}
           transition={{ duration: dur, ease }}
           fill="none"
-          strokeWidth={0.8}
+          strokeWidth={1.1}
         />
       ))}
       <motion.circle
@@ -142,14 +151,14 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
         initial={{
           r:      hovered ? 21.5291 : 19.9297,
           stroke: hovered ? "#d90cb7" : "#4e4e4e",
-          fill:   hovered ? "#0a0a0a" : "none",
+          fill:   "none",
         }}
         animate={{
           r:      hovered ? 21.5291 : 19.9297,
           stroke: hovered ? "#d90cb7" : "#4e4e4e",
-          fill:   hovered ? "#0a0a0a" : "none",
+          fill:   "none",
         }}
-        strokeWidth={0.8}
+        strokeWidth={1.1}
         transition={{ duration: dur, ease }}
       />
     </svg>
@@ -300,7 +309,7 @@ function ExpandedPanel({
         borderRadius: 16,
         background: "#0a0a0a",
         overflow: "hidden",
-        minHeight: 636,
+        height: 636,
         display: "flex",
       }}
     >
@@ -398,9 +407,10 @@ function ExpandedPanel({
               display: "flex",
               justifyContent: "center",
               transformOrigin: "center center",
+              marginTop: activeTab === 0 ? 340 : activeTab === 1 ? 48 : 60,
             }}
           >
-            {activeTab === 0 && <IllustrationCubes hovered={true} />}
+            {activeTab === 0 && <IllustrationCubes hovered={true} hideGradient={true} />}
             {activeTab === 1 && <IllustrationGrid  hovered={true} />}
             {activeTab === 2 && <IllustrationNested hovered={true} />}
           </motion.div>
@@ -477,6 +487,7 @@ function AudienceCard({
       transition={{ duration: 0.7, delay: index * 0.12, ease: "easeOut" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onExpand}
       style={{
         position: "relative",
         display: "flex",
@@ -492,7 +503,7 @@ function AudienceCard({
         boxShadow: hovered
           ? "0 0 48px rgba(217,12,183,0.1), inset 0 1px 0 rgba(217,12,183,0.15)"
           : "none",
-        cursor: "default",
+        cursor: "pointer",
         flex: "1 1 0",
         minWidth: 0,
       }}
@@ -501,7 +512,7 @@ function AudienceCard({
       <div style={{
         position: "absolute",
         width: "120%", height: 357,
-        left: "-10%", top: 488,
+        left: "-10%", top: 450,
         background: "#0A0A0A",
         filter: "blur(60px)",
         pointerEvents: "none",
@@ -542,12 +553,53 @@ function AudienceCard({
         </p>
       </div>
 
+      {/* Bottom hemisphere sphere — grid card only */}
+      {card.type === "grid" && (
+        <>
+          {/* Sphere SVG asset (from Figma node 1:2628) */}
+          <div style={{
+            position: "absolute",
+            width: 659, height: 514,
+            left: "calc(50% + 2px)", top: 486,
+            transform: "translateX(-50%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}>
+            <img
+              src="/who-we-serve-sphere.svg"
+              alt=""
+              style={{ width: "100%", height: "100%", display: "block" }}
+            />
+          </div>
+          {/* Dark blur mask at the very bottom edge */}
+          <div style={{
+            position: "absolute",
+            width: 532, height: 97,
+            left: -75, top: 598,
+            background: "#0a0a0a",
+            filter: "blur(25px)",
+            pointerEvents: "none",
+            zIndex: 2,
+          }} />
+        </>
+      )}
+
       {/* Illustration */}
-      <div style={{
+      <div className={card.type === "grid" ? "grid-illus-wrap" : undefined} style={card.type === "grid" ? {
+        position: "absolute",
+        left: "calc(50% + 0.16px)",
+        top: "calc(50% - 38px)",
+        transform: "translate(-50%, -50%)",
+        width: 222,
+        zIndex: 3,
+      } : {
+        /* zIndex: 1 keeps the illustration BELOW the blur bg (zIndex:3) and pink glow (zIndex:4)
+           so they correctly mask the column bottom and sliding gray cubes */
         flex: 1, display: "flex",
-        alignItems: "center", justifyContent: "center",
+        alignItems: "center",
+        justifyContent: "center",
         padding: "32px 28px 32px",
-        position: "relative", zIndex: 2,
+        position: "relative", zIndex: 1,
       }}>
         {card.type === "cubes"  && <IllustrationCubes hovered={hovered} />}
         {card.type === "grid"   && <IllustrationGrid  hovered={hovered} />}
@@ -655,6 +707,9 @@ export default function WhoWeServe() {
           .audience-cards > div {
             height: auto !important;
             min-height: 480px !important;
+          }
+          .grid-illus-wrap {
+            top: calc(50% + 42px) !important;
           }
         }
         button {

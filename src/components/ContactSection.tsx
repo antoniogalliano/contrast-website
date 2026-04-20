@@ -54,17 +54,17 @@ function Calendar() {
       </div>
 
       {/* Days — 7 column layout */}
-      <div style={{ display: "flex", gap: 8, width: "100%", alignItems: "flex-start" }}>
+      <div className="cal-days-row" style={{ display: "flex", gap: 8, width: "100%", alignItems: "flex-start" }}>
         {cols.map((colDays, colIdx) => (
           <div key={colIdx} style={{ flex: "1 0 0", display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
             {/* Day header */}
-            <span style={{ fontFamily: "var(--font-urbanist)", fontWeight: 400, fontSize: 12, color: "#ffffff", textTransform: "uppercase", lineHeight: "12px", textAlign: "center", width: 44 }}>
+            <span className="cal-col-header" style={{ fontFamily: "var(--font-urbanist)", fontWeight: 400, fontSize: 12, color: "#ffffff", textTransform: "uppercase", lineHeight: "12px", textAlign: "center", width: 44 }}>
               {DAY_LABELS[colIdx]}
             </span>
             {/* Date buttons */}
             <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
               {colDays.map((d, i) => {
-                if (d === null) return <div key={i} style={{ width: 44, height: 44 }} />;
+                if (d === null) return <div key={i} className="cal-day-cell" style={{ width: 44, height: 44 }} />;
                 const isPast    = isThisMonth && d < todayNum;
                 const isToday   = isThisMonth && d === todayNum;
                 const isSel     = selected === d;
@@ -72,6 +72,7 @@ function Calendar() {
                 return (
                   <button
                     key={i}
+                    className="cal-day-cell"
                     onClick={() => isAvail && setSelected(d)}
                     style={{
                       all: "unset",
@@ -130,6 +131,7 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
+          className="contact-wrapper"
           style={{ position: "relative", width: 800, display: "flex", flexDirection: "column", gap: 55, alignItems: "center" }}
         >
           {/* ── Background glows ── */}
@@ -143,7 +145,7 @@ export default function ContactSection() {
           </div>
 
           {/* ── Heading ── */}
-          <div style={{ width: 548, display: "flex", flexDirection: "column", gap: 19, alignItems: "center", textAlign: "center", position: "relative", zIndex: 1 }}>
+          <div className="contact-heading" style={{ width: 548, display: "flex", flexDirection: "column", gap: 19, alignItems: "center", textAlign: "center", position: "relative", zIndex: 1 }}>
             <h2 style={{ margin: 0, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 35, color: "#ffffff", letterSpacing: "-0.35px", width: "100%", lineHeight: "normal" }}>
               30 Minutes. Real Clarity
             </h2>
@@ -154,6 +156,7 @@ export default function ContactSection() {
 
           {/* ── Booking card ── */}
           <div
+            className="booking-card"
             style={{
               position: "relative",
               zIndex: 1,
@@ -167,15 +170,15 @@ export default function ContactSection() {
             }}
           >
             {/* Vertical divider */}
-            <div style={{ position: "absolute", left: 399, top: -1, width: 1, height: 592, background: "rgba(56,56,56,0.8)" }} />
+            <div className="booking-divider" style={{ position: "absolute", left: 399, top: -1, width: 1, height: 592, background: "rgba(56,56,56,0.8)" }} />
 
             {/* Troubleshooting — plain text link, bottom-right of card */}
-            <span style={{ position: "absolute", bottom: 23, right: 24, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 14, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap", lineHeight: 1.5, cursor: "pointer" }}>
+            <span className="booking-troubleshoot" style={{ position: "absolute", bottom: 23, right: 24, fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 400, fontSize: 14, color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap", lineHeight: 1.5, cursor: "pointer" }}>
               Troubleshooting
             </span>
 
             {/* ── LEFT PANEL ── */}
-            <div style={{ position: "absolute", left: 23, top: 23, width: 352, height: 544, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div className="booking-left" style={{ position: "absolute", left: 23, top: 23, width: 352, height: 544, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start" }}>
               {/* Top */}
               <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%" }}>
                 {/* Title block */}
@@ -211,7 +214,7 @@ export default function ContactSection() {
             </div>
 
             {/* ── RIGHT PANEL ── */}
-            <div style={{ position: "absolute", left: 424, top: 23, width: 351, display: "flex", flexDirection: "column", gap: 32, alignItems: "flex-start" }}>
+            <div className="booking-right" style={{ position: "absolute", left: 424, top: 23, width: 351, display: "flex", flexDirection: "column", gap: 32, alignItems: "flex-start" }}>
               {/* Calendar heading */}
               <span style={{ fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 700, fontSize: 20, color: "#ffffff", lineHeight: 1.5, width: "100%" }}>
                 Select a Date &amp; Time
@@ -235,6 +238,50 @@ export default function ContactSection() {
           </div>
         </motion.div>
       </div>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .contact-wrapper {
+            width: 100% !important;
+          }
+          .contact-heading {
+            width: 100% !important;
+          }
+          .booking-card {
+            height: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+          .booking-divider,
+          .booking-troubleshoot {
+            display: none !important;
+          }
+          .booking-left {
+            position: static !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 24px !important;
+            border-bottom: 1px solid rgba(56,56,56,0.8) !important;
+            box-sizing: border-box !important;
+          }
+          .booking-right {
+            position: static !important;
+            width: auto !important;
+            padding: 24px !important;
+            box-sizing: border-box !important;
+          }
+          .cal-days-row {
+            gap: 2px !important;
+          }
+          .cal-col-header {
+            width: 34px !important;
+            font-size: 10px !important;
+          }
+          .cal-day-cell {
+            width: 34px !important;
+            height: 34px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

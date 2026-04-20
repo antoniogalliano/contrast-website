@@ -88,9 +88,6 @@ const cardDesc: React.CSSProperties = {
   fontSize: 16,
   color: "rgba(255,255,255,0.65)",
   margin: 0,
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
   lineHeight: "normal",
 };
 
@@ -153,22 +150,53 @@ function DesignTriggersCard({ delay }: { delay: number }) {
         }} />
 
         {/* Illustration area — 304px tall */}
-        <div style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
-          {/* Default illustration — hidden when hovered or expanded */}
+        <div className="method-card-illus" style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
+          {/* Illustration — slides from right + large (default) → centered + small (hover) */}
           <motion.div
-            style={{ position: "absolute", top: 95, left: "50%", x: "-50%" }}
-            animate={{ opacity: !hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: 552,
+              height: 447,
+              marginLeft: -276,
+              marginTop: -223,
+            }}
+            animate={{
+              opacity: expanded ? 0 : 1,
+              x: hovered && !expanded ? 0 : 180,
+              y: hovered && !expanded ? 0 : 71,
+              scale: hovered && !expanded ? 0.4 : 1,
+            }}
+            transition={{
+              opacity: { duration: 0.4, ease: "easeInOut" },
+              x: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              y: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              scale: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+            }}
           >
-            <img src="/method/design-triggers.svg" width={221} height={179} alt="" aria-hidden="true" style={{ display: "block" }} />
-          </motion.div>
-          {/* Hover illustration — visible only when hovered and not expanded */}
-          <motion.div
-            style={{ position: "absolute", top: 95, left: "50%", x: "-50%" }}
-            animate={{ opacity: hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <img src="/method/design-triggers-hover.svg" width={221} height={179} alt="" aria-hidden="true" style={{ display: "block" }} />
+            {/* Default — tinted to #2E2E2E, fades out on hover */}
+            <motion.img
+              src="/method/design-triggers.svg"
+              width={552} height={447}
+              alt="" aria-hidden="true"
+              animate={{ opacity: hovered ? 0 : 1 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                position: "absolute", top: 0, left: 0, display: "block",
+                filter: "brightness(0) invert(1) brightness(0.18)",
+              }}
+            />
+            {/* Hover — pink accent with pulsing glow, fades in on hover */}
+            <motion.img
+              src="/method/design-triggers-hover.svg"
+              width={552} height={447}
+              alt="" aria-hidden="true"
+              animate={{ opacity: hovered && !expanded ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              className={hovered && !expanded ? "method-dt-glow" : ""}
+              style={{ position: "absolute", top: 0, left: 0, display: "block" }}
+            />
           </motion.div>
           {/* Expanded text — animates in/out when expanded */}
           <AnimatePresence>
@@ -291,22 +319,53 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
         }} />
 
         {/* Illustration area — 304px tall */}
-        <div style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
-          {/* Default illustration — hidden when hovered or expanded */}
+        <div className="method-card-illus" style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
+          {/* Illustration — slides from right + large (default) → centered + small (hover) */}
           <motion.div
-            style={{ position: "absolute", top: 54, left: "50%", x: "-50%", width: 248, height: 248 }}
-            animate={{ opacity: !hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: 620,
+              height: 620,
+              marginLeft: -310,
+              marginTop: -310,
+            }}
+            animate={{
+              opacity: expanded ? 0 : 1,
+              x: hovered && !expanded ? 0 : 180,
+              y: hovered && !expanded ? 0 : 71,
+              scale: hovered && !expanded ? 0.4 : 1,
+            }}
+            transition={{
+              opacity: { duration: 0.4, ease: "easeInOut" },
+              x: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              y: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              scale: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+            }}
           >
-            <img src="/method/hero-framework.svg" width={248} height={248} alt="" aria-hidden="true" style={{ display: "block", width: "100%", height: "100%" }} />
-          </motion.div>
-          {/* Hover illustration — visible only when hovered and not expanded */}
-          <motion.div
-            style={{ position: "absolute", top: 54, left: "50%", x: "-50%", width: 248, height: 248 }}
-            animate={{ opacity: hovered && !expanded ? 1 : 0, y: expanded ? -12 : 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <img src="/method/hero-framework-hover.svg" width={248} height={248} alt="" aria-hidden="true" style={{ display: "block", width: "100%", height: "100%" }} />
+            {/* Default — tinted to #2E2E2E, fades out on hover */}
+            <motion.img
+              src="/method/hero-framework.svg"
+              width={620} height={620}
+              alt="" aria-hidden="true"
+              animate={{ opacity: hovered ? 0 : 1 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                position: "absolute", top: 0, left: 0, display: "block",
+                filter: "brightness(0) invert(1) brightness(0.18)",
+              }}
+            />
+            {/* Hover — pink accent with pulsing glow, fades in on hover */}
+            <motion.img
+              src="/method/hero-framework-hover.svg"
+              width={620} height={620}
+              alt="" aria-hidden="true"
+              animate={{ opacity: hovered && !expanded ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              className={hovered && !expanded ? "method-dt-glow" : ""}
+              style={{ position: "absolute", top: 0, left: 0, display: "block" }}
+            />
           </motion.div>
           {/* Expanded text — animates in/out when expanded */}
           <AnimatePresence>
@@ -373,7 +432,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function MethodSection() {
   return (
-    <section id="framework" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
+    <section id="framework" className="method-section" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
 
         {/* Header */}
@@ -402,7 +461,6 @@ export default function MethodSection() {
             lineHeight: 1.17,
             letterSpacing: "-0.01em",
             margin: "0 auto 20px",
-            whiteSpace: "nowrap",
           }}>
             The Method Behind Every Result
           </h2>
@@ -450,12 +508,12 @@ export default function MethodSection() {
           className="method-video-card"
         >
           {/* Left column — text top, button bottom */}
-          <div style={{
+          <div className="method-video-col" style={{
             flex: "0 0 auto",
             width: 332,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: "center",
             position: "relative",
             zIndex: 1,
           }}>
@@ -504,9 +562,27 @@ export default function MethodSection() {
       </div>
 
       <style jsx global>{`
+        @keyframes method-glow {
+          0%, 100% { filter: drop-shadow(0 0 6px rgba(217,12,183,0.5)); }
+          50%       { filter: drop-shadow(0 0 20px rgba(217,12,183,0.95)) drop-shadow(0 0 36px rgba(118,12,217,0.45)); }
+        }
+        .method-dt-glow {
+          animation: method-glow 1.8s ease-in-out infinite;
+        }
+
         @media (max-width: 768px) {
+          .method-section { padding: 80px 20px !important; }
           .method-cards { grid-template-columns: 1fr !important; }
-          .method-video-card { flex-direction: column !important; }
+          .method-card-illus { height: 220px !important; }
+          .method-video-card {
+            flex-direction: column !important;
+            padding: 28px !important;
+            gap: 24px !important;
+          }
+          .method-video-col {
+            width: auto !important;
+            flex: 1 1 auto !important;
+          }
         }
       `}</style>
     </section>

@@ -125,7 +125,7 @@ export default function TestimonialSection() {
         </AnimatePresence>
 
         {/* Author row */}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+        <div className="testimonial-author-row" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
 
           {/* Author */}
           <AnimatePresence mode="wait">
@@ -135,11 +135,13 @@ export default function TestimonialSection() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
+              className="testimonial-author"
               style={{ display: "flex", alignItems: "center", gap: 52 }}
             >
               <img
                 src={t.photo}
                 alt={t.name}
+                className="testimonial-photo"
                 style={{
                   width: 131, height: 126,
                   borderRadius: 16,
@@ -149,7 +151,7 @@ export default function TestimonialSection() {
                 }}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                <p style={{
+                <p className="testimonial-name" style={{
                   margin: 0,
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontWeight: 400, fontSize: 29,
@@ -157,7 +159,7 @@ export default function TestimonialSection() {
                 }}>
                   {t.name}
                 </p>
-                <p style={{
+                <p className="testimonial-title" style={{
                   margin: 0,
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontWeight: 400, fontSize: 29,
@@ -170,10 +172,10 @@ export default function TestimonialSection() {
           </AnimatePresence>
 
           {/* Controls: arrows + pagination dots */}
-          <div style={{ display: "flex", gap: 16, alignItems: "center", flexShrink: 0 }}>
+          <div className="testimonial-controls" style={{ display: "flex", gap: 16, alignItems: "center", flexShrink: 0 }}>
             <NavButton direction="left" onClick={goPrev} />
 
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div className="testimonial-dots" style={{ display: "flex", gap: 8, alignItems: "center" }}>
               {TESTIMONIALS.map((_, i) => (
                 <div
                   key={i}
@@ -196,6 +198,36 @@ export default function TestimonialSection() {
 
         </div>
       </div>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .testimonial-author-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 28px !important;
+          }
+          .testimonial-author {
+            gap: 20px !important;
+          }
+          .testimonial-photo {
+            width: 72px !important;
+            height: 68px !important;
+          }
+          .testimonial-name,
+          .testimonial-title {
+            font-size: 18px !important;
+            line-height: 1.4 !important;
+          }
+          .testimonial-controls {
+            width: 100% !important;
+            justify-content: space-between !important;
+            flex-shrink: 0 !important;
+          }
+          .testimonial-dots {
+            flex: 1 !important;
+            justify-content: center !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
