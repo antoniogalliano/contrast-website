@@ -105,19 +105,28 @@ function PanelLayer({
   const isLast = index === total - 1;
   const router = useRouter();
 
-  // Wrap navigation in a view transition.
-  // flushSync forces React to synchronously commit the new page into the DOM
-  // before the browser takes the "new" screenshot — no intermediate states ever
-  // flash. Next.js scrolls to top automatically as part of router.push().
+  // Named view-transition: tag this panel's <img> as "case-hero" right before
+  // the "old" snapshot so the browser cross-dissolves it with the case page
+  // hero (same photo, same full-screen size → image appears frozen while the
+  // page UI transitions around it). Clean up the name after the animation.
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) {
-      router.push(project.href);
+      router.push(project.href, { scroll: false });
       return;
     }
-    (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
-      flushSync(() => { router.push(project.href); });
+    const panelImg = wrapperRef.current?.querySelector("img") as HTMLElement | null;
+    panelImg?.style.setProperty("view-transition-name", "case-hero");
+
+    const vt = (document as Document & {
+      startViewTransition: (cb: () => void) => { finished: Promise<void> };
+    }).startViewTransition(() => {
+      flushSync(() => { router.push(project.href, { scroll: false }); });
+    });
+
+    vt.finished.then(() => {
+      panelImg?.style.removeProperty("view-transition-name");
     });
   };
 

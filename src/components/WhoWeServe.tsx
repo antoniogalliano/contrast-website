@@ -499,7 +499,7 @@ function AudienceCard({
         overflow: "hidden",
         backdropFilter: "blur(8.5px)",
         WebkitBackdropFilter: "blur(8.5px)",
-        transition: "border-color 0.4s ease, box-shadow 0.4s ease",
+        transition: "border-color 0.52s ease, box-shadow 0.52s ease",
         boxShadow: hovered
           ? "0 0 48px rgba(217,12,183,0.1), inset 0 1px 0 rgba(217,12,183,0.15)"
           : "none",
@@ -518,7 +518,7 @@ function AudienceCard({
         pointerEvents: "none",
         zIndex: 3,
         opacity: hovered ? 1 : 0,
-        transition: "opacity 0.4s ease",
+        transition: "opacity 0.52s ease",
       }} />
 
       {/* Pink glow ellipse */}
@@ -532,7 +532,7 @@ function AudienceCard({
         pointerEvents: "none",
         zIndex: 4,
         opacity: hovered ? 1 : 0,
-        transition: "opacity 0.5s ease",
+        transition: "opacity 0.65s ease",
       }} />
 
       {/* Text block */}

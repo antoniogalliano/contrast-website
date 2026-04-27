@@ -45,12 +45,8 @@ body {
   box-shadow: 0px 6px 32px -8px rgba(255, 255, 255, 0.2);
 }
 
-/* ── View Transitions — work case page navigation ───────────────────────────
-   Both the home-page work panel and the work-case hero show the same
-   full-screen image at the same position.  A crossfade on the root means
-   at the 50% midpoint both images are at 0.5 opacity — same pixel values
-   stack to 100%, so the image looks frozen while the UI dissolves.
-────────────────────────────────────────────────────────────────────────── */
+/* ── View Transitions ────────────────────────────────────────────────────── */
+
 @keyframes vt-fade-out {
   to { opacity: 0; }
 }
@@ -58,16 +54,31 @@ body {
   from { opacity: 0; }
 }
 
+/* Root — page chrome & all content not in a named group.
+   Old fades out quickly; new lags 80 ms so there's a deliberate beat. */
 ::view-transition-old(root) {
-  animation: 480ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+  animation: 350ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
 }
 ::view-transition-new(root) {
-  animation: 480ms cubic-bezier(0, 0, 0.2, 1) both vt-fade-in;
+  animation: 500ms cubic-bezier(0, 0, 0.2, 1) 80ms both vt-fade-in;
+}
+
+/* Named hero image — both the home panel <img> and the case page hero <img>
+   get view-transition-name: case-hero at transition time.  Because they show
+   the same photo at the same full-screen size the cross-dissolve is
+   imperceptible and the image appears frozen while the UI transitions. */
+::view-transition-old(case-hero) {
+  animation: 520ms ease both vt-fade-out;
+}
+::view-transition-new(case-hero) {
+  animation: 520ms ease both vt-fade-in;
 }
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
-  ::view-transition-new(root) {
+  ::view-transition-new(root),
+  ::view-transition-old(case-hero),
+  ::view-transition-new(case-hero) {
     animation-duration: 0.01ms;
   }
 }
