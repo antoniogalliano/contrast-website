@@ -248,7 +248,7 @@ function PanelLayer({
         {/* Bottom row */}
         <div
           className="work-panel-bottom"
-          style={{ position: "absolute", bottom: 52, left: 56, right: 56, zIndex: 5, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 32 }}
+          style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: 56, right: 56, zIndex: 5, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 32 }}
         >
           <div>
             <div style={{ overflow: "hidden", marginBottom: 18 }}>
@@ -469,7 +469,7 @@ export default function SelectedWorkSection() {
       <style jsx global>{`
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
-          .work-panel-bottom { left: 24px !important; right: 24px !important; bottom: 36px !important; }
+          .work-panel-bottom { left: 24px !important; right: 24px !important; top: 50% !important; transform: translateY(-50%) !important; }
         }
       `}</style>
     </section>
