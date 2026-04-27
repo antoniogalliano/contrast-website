@@ -163,7 +163,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               marginTop: -223,
             }}
             animate={{
-              opacity: expanded ? 0 : 1,
+              opacity: expanded ? 0.1 : 1,
               x: hovered && !expanded ? 0 : 180,
               y: hovered && !expanded ? 0 : 71,
               scale: hovered && !expanded ? 0.4 : 1,
@@ -180,7 +180,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               src="/method/design-triggers.svg"
               width={552} height={447}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered ? 0 : 1 }}
+              animate={{ opacity: hovered && !expanded ? 0 : 1 }}
               transition={{ duration: 0.4 }}
               style={{
                 position: "absolute", top: 0, left: 0, display: "block",
@@ -332,7 +332,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               marginTop: -310,
             }}
             animate={{
-              opacity: expanded ? 0 : 1,
+              opacity: expanded ? 0.1 : 1,
               x: hovered && !expanded ? 0 : 180,
               y: hovered && !expanded ? 0 : 71,
               scale: hovered && !expanded ? 0.4 : 1,
@@ -349,7 +349,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               src="/method/hero-framework.svg"
               width={620} height={620}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered ? 0 : 1 }}
+              animate={{ opacity: hovered && !expanded ? 0 : 1 }}
               transition={{ duration: 0.4 }}
               style={{
                 position: "absolute", top: 0, left: 0, display: "block",
