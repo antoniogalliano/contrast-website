@@ -25,7 +25,7 @@ export interface WorkCaseData {
   metaItems: { label: string; value: string; accent?: boolean }[]; // 6 items
 
   // Gallery (large, small-top, small-bottom)
-  gallery: { src: string; alt: string; objectPosition?: string }[];
+  gallery: { src: string; alt: string; objectPosition?: string; pair?: boolean }[];
 
   // What We Did
   whatWeDidHeading: string;
@@ -790,13 +790,26 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
         {/* Images share the same 1360 px column as every other section */}
         <div style={{ maxWidth: 1360, margin: "0 auto", paddingTop: 64, display: "flex", flexDirection: "column", gap: 24 }}>
-          {data.gallery.map((img) => (
-            <GalleryImage
-              key={img.src}
-              src={img.src}
-              alt={img.alt}
-            />
-          ))}
+          {(() => {
+            const rows: JSX.Element[] = [];
+            const items = data.gallery;
+            let i = 0;
+            while (i < items.length) {
+              if (items[i].pair && items[i + 1]?.pair) {
+                rows.push(
+                  <div key={items[i].src} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+                    <GalleryImage src={items[i].src} alt={items[i].alt} />
+                    <GalleryImage src={items[i + 1].src} alt={items[i + 1].alt} />
+                  </div>
+                );
+                i += 2;
+              } else {
+                rows.push(<GalleryImage key={items[i].src} src={items[i].src} alt={items[i].alt} />);
+                i += 1;
+              }
+            }
+            return rows;
+          })()}
         </div>
       </section>
 

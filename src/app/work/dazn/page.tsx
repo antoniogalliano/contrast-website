@@ -27,11 +27,10 @@ const data: WorkCaseData = {
     { label: "Team Size", value: "4 designers, 2 devs" },
   ],
 
-  // Gallery — 5 images: mobile app (wide panoramic) + web dashboard × 2 + TV app × 2
+  // Gallery — 4 images: web dashboard × 2 (side by side) + TV app × 2
   gallery: [
-    { src: "/work/dazn-mobile.png",  alt: "DAZN Bar Finder mobile app",         objectPosition: "center center" },
-    { src: "/work/dazn-web-1.jpg",   alt: "DAZN Business account overview",      objectPosition: "center center" },
-    { src: "/work/dazn-web-2.jpg",   alt: "DAZN Business manage devices",        objectPosition: "center center" },
+    { src: "/work/dazn-web-1.jpg",   alt: "DAZN Business account overview",      objectPosition: "center center", pair: true },
+    { src: "/work/dazn-web-2.jpg",   alt: "DAZN Business manage devices",        objectPosition: "center center", pair: true },
     { src: "/work/dazn-tv-1.png",    alt: "DAZN TV app — Live channels",         objectPosition: "center center" },
     { src: "/work/dazn-tv-2.png",    alt: "DAZN TV app — Channel builder",       objectPosition: "center center" },
   ],

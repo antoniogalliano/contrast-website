@@ -171,14 +171,7 @@ function PanelLayer({
   const EXIT_DUR       = 0.07;
   const chars = project.client.split("");
 
-  const BOTTOM_IN      = 0.30;
-  const BOTTOM_IN_END  = 0.44;
-  const BOTTOM_OUT     = 0.78;
-  const BOTTOM_OUT_END = 0.90;
-  const bottomY        = useTransform(lsp, [0, BOTTOM_IN, BOTTOM_IN_END, BOTTOM_OUT, BOTTOM_OUT_END, 1], ["1.4rem", "1.4rem", "0rem", "0rem", "-1.4rem", "-1.4rem"]);
-  const bottomOpacity  = useTransform(lsp, [0, BOTTOM_IN, BOTTOM_IN_END, BOTTOM_OUT, BOTTOM_OUT_END, 1], [0, 0, 1, 1, 0, 0]);
-  const descY          = bottomY;
-  const descOpacity    = bottomOpacity;
+  const subtitleOpacity = useTransform(lsp, [0, REVEAL_START, REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
   const numOpacity     = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
 
   const handleBottomEnter = () => {
@@ -226,7 +219,7 @@ function PanelLayer({
         </motion.div>
 
         {/* Title */}
-        <motion.div style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
+        <motion.div className="selected-work-title" style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
           <h3 style={{
             fontFamily: "var(--font-urbanist), sans-serif",
             fontSize: "clamp(56px, 10vw, 140px)",
@@ -243,25 +236,17 @@ function PanelLayer({
               />
             ))}
           </h3>
-        </motion.div>
 
-        {/* Bottom row */}
-        <div
-          className="work-panel-bottom"
-          style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: 56, right: 56, zIndex: 5, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 32 }}
-        >
-          <div>
-            <div style={{ overflow: "hidden", marginBottom: 18 }}>
-              <motion.p style={{
-                fontFamily: "var(--font-urbanist), sans-serif",
-                fontSize: 17, fontWeight: 400, color: "rgba(255,255,255,0.72)",
-                margin: 0, y: descY, opacity: descOpacity,
-              }}>
-                {project.title}
-              </motion.p>
-            </div>
-            <motion.div
-              style={{ marginTop: 18, y: bottomY, opacity: bottomOpacity }}
+          {/* Subtitle + button — travel with title, fade on same timing as chars */}
+          <motion.div style={{ marginTop: 20, opacity: subtitleOpacity }}>
+            <motion.p style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 17, fontWeight: 400, color: "rgba(255,255,255,0.72)",
+              margin: "0 0 18px",
+            }}>
+              {project.title}
+            </motion.p>
+            <div
               onMouseEnter={handleBottomEnter}
               onMouseLeave={handleBottomLeave}
             >
@@ -273,7 +258,6 @@ function PanelLayer({
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
                   color: "#ffffff",
-                  // Explicit cursor: pointer overrides the parent's cursor: none
                   cursor: "pointer",
                   border: `1px solid ${bottomHovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
                   background: bottomHovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
@@ -286,9 +270,9 @@ function PanelLayer({
                   <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-            </motion.div>
-          </div>
-        </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </a>
     </div>
   );
@@ -469,7 +453,7 @@ export default function SelectedWorkSection() {
       <style jsx global>{`
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
-          .work-panel-bottom { left: 24px !important; right: 24px !important; top: 50% !important; transform: translateY(-50%) !important; }
+          .selected-work-title { left: 24px !important; right: 24px !important; }
         }
       `}</style>
     </section>
