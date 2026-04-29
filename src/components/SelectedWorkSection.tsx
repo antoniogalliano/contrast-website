@@ -119,7 +119,17 @@ function PanelLayer({
     }
     const panelImg = wrapperRef.current?.querySelector("img") as HTMLElement | null;
     panelImg?.style.setProperty("view-transition-name", "case-hero");
-    titleRef.current?.style.setProperty("view-transition-name", "case-title");
+
+    // Reset individual TitleChar spans to clean visible state so the
+    // view-transition snapshot captures solid text, not scattered/blurred letters.
+    if (titleRef.current) {
+      titleRef.current.querySelectorAll("span").forEach((span) => {
+        (span as HTMLElement).style.opacity = "1";
+        (span as HTMLElement).style.transform = "translateY(0px)";
+        (span as HTMLElement).style.filter = "none";
+      });
+      titleRef.current.style.setProperty("view-transition-name", "case-title");
+    }
 
     const vt = (document as Document & {
       startViewTransition: (cb: () => void) => { finished: Promise<void> };
