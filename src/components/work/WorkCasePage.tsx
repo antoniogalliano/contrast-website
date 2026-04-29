@@ -525,6 +525,7 @@ function GalleryImage({ src, alt }: { src: string; alt: string }) {
 
 export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const heroRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
 
   // Gate all section animations for 1 s so the user has time to settle
@@ -542,18 +543,20 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     window.scrollTo({ top: 0, behavior: "instant" });
     const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
     heroImg?.style.setProperty("view-transition-name", "case-hero");
+    titleRef.current?.style.setProperty("view-transition-name", "case-title");
     return () => {
       heroImg?.style.removeProperty("view-transition-name");
+      titleRef.current?.style.removeProperty("view-transition-name");
     };
   }, []);
 
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    // Strip case-hero name before the snapshot so the back-navigation uses a
-    // plain root crossfade rather than an unmatched named-element exit flash.
+    // Strip names before the snapshot so back-navigation uses a plain crossfade.
     const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
     heroImg?.style.removeProperty("view-transition-name");
+    titleRef.current?.style.removeProperty("view-transition-name");
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href); });
@@ -655,6 +658,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
             {/* Title */}
             <h1
+              ref={titleRef}
               style={{
                 fontFamily: "var(--font-urbanist), sans-serif",
                 fontWeight: 700,

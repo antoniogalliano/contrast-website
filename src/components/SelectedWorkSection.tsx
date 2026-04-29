@@ -102,6 +102,7 @@ function PanelLayer({
 }) {
   const [bottomHovered, setBottomHovered] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const isLast = index === total - 1;
   const router = useRouter();
 
@@ -118,6 +119,7 @@ function PanelLayer({
     }
     const panelImg = wrapperRef.current?.querySelector("img") as HTMLElement | null;
     panelImg?.style.setProperty("view-transition-name", "case-hero");
+    titleRef.current?.style.setProperty("view-transition-name", "case-title");
 
     const vt = (document as Document & {
       startViewTransition: (cb: () => void) => { finished: Promise<void> };
@@ -127,6 +129,7 @@ function PanelLayer({
 
     vt.finished.then(() => {
       panelImg?.style.removeProperty("view-transition-name");
+      titleRef.current?.style.removeProperty("view-transition-name");
     });
   };
 
@@ -220,7 +223,7 @@ function PanelLayer({
 
         {/* Title */}
         <motion.div className="selected-work-title" style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
-          <h3 style={{
+          <h3 ref={titleRef} style={{
             fontFamily: "var(--font-urbanist), sans-serif",
             fontSize: "clamp(56px, 10vw, 140px)",
             fontWeight: 600, color: "#ffffff",

@@ -74,11 +74,28 @@ body {
   animation: 520ms ease both vt-fade-in;
 }
 
+/* Named title — morphs the large client name from the work preview panel
+   into the hero h1 on the case page. The browser handles position + scale
+   interpolation automatically; we only control timing and cross-fade. */
+::view-transition-old(case-title),
+::view-transition-new(case-title) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(case-title) {
+  animation-name: vt-fade-out;
+}
+::view-transition-new(case-title) {
+  animation-name: vt-fade-in;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root),
   ::view-transition-old(case-hero),
-  ::view-transition-new(case-hero) {
+  ::view-transition-new(case-hero),
+  ::view-transition-old(case-title),
+  ::view-transition-new(case-title) {
     animation-duration: 0.01ms;
   }
 }
