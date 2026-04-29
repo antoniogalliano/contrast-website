@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, useInView, useMotionValue, animate } from "framer-motion";
-import { useState, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
@@ -791,7 +791,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         {/* Images share the same 1360 px column as every other section */}
         <div style={{ maxWidth: 1360, margin: "0 auto", paddingTop: 64, display: "flex", flexDirection: "column", gap: 24 }}>
           {(() => {
-            const rows: JSX.Element[] = [];
+            const rows: React.ReactElement[] = [];
             const items = data.gallery;
             let i = 0;
             while (i < items.length) {
