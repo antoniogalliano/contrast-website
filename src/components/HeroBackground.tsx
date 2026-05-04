@@ -108,9 +108,11 @@ export default function HeroBackground() {
     // Sphere intro takes 2 200 ms, so starting at 2 600 ms means:
     //   • overlay-fade-start (3 200 ms) → sphere is 600 ms in (~27 % formed)
     //   • overlay-gone       (4 300 ms) → sphere is 1 700 ms in (~77 % formed)
-    // Intro overlay always plays on every page load and starts fading at ~3200ms.
-    // Delay sphere so particles are mid-convergence when overlay reveals them.
-    startTimeRef.current = performance.now() + 2600;
+    // Intro overlay fades starting at ~3700ms.  Start sphere convergence at
+    // 2700ms so particles are ~45% formed when the overlay begins to fade,
+    // and ~95% formed when it's fully gone (4800ms).
+    // INTRO_DURATION = 2200ms → at 3700ms sphere is (3700-2700)/2200 = 45% done
+    startTimeRef.current = performance.now() + 2700;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = {
