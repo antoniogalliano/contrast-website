@@ -1,3 +1,4 @@
+import IntroAnimation from "@/components/IntroAnimation";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import LogoMarquee from "@/components/LogoMarquee";
@@ -14,6 +15,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main style={{ background: "#0a0a0a", color: "#ffffff" }}>
+      <IntroAnimation />
       <Header />
       <Hero />
       <LogoMarquee />
