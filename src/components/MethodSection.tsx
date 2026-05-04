@@ -120,12 +120,13 @@ function DesignTriggersCard({ delay }: { delay: number }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseMove={handleMouseMove}
+      onClick={() => setExpanded(e => !e)}
       style={{
         padding: 1,
         borderRadius: 17,
         background: borderBg,
         transition: active ? "none" : "background 0.4s ease",
-        cursor: "default",
+        cursor: "pointer",
       }}
     >
       <div style={{
@@ -225,17 +226,16 @@ function DesignTriggersCard({ delay }: { delay: number }) {
           <p style={cardDesc}>Leverages decision-making psychology to drive engagement.</p>
         </div>
 
-        {/* Plus / Close icon — appears on hover or when expanded */}
+        {/* Plus / Close icon — visual affordance only; click handled by card wrapper */}
         <AnimatePresence>
           {active && (
-            <motion.button
+            <motion.div
               key="toggle"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              onClick={() => setExpanded(e => !e)}
-              aria-label={expanded ? "Close" : "Learn more"}
+              aria-hidden="true"
               style={{
                 position: "absolute", bottom: 27, right: 27, zIndex: 8,
                 width: 40, height: 40, borderRadius: "50%",
@@ -243,7 +243,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
                 background: "rgba(10,10,10,0.4)",
                 backdropFilter: "blur(8px)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
+                pointerEvents: "none",
               }}
             >
               <svg
@@ -252,7 +252,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               >
                 <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-            </motion.button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -289,12 +289,13 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseMove={handleMouseMove}
+      onClick={() => setExpanded(e => !e)}
       style={{
         padding: 1,
         borderRadius: 17,
         background: borderBg,
         transition: active ? "none" : "background 0.4s ease",
-        cursor: "default",
+        cursor: "pointer",
       }}
     >
       <div style={{
@@ -397,14 +398,13 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
         {/* Plus / Close icon — appears on hover or when expanded */}
         <AnimatePresence>
           {active && (
-            <motion.button
+            <motion.div
               key="toggle"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              onClick={() => setExpanded(e => !e)}
-              aria-label={expanded ? "Close" : "Learn more"}
+              aria-hidden="true"
               style={{
                 position: "absolute", bottom: 27, right: 27, zIndex: 8,
                 width: 40, height: 40, borderRadius: "50%",
@@ -412,7 +412,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
                 background: "rgba(10,10,10,0.4)",
                 backdropFilter: "blur(8px)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
+                pointerEvents: "none",
               }}
             >
               <svg
@@ -421,7 +421,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               >
                 <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-            </motion.button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
