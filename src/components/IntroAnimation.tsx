@@ -29,7 +29,7 @@ export default function IntroAnimation() {
   const dotRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
-    if (sessionStorage.getItem("intro-seen")) {
+    if (sessionStorage.getItem("intro-seen-v2")) {
       setShow(false);
       return;
     }
@@ -64,7 +64,7 @@ export default function IntroAnimation() {
     const t4 = setTimeout(() => {
       document.body.style.overflow = "";
       setShow(false);
-      sessionStorage.setItem("intro-seen", "1");
+      sessionStorage.setItem("intro-seen-v2", "1");
     }, DONE_MS);
 
     return () => {
