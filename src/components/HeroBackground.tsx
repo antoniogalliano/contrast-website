@@ -102,11 +102,14 @@ export default function HeroBackground() {
       });
     }
     sphereRef.current = particles;
-    // On first visit the intro overlay runs for ~3 s.
-    // Delay the sphere's convergence so particles form *while* the overlay is
-    // fading out (starting ~3 000 ms in) rather than snapping in fully-formed.
+    // On first visit the intro overlay runs until ~4 300 ms and starts fading
+    // at ~3 200 ms.  Delay the sphere so particles are visibly mid-convergence
+    // when the overlay reveals them — not already fully formed.
+    // Sphere intro takes 2 200 ms, so starting at 2 600 ms means:
+    //   • overlay-fade-start (3 200 ms) → sphere is 600 ms in (~27 % formed)
+    //   • overlay-gone       (4 300 ms) → sphere is 1 700 ms in (~77 % formed)
     const introAlreadySeen = sessionStorage.getItem("intro-seen");
-    const sphereDelay = introAlreadySeen ? 0 : 2400; // ms
+    const sphereDelay = introAlreadySeen ? 0 : 2600; // ms
     startTimeRef.current = performance.now() + sphereDelay;
 
     const handleMouseMove = (e: MouseEvent) => {

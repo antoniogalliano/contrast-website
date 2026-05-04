@@ -2,22 +2,30 @@
 import { useState, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const LETTERS = "Contrast"; // "." is handled separately so we can ref it
+const LETTERS = "Contrast"; // "." handled separately for independent animation
 
 const STAGGER     = 0.07;
 const START_DELAY = 0.15;
 const L_DURATION  = 0.75;
-// Dot is index 8 → delay = 0.15 + 8*0.07 = 0.71s, finishes at 1.46s
-// Hold ~600ms → burst starts at 2050ms
+// Last letter (index 7 "t"): delay = 0.15 + 7*0.07 = 0.64s, done at 1.39s
+// Dot (index 8):             delay = 0.15 + 8*0.07 = 0.71s, done at 1.46s
 
-const BURST_MS = 2700; // letters start fading + sphere starts expanding
-const FADE_MS  = 3000; // overlay starts fading (300ms after burst)
-const DONE_MS  = 3850; // unmount + restore scroll
+// ── Timeline ─────────────────────────────────────────────────────────────────
+// 0 – 1460ms   letters animate in
+// 1460 – 2700ms  hold (text sits still, ~1.24s)
+// 2700ms       "Contrast" letters fade out (300ms); dot stays + begins to grow
+// 3000ms       dot glow is blooming; bloom div mounts at dot position
+// 3200ms       overlay starts fading
+// 4300ms       overlay gone, unmount, scroll unlocked
+const LETTERS_FADE_MS = 2700;
+const BLOOM_MS        = 3000; // bloom mounts (200ms after dot starts growing)
+const FADE_MS         = 3200;
+const DONE_MS         = 4300;
 
 export default function IntroAnimation() {
-  const [show,   setShow]   = useState(true);
-  const [phase,  setPhase]  = useState<"in" | "burst" | "fade">("in");
-  const [sphere, setSphere] = useState<{ left: number; top: number; size: number } | null>(null);
+  const [show,  setShow]  = useState(true);
+  const [phase, setPhase] = useState<"in" | "burst" | "fade">("in");
+  const [bloom, setBloom] = useState<{ left: number; top: number; size: number } | null>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
@@ -27,45 +35,54 @@ export default function IntroAnimation() {
     }
     document.body.style.overflow = "hidden";
 
-    const t1 = setTimeout(() => {
-      // Measure the dot and compute a circle large enough to cover the viewport
+    // Step 1: letters fade, dot starts growing
+    const t1 = setTimeout(() => setPhase("burst"), LETTERS_FADE_MS);
+
+    // Step 2: mount the bloom at dot's measured position
+    const t2 = setTimeout(() => {
       if (dotRef.current) {
-        const r    = dotRef.current.getBoundingClientRect();
-        const cx   = r.left + r.width  / 2;
-        const cy   = r.top  + r.height / 2;
-        const vw   = window.innerWidth;
-        const vh   = window.innerHeight;
-        // Radius = farthest viewport corner from the dot center
+        const r  = dotRef.current.getBoundingClientRect();
+        const cx = r.left + r.width  / 2;
+        const cy = r.top  + r.height / 2;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
         const maxR = Math.max(
           Math.hypot(cx,      cy),
           Math.hypot(vw - cx, cy),
           Math.hypot(cx,      vh - cy),
           Math.hypot(vw - cx, vh - cy),
         );
-        const size = (maxR + 80) * 2; // diameter, +80px safety margin
-        setSphere({ left: cx - size / 2, top: cy - size / 2, size });
+        const size = (maxR + 80) * 2;
+        setBloom({ left: cx - size / 2, top: cy - size / 2, size });
       }
-      setPhase("burst");
-    }, BURST_MS);
+    }, BLOOM_MS);
 
-    const t2 = setTimeout(() => setPhase("fade"), FADE_MS);
+    // Step 3: overlay fades
+    const t3 = setTimeout(() => setPhase("fade"), FADE_MS);
 
-    const t3 = setTimeout(() => {
+    // Step 4: unmount
+    const t4 = setTimeout(() => {
       document.body.style.overflow = "";
       setShow(false);
       sessionStorage.setItem("intro-seen", "1");
     }, DONE_MS);
 
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    return () => {
+      clearTimeout(t1); clearTimeout(t2);
+      clearTimeout(t3); clearTimeout(t4);
+    };
   }, []);
+
+  const isBurst = phase === "burst";
+  const isFade  = phase === "fade";
 
   return (
     <AnimatePresence>
       {show && (
         <motion.div
           key="intro"
-          animate={phase === "fade" ? { opacity: 0 } : { opacity: 1 }}
-          transition={{ duration: 0.65, ease: "easeInOut" }}
+          animate={isFade ? { opacity: 0 } : { opacity: 1 }}
+          transition={{ duration: 1.0, ease: "easeInOut" }}
           style={{
             position: "fixed",
             inset: 0,
@@ -78,35 +95,33 @@ export default function IntroAnimation() {
             overflow: "hidden",
           }}
         >
-          {/* ── Expanding pink sphere ── */}
-          {sphere && phase !== "in" && (
+          {/* ── Bloom: pink glow expands from dot position ── */}
+          {bloom && (
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 position: "absolute",
-                left:   sphere.left,
-                top:    sphere.top,
-                width:  sphere.size,
-                height: sphere.size,
+                left:         bloom.left,
+                top:          bloom.top,
+                width:        bloom.size,
+                height:       bloom.size,
                 borderRadius: "50%",
                 background: `radial-gradient(
                   circle at center,
-                  rgba(118, 12, 217, 0.95) 0%,
-                  #d90cb7 28%,
-                  rgba(217, 12, 183, 0.5) 55%,
-                  transparent 72%
+                  rgba(118, 12, 217, 0.85) 0%,
+                  rgba(217, 12, 183, 0.65) 18%,
+                  rgba(217, 12, 183, 0.28) 42%,
+                  transparent 62%
                 )`,
-                filter: "blur(48px)",
+                filter: "blur(56px)",
               }}
             />
           )}
 
-          {/* ── Letters ── */}
-          <motion.div
-            animate={phase !== "in" ? { opacity: 0, y: -6 } : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.28, ease: "easeIn" }}
+          {/* ── Layout row — letters + dot sit side by side ── */}
+          <div
             style={{
               display: "flex",
               alignItems: "baseline",
@@ -114,41 +129,55 @@ export default function IntroAnimation() {
               zIndex: 2,
             }}
           >
-            {/* "Contrast" */}
-            {LETTERS.split("").map((char, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 48, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{
-                  duration: L_DURATION,
-                  delay: START_DELAY + i * STAGGER,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{
-                  display: "inline-block",
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  fontSize: "clamp(52px, 9vw, 128px)",
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                  color: "#ffffff",
-                }}
-              >
-                {char}
-              </motion.span>
-            ))}
+            {/* "Contrast" — fades out when burst starts */}
+            <motion.div
+              animate={isBurst || isFade ? { opacity: 0 } : { opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeIn" }}
+              style={{ display: "flex", alignItems: "baseline" }}
+            >
+              {LETTERS.split("").map((char, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 48, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    duration: L_DURATION,
+                    delay: START_DELAY + i * STAGGER,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  style={{
+                    display: "inline-block",
+                    fontFamily: "var(--font-urbanist), sans-serif",
+                    fontSize: "clamp(52px, 9vw, 128px)",
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    color: "#ffffff",
+                  }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </motion.div>
 
-            {/* "." — pink, with a soft glow */}
+            {/* "." — pink, stays after letters, then grows into the bloom */}
             <motion.span
               ref={dotRef}
               initial={{ opacity: 0, y: 48, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: L_DURATION,
-                delay: START_DELAY + 8 * STAGGER,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              animate={
+                isBurst || isFade
+                  ? { opacity: 0, scale: 4, filter: "blur(32px)" }
+                  : { opacity: 1, y: 0, filter: "blur(0px)" }
+              }
+              transition={
+                isBurst || isFade
+                  ? { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+                  : {
+                      duration: L_DURATION,
+                      delay: START_DELAY + 8 * STAGGER,
+                      ease: [0.22, 1, 0.36, 1],
+                    }
+              }
               style={{
                 display: "inline-block",
                 fontFamily: "var(--font-urbanist), sans-serif",
@@ -158,12 +187,12 @@ export default function IntroAnimation() {
                 letterSpacing: "-0.02em",
                 color: "#d90cb7",
                 textShadow:
-                  "0 0 24px rgba(217,12,183,0.9), 0 0 60px rgba(217,12,183,0.5), 0 0 100px rgba(118,12,217,0.3)",
+                  "0 0 24px rgba(217,12,183,0.95), 0 0 60px rgba(217,12,183,0.6), 0 0 120px rgba(118,12,217,0.4)",
               }}
             >
               .
             </motion.span>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
