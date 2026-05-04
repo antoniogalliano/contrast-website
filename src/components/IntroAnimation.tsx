@@ -10,9 +10,9 @@ const L_DURATION  = 0.75;
 // Dot is index 8 → delay = 0.15 + 8*0.07 = 0.71s, finishes at 1.46s
 // Hold ~600ms → burst starts at 2050ms
 
-const BURST_MS = 2050; // letters start fading + sphere starts expanding
-const FADE_MS  = 2350; // overlay starts fading (250ms after burst)
-const DONE_MS  = 3050; // unmount + restore scroll
+const BURST_MS = 2700; // letters start fading + sphere starts expanding
+const FADE_MS  = 3000; // overlay starts fading (300ms after burst)
+const DONE_MS  = 3850; // unmount + restore scroll
 
 export default function IntroAnimation() {
   const [show,   setShow]   = useState(true);

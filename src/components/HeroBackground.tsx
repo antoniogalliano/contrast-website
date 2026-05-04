@@ -102,7 +102,12 @@ export default function HeroBackground() {
       });
     }
     sphereRef.current = particles;
-    startTimeRef.current = performance.now();
+    // On first visit the intro overlay runs for ~3 s.
+    // Delay the sphere's convergence so particles form *while* the overlay is
+    // fading out (starting ~3 000 ms in) rather than snapping in fully-formed.
+    const introAlreadySeen = sessionStorage.getItem("intro-seen");
+    const sphereDelay = introAlreadySeen ? 0 : 2400; // ms
+    startTimeRef.current = performance.now() + sphereDelay;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = {
