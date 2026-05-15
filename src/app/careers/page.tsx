@@ -349,7 +349,7 @@ export default function CareersPage() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 3.4, ease: "easeOut" }}
+          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
           style={{ maxWidth: 800 }}
         >
           {/* Eyebrow */}
