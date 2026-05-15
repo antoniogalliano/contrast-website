@@ -55,47 +55,25 @@ body {
 }
 
 /* Root — page chrome & all content not in a named group.
-   Old fades out quickly; new lags 80 ms so there's a deliberate beat. */
+   Old snaps out fast; new surges in — creates a "context change" beat. */
 ::view-transition-old(root) {
-  animation: 350ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+  animation: 280ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
 }
 ::view-transition-new(root) {
-  animation: 500ms cubic-bezier(0, 0, 0.2, 1) 80ms both vt-fade-in;
+  animation: 580ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both vt-fade-in;
 }
 
-/* Named hero image — both the home panel <img> and the case page hero <img>
-   get view-transition-name: case-hero at transition time.  Because they show
-   the same photo at the same full-screen size the cross-dissolve is
-   imperceptible and the image appears frozen while the UI transitions. */
-::view-transition-old(case-hero) {
-  animation: 520ms ease both vt-fade-out;
-}
-::view-transition-new(case-hero) {
-  animation: 520ms ease both vt-fade-in;
-}
-
-/* Named title — morphs the large client name from the work preview panel
-   into the hero h1 on the case page. The browser handles position + scale
-   interpolation automatically; we only control timing and cross-fade. */
-::view-transition-old(case-title),
-::view-transition-new(case-title) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-::view-transition-old(case-title) {
-  animation-name: vt-fade-out;
-}
-::view-transition-new(case-title) {
-  animation-name: vt-fade-in;
-}
+/* case-hero — NO custom overrides. The browser's default view-transition
+   behaviour morphs the image from the work list thumbnail (right panel,
+   ~42 % of the viewport) to the fullscreen case page hero: it interpolates
+   position, size, and clips automatically. This is the "image expands"
+   signal that tells the user they navigated to a new page. */
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root),
   ::view-transition-old(case-hero),
-  ::view-transition-new(case-hero),
-  ::view-transition-old(case-title),
-  ::view-transition-new(case-title) {
+  ::view-transition-new(case-hero) {
     animation-duration: 0.01ms;
   }
 }

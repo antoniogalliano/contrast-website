@@ -603,10 +603,8 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     window.scrollTo({ top: 0, behavior: "instant" });
     const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
     heroImg?.style.setProperty("view-transition-name", "case-hero");
-    titleRef.current?.style.setProperty("view-transition-name", "case-title");
     return () => {
       heroImg?.style.removeProperty("view-transition-name");
-      titleRef.current?.style.removeProperty("view-transition-name");
     };
   }, []);
 
@@ -615,10 +613,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    // Strip names before the snapshot so back-navigation uses a plain crossfade.
+    // Strip name before the snapshot so back-navigation uses a plain crossfade.
     const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
     heroImg?.style.removeProperty("view-transition-name");
-    titleRef.current?.style.removeProperty("view-transition-name");
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href); });
@@ -702,6 +699,30 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           All Work
         </motion.a>
 
+        {/* ── "CASE STUDY" eyebrow — fires immediately, letter by letter ── */}
+        <div style={{
+          position: "absolute", top: 96, right: 56, zIndex: 10,
+          display: "flex", alignItems: "center", gap: 0,
+        }}>
+          {"CASE STUDY".split("").map((char, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, filter: "blur(6px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.32, delay: 0.18 + i * 0.028, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                fontFamily: "var(--font-urbanist), sans-serif",
+                fontSize: 11, fontWeight: 700,
+                letterSpacing: "3.5px", textTransform: "uppercase",
+                color: "rgba(255,255,255,0.32)",
+                display: "inline-block",
+              }}
+            >
+              {char === " " ? "  " : char}
+            </motion.span>
+          ))}
+        </div>
+
         {/* ── Bottom text block — entrance from below, then fades on scroll ── */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -712,13 +733,13 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         >
           <motion.div style={{ opacity: textOpacity }}>
             {/* Tags */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
               {data.heroTags.map((t) => (
                 <Tag key={t} label={t} />
               ))}
             </div>
 
-            {/* Title */}
+            {/* Title — word-by-word reveal gated by pageReady */}
             <h1
               ref={titleRef}
               style={{
@@ -728,27 +749,60 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                 lineHeight: 1.0,
                 letterSpacing: "-0.03em",
                 color: "#ffffff",
-                margin: "0 0 20px",
+                margin: "0 0 24px",
                 maxWidth: "14ch",
               }}
             >
-              {data.heroTitle}
+              <WordReveal text={data.heroTitle} />
             </h1>
 
+            {/* Metadata strip — 3 key facts, fades in with pageReady */}
+            {data.metaItems.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={pageReady ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                style={{ display: "flex", gap: 32, marginBottom: 20, flexWrap: "wrap" }}
+              >
+                {data.metaItems.slice(0, 3).map((item) => (
+                  <div key={item.label}>
+                    <div style={{
+                      fontFamily: "var(--font-urbanist), sans-serif",
+                      fontSize: 10, fontWeight: 700,
+                      letterSpacing: "1.5px", textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.3)", marginBottom: 4,
+                    }}>
+                      {item.label}
+                    </div>
+                    <div style={{
+                      fontFamily: "var(--font-urbanist), sans-serif",
+                      fontSize: 14, fontWeight: 500,
+                      color: item.accent ? "#d90cb7" : "rgba(255,255,255,0.72)",
+                    }}>
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
             {/* Subtitle */}
-            <p
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={pageReady ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
               style={{
                 fontFamily: "var(--font-geist), sans-serif",
                 fontWeight: 300,
                 fontSize: "clamp(14px, 1.2vw, 17px)",
                 lineHeight: 1.65,
-                color: "rgba(255,255,255,0.62)",
+                color: "rgba(255,255,255,0.55)",
                 margin: 0,
-                maxWidth: 560,
+                maxWidth: 520,
               }}
             >
               {data.heroSubtitle}
-            </p>
+            </motion.p>
           </motion.div>
         </motion.div>
 
