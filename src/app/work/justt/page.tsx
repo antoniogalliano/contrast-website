@@ -22,8 +22,6 @@ const data: WorkCaseData = {
     { label: "Client", value: "JUSTT" },
     { label: "Industry", value: "Fintech / SaaS" },
     { label: "Year", value: "2024" },
-    { label: "Duration", value: "5 months" },
-    { label: "Our Role", value: "Product Design" },
     { label: "Type", value: "B2B Dashboard" },
   ],
 

@@ -388,23 +388,27 @@ function PBodyReveal({ children, delay, style }: {
 }
 
 // Overview meta grid cell
-function MetaCell({ item, i }: {
+function MetaCell({ item, i, total, cols }: {
   item: { label: string; value: string; accent?: boolean };
   i: number;
+  total: number;
+  cols: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const ready = usePageReady();
   const inView = useInView(ref, { once: true, amount: 0.3 });
+  const hasRowBelow = Math.floor(i / cols) < Math.ceil(total / cols) - 1;
+  const hasNeighbour = (i % cols !== cols - 1) && (i + 1 < total);
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, x: i % 2 === 0 ? -16 : 16, y: 12, scale: 0.92, filter: "blur(6px)" }}
       animate={inView && ready ? { opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" } : {}}
-      transition={{ duration: 0.6, delay: Math.floor(i / 2) * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay: Math.floor(i / cols) * 0.1, ease: [0.22, 1, 0.36, 1] }}
       style={{
         padding: "28px 28px",
-        borderBottom: i < 4 ? "1px solid rgba(56,56,56,0.7)" : "none",
-        borderRight: i % 2 === 0 ? "1px solid rgba(56,56,56,0.7)" : "none",
+        borderBottom: hasRowBelow ? "1px solid rgba(56,56,56,0.7)" : "none",
+        borderRight: hasNeighbour ? "1px solid rgba(56,56,56,0.7)" : "none",
       }}
     >
       <p style={{
@@ -482,41 +486,97 @@ function ViewAllReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Gallery image with scroll-driven scale reveal ───────────────────────────
+// ─── Bento gallery — full-viewport-width, natural-height image grid ──────────
+//
+// Reveal animation: clip-path curtain (top → bottom) + counter-scale on the
+// image (1.08 → 1.0). Cells stagger by `delay` seconds.
+// Images are never cropped: width = 100%, height = auto.
 
-function GalleryImage({ src, alt }: { src: string; alt: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function BentoCell({ src, alt, delay = 0 }: { src: string; alt: string; delay?: number }) {
+  const ref   = useRef<HTMLDivElement>(null);
+  const ready = usePageReady();
+  const inView = useInView(ref, { once: true, amount: 0.06 });
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 0.92", "center 0.55"],
-  });
-
-  // Scale and opacity are perfectly synchronised:
-  // scale 0.7 → opacity 0,  scale 1.0 → opacity 1
-  const scale   = useTransform(scrollYProgress, [0, 1], [0.7, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const revealed = inView && ready;
 
   return (
-    <div ref={containerRef}>
+    <div ref={ref} style={{ overflow: "hidden" }}>
+      {/* Clip-path curtain: reveals the image top → bottom */}
       <motion.div
-        style={{
-          scale,
-          opacity,
-          borderRadius: 20,
-          overflow: "hidden",
-          border: "1px solid rgba(56,56,56,0.6)",
-          transformOrigin: "center center",
-          willChange: "transform, opacity",
-        }}
+        initial={{ clipPath: "inset(0 0 100% 0)" }}
+        animate={revealed ? { clipPath: "inset(0 0 0% 0)" } : {}}
+        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* height: auto — full image shown, never cropped, natural aspect ratio */}
-        <img
+        {/* Image counter-scales during reveal: starts slightly zoomed in */}
+        <motion.img
           src={src}
           alt={alt}
+          initial={{ scale: 1.08 }}
+          animate={revealed ? { scale: 1 } : {}}
+          transition={{ duration: 1.15, delay, ease: [0.22, 1, 0.36, 1] }}
           style={{ width: "100%", height: "auto", display: "block" }}
         />
       </motion.div>
+    </div>
+  );
+}
+
+function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
+  const n = items.length;
+  if (n <= 0) return null;
+
+  const STAGGER = 0.11;
+
+  if (n === 1) {
+    return <BentoCell src={items[0].src} alt={items[0].alt} />;
+  }
+
+  if (n === 2) {
+    return (
+      <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+        <div style={{ flex: 1, minWidth: 0 }}><BentoCell src={items[0].src} alt={items[0].alt} delay={0} /></div>
+        <div style={{ flex: 1, minWidth: 0 }}><BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} /></div>
+      </div>
+    );
+  }
+
+  if (n === 3) {
+    // F-pattern: wide left column + two stacked right
+    return (
+      <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+        <div style={{ flex: 3, minWidth: 0 }}>
+          <BentoCell src={items[0].src} alt={items[0].alt} delay={0} />
+        </div>
+        <div style={{ flex: 2, minWidth: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+          <BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} />
+          <BentoCell src={items[2].src} alt={items[2].alt} delay={STAGGER * 2} />
+        </div>
+      </div>
+    );
+  }
+
+  if (n === 4) {
+    // Alternating emphasis: wide-left row, then wide-right row
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <div style={{ flex: 3, minWidth: 0 }}><BentoCell src={items[0].src} alt={items[0].alt} delay={0} /></div>
+          <div style={{ flex: 2, minWidth: 0 }}><BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} /></div>
+        </div>
+        <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <div style={{ flex: 2, minWidth: 0 }}><BentoCell src={items[2].src} alt={items[2].alt} delay={0} /></div>
+          <div style={{ flex: 3, minWidth: 0 }}><BentoCell src={items[3].src} alt={items[3].alt} delay={STAGGER} /></div>
+        </div>
+      </div>
+    );
+  }
+
+  // 5+ images: single column, all full-width
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {items.map((item, i) => (
+        <BentoCell key={item.src} src={item.src} alt={item.alt} delay={i * STAGGER} />
+      ))}
     </div>
   );
 }
@@ -549,6 +609,8 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       titleRef.current?.style.removeProperty("view-transition-name");
     };
   }, []);
+
+  const metaCols = data.metaItems.length === 3 ? 3 : 2;
 
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
@@ -759,7 +821,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: `repeat(${metaCols}, 1fr)`,
                 gap: 0,
                 border: "1px solid rgba(56,56,56,0.7)",
                 borderRadius: 16,
@@ -767,7 +829,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               }}
             >
               {data.metaItems.map((item, i) => (
-                <MetaCell key={item.label} item={item} i={i} />
+                <MetaCell key={item.label} item={item} i={i} total={data.metaItems.length} cols={metaCols} />
               ))}
             </div>
           </div>
@@ -784,101 +846,22 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       </section>
 
       {/* ════════════════════════════════════════════════
-          3. GALLERY — full-width stacked, scroll-scale reveal
+          3. GALLERY — full-bleed bento grid
       ════════════════════════════════════════════════ */}
-      <section style={{ padding: "0 40px 100px", background: "#0a0a0a" }}>
-        {/* Divider stays in the standard content column */}
-        <div style={{ maxWidth: 1360, margin: "0 auto" }}>
+      <section style={{ paddingBottom: 100, background: "#0a0a0a" }}>
+        {/* Divider stays in the content column */}
+        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px 48px" }}>
           <Divider />
         </div>
 
-        {/* Images share the same 1360 px column as every other section */}
-        <div style={{ maxWidth: 1360, margin: "0 auto", paddingTop: 64, display: "flex", flexDirection: "column", gap: 24 }}>
-          {(() => {
-            const rows: React.ReactElement[] = [];
-            const items = data.gallery;
-            let i = 0;
-            while (i < items.length) {
-              if (items[i].pair && items[i + 1]?.pair) {
-                rows.push(
-                  <div key={items[i].src} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-                    <GalleryImage src={items[i].src} alt={items[i].alt} />
-                    <GalleryImage src={items[i + 1].src} alt={items[i + 1].alt} />
-                  </div>
-                );
-                i += 2;
-              } else {
-                rows.push(<GalleryImage key={items[i].src} src={items[i].src} alt={items[i].alt} />);
-                i += 1;
-              }
-            }
-            return rows;
-          })()}
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════
-          4. WHAT WE DID
-      ════════════════════════════════════════════════ */}
-      <section style={{ padding: "100px 40px", background: "#0a0a0a" }}>
-        <div style={{ maxWidth: 1360, margin: "0 auto" }}>
-          <Divider />
-          <div style={{ paddingTop: 64 }}>
-            <div
-              className="wcp-whatwedid-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: 80,
-                alignItems: "start",
-              }}
-            >
-              {/* Left — heading */}
-              <div>
-                <Eyebrow>What We Did</Eyebrow>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-urbanist), sans-serif",
-                    fontWeight: 600,
-                    fontSize: "clamp(28px, 3vw, 42px)",
-                    lineHeight: 1.15,
-                    letterSpacing: "-0.01em",
-                    color: "#ffffff",
-                    margin: 0,
-                  }}
-                >
-                  <WordReveal text={data.whatWeDidHeading} />
-                </h2>
-              </div>
-
-              {/* Right — deliverables grid */}
-              <div
-                className="wcp-deliverables-grid"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 0,
-                  border: "1px solid rgba(56,56,56,0.7)",
-                  borderRadius: 16,
-                  overflow: "hidden",
-                }}
-              >
-                {data.deliverables.map((item, i) => (
-                  <DeliverableCell key={item.num} item={item} i={i} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Full-viewport-width bento — no horizontal padding */}
+        <GalleryBento items={data.gallery} />
 
         <style jsx global>{`
-          @media (max-width: 860px) {
-            .wcp-whatwedid-grid {
-              grid-template-columns: 1fr !important;
-              gap: 48px !important;
-            }
-            .wcp-deliverables-grid {
-              grid-template-columns: 1fr !important;
+          /* Mobile: flex rows collapse to vertical stack */
+          @media (max-width: 768px) {
+            .wcp-bento-row {
+              flex-direction: column !important;
             }
           }
         `}</style>

@@ -1,15 +1,17 @@
 /**
- * Shared mutable state between IntroAnimation and HeroBackground.
+ * Shared mutable state between IntroAnimation, HeroBackground, and Header.
  *
- * IntroAnimation writes the viewport position of the "." dot at the moment
- * the sphere transition begins. HeroBackground reads it every animation frame
- * to use as the origin point for particle convergence.
- *
- * Using a module-level variable gives a zero-overhead live binding without
- * requiring React context plumbing across unrelated component trees.
+ * Zero-overhead live bindings — no React context plumbing needed.
  */
-export let dotOrigin: { x: number; y: number } | null = null;
 
+/** Position of the "." dot when the intro exits (read by HeroBackground each frame). */
+export let dotOrigin: { x: number; y: number } | null = null;
 export function setDotOrigin(pos: { x: number; y: number } | null): void {
   dotOrigin = pos;
+}
+
+/** Center + width of the header Logotype (read by IntroAnimation at transition time). */
+export let logoOrigin: { cx: number; cy: number; width: number } | null = null;
+export function setLogoOrigin(pos: { cx: number; cy: number; width: number } | null): void {
+  logoOrigin = pos;
 }

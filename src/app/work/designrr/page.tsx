@@ -21,8 +21,6 @@ const data: WorkCaseData = {
     { label: "Client", value: "Designrr" },
     { label: "Industry", value: "SaaS / Content" },
     { label: "Year", value: "2023" },
-    { label: "Duration", value: "4 months" },
-    { label: "Our Role", value: "UX & Product Design" },
     { label: "Result", value: "+97% engagement", accent: true },
   ],
 

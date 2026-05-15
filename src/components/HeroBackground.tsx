@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { dotOrigin } from "@/lib/introState";
 
 interface SphereParticle {
   sx: number;
@@ -95,11 +94,12 @@ export default function HeroBackground() {
 
     // Intro overlay always plays on every page load.
     // Delay sphere so particles begin streaming from the dot position
-    // right as the intro text exits (TRANSITION_MS = 2700ms).
-    // INTRO_DURATION = 2200ms:
-    //   overlay-fade-start (3050ms) → sphere is ~16% formed
-    //   overlay-gone       (4150ms) → sphere is ~66% formed  ← still actively forming
-    startTimeRef.current = performance.now() + 2700;
+    // right as the intro overlay unmounts (DONE_MS = 3200ms).
+    // INTRO_DURATION = 1000ms — fast convergence so sphere is fully formed quickly:
+    //   sphere start   (3200ms) → particles leave dot origin
+    //   header appears (3800ms) → sphere is ~60% formed
+    //   sphere done    (4200ms) → all particles at rest on sphere
+    startTimeRef.current = performance.now() + 3200;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = {
@@ -152,7 +152,7 @@ export default function HeroBackground() {
 
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    const INTRO_DURATION = 2200; // ms — time for all particles to reach sphere positions
+    const INTRO_DURATION = 1000; // ms — time for all particles to reach sphere positions
 
     const animate = () => {
       if (!ctx || !canvas) return;
@@ -211,9 +211,9 @@ export default function HeroBackground() {
       const pull2dX = pullNormX;
       const pull2dY = pullNormY;
 
-      // Dot origin in canvas pixels (set by IntroAnimation when the text exits)
-      const originX = dotOrigin ? dotOrigin.x * dpr : cx;
-      const originY = dotOrigin ? dotOrigin.y * dpr : cy;
+      // Particles always expand from the sphere's own centre — keeps formation centred.
+      const originX = cx;
+      const originY = cy;
 
       // --- Sphere particles ---
       for (const p of sphereRef.current) {

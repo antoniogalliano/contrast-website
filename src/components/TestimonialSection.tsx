@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
 
 const TESTIMONIALS = [
@@ -13,19 +13,69 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Contrast didn\u2019t just redesign our product \u2014 they transformed the way our users experience it. The results speak for themselves: engagement up, drop-off down, and a team that finally feels proud of what they ship.",
-    name: "Sarah Chen",
-    title: "VP of Product / Viably",
-    photo: "/testimonials/benjamin-oakes.jpg",
+      "Contrast\u2019s strategic approach paired with their pixel-perfect designs are an inseparable part of the Post.news launch and results.",
+    name: "Noam Bardin",
+    title: "Founder Post.news \u00b7 Former CEO of Waze",
+    photo: "/testimonials/noam-bardin.jpg",
   },
   {
     quote:
-      "Working with Contrast was the best investment we made in our product this year. Their Hero Framework gave us a clear roadmap and the design execution was flawless.",
-    name: "David Miller",
-    title: "CEO / Designrr",
-    photo: "/testimonials/benjamin-oakes.jpg",
+      "Contrast\u2019s outstanding strategy & design work set the stage \u2014 and is directly linked \u2014 to the rapid success & eventual acquisition of our startup.",
+    name: "Kieran O\u2019Brien",
+    title: "Founder Mediakits \u00b7 Acquired by Viral Nation",
+    photo: "/testimonials/kieran-obrien.png",
   },
 ];
+
+// ── Avatar — shows photo if it loads, initials otherwise ──────────────────────
+function Avatar({ src, name }: { src: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [src]);          // reset when photo changes
+
+  const initials = name
+    .split(" ")
+    .slice(0, 2)
+    .map(w => w[0])
+    .join("")
+    .toUpperCase();
+
+  if (failed) {
+    return (
+      <div
+        className="testimonial-photo"
+        style={{
+          width: 131, height: 126, borderRadius: 16,
+          border: "1px solid #242323",
+          background: "rgba(217,12,183,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontWeight: 600, fontSize: 36,
+          color: "#d90cb7",
+          letterSpacing: "-0.02em",
+        }}
+      >
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="testimonial-photo"
+      onError={() => setFailed(true)}
+      style={{
+        width: 131, height: 126,
+        borderRadius: 16,
+        border: "1px solid #242323",
+        objectFit: "cover",
+        flexShrink: 0,
+      }}
+    />
+  );
+}
 
 function Arrow({ direction }: { direction: "left" | "right" }) {
   return (
@@ -138,18 +188,7 @@ export default function TestimonialSection() {
               className="testimonial-author"
               style={{ display: "flex", alignItems: "center", gap: 52 }}
             >
-              <img
-                src={t.photo}
-                alt={t.name}
-                className="testimonial-photo"
-                style={{
-                  width: 131, height: 126,
-                  borderRadius: 16,
-                  border: "1px solid #242323",
-                  objectFit: "cover",
-                  flexShrink: 0,
-                }}
-              />
+              <Avatar src={t.photo} name={t.name} />
               <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                 <p className="testimonial-name" style={{
                   margin: 0,

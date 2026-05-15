@@ -22,9 +22,6 @@ const data: WorkCaseData = {
     { label: "Client", value: "DAZN" },
     { label: "Industry", value: "#1 World Sport streaming service" },
     { label: "Year", value: "2024 - Present" },
-    { label: "Duration", value: "2+ years" },
-    { label: "Our Role", value: "Lead Design Partner" },
-    { label: "Team Size", value: "4 designers, 2 devs" },
   ],
 
   // Gallery — 4 images: web dashboard × 2 (side by side) + TV app × 2

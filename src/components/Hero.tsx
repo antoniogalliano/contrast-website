@@ -62,7 +62,7 @@ export default function Hero() {
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 1.0, ease: "easeOut" }}
+        transition={{ duration: 0.9, delay: 3.9, ease: "easeOut" }}
         style={{
           position: "relative",
           zIndex: 1,
@@ -89,7 +89,7 @@ export default function Hero() {
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 1.3, ease: "easeOut" }}
+        transition={{ duration: 0.9, delay: 4.1, ease: "easeOut" }}
         style={{
           position: "relative",
           zIndex: 1,
@@ -118,7 +118,7 @@ export default function Hero() {
         href="#plan"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 1.5, ease: "easeOut" }}
+        transition={{ duration: 0.9, delay: 4.3, ease: "easeOut" }}
         className="btn-gradient-border"
         style={{
           position: "relative",
@@ -161,7 +161,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: Math.max(0, 1 - scrollY * 5) }}
-        transition={{ duration: scrollY > 0 ? 0 : 0.8, delay: scrollY > 0 ? 0 : 2.0 }}
+        transition={{ duration: scrollY > 0 ? 0 : 0.8, delay: scrollY > 0 ? 0 : 4.5 }}
         style={{
           position: "absolute",
           zIndex: 1,

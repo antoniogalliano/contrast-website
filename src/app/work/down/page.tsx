@@ -21,8 +21,6 @@ const data: WorkCaseData = {
     { label: "Client", value: "Down" },
     { label: "Industry", value: "Social / Dating" },
     { label: "Year", value: "2024" },
-    { label: "Duration", value: "6 months" },
-    { label: "Our Role", value: "Full Product Design" },
     { label: "Platforms", value: "iOS, Android, Web" },
   ],
 

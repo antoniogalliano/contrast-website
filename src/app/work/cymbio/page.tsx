@@ -21,8 +21,6 @@ const data: WorkCaseData = {
     { label: "Client", value: "Cymbio" },
     { label: "Industry", value: "B2B / Retail Tech" },
     { label: "Year", value: "2024" },
-    { label: "Duration", value: "5 months" },
-    { label: "Our Role", value: "Product Design" },
     { label: "Type", value: "SaaS Dashboard" },
   ],
 
