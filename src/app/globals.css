@@ -53,33 +53,39 @@ body {
 @keyframes vt-fade-in {
   from { opacity: 0; }
 }
+@keyframes vt-slide-out {
+  to { opacity: 0; transform: translateY(-24px); filter: blur(3px); }
+}
+@keyframes vt-slide-in {
+  from { opacity: 0; transform: translateY(72px); }
+}
+@keyframes vt-hero-settle {
+  from { transform: scale(1.06); opacity: 0.6; }
+}
 
-/* Root — page chrome & all content not in a named group.
-   Old fades out quickly; new lags 80 ms so there's a deliberate beat. */
+/* Root — old page UI slides up + blurs; new page surges up from below.
+   This creates an unmistakable "new page" signal vs. the previous plain fade. */
 ::view-transition-old(root) {
-  animation: 350ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+  animation: 380ms cubic-bezier(0.4, 0, 1, 1) both vt-slide-out;
 }
 ::view-transition-new(root) {
-  animation: 500ms cubic-bezier(0, 0, 0.2, 1) 80ms both vt-fade-in;
+  animation: 700ms cubic-bezier(0.22, 1, 0.36, 1) 50ms both vt-slide-in;
 }
 
-/* Named hero image — both the home panel <img> and the case page hero <img>
-   get view-transition-name: case-hero at transition time.  Because they show
-   the same photo at the same full-screen size the cross-dissolve is
-   imperceptible and the image appears frozen while the UI transitions. */
+/* Named hero image — old fades out cleanly; new settles from a slight zoom
+   giving the feeling of "arriving" at the case page destination. */
 ::view-transition-old(case-hero) {
-  animation: 520ms ease both vt-fade-out;
+  animation: 420ms ease-in both vt-fade-out;
 }
 ::view-transition-new(case-hero) {
-  animation: 520ms ease both vt-fade-in;
+  animation: 750ms cubic-bezier(0.22, 1, 0.36, 1) both vt-hero-settle;
 }
 
 /* Named title — morphs the large client name from the work preview panel
-   into the hero h1 on the case page. The browser handles position + scale
-   interpolation automatically; we only control timing and cross-fade. */
+   into the hero h1 on the case page. Duration bumped to 600ms for weight. */
 ::view-transition-old(case-title),
 ::view-transition-new(case-title) {
-  animation-duration: 520ms;
+  animation-duration: 600ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 ::view-transition-old(case-title) {

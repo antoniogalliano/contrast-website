@@ -607,13 +607,25 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
         </motion.div>
 
+        {/* ── Accent bar — draws across the top on entry, signals "new page" ── */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: "absolute", top: 0, left: 0, right: 0,
+            height: 3, background: "#d90cb7", zIndex: 20,
+            transformOrigin: "left center",
+          }}
+        />
+
         {/* ── Back button — top left, clears the fixed header ── */}
         <motion.a
           href="/#work"
           onClick={(e) => navigateWithTransition("/#work", e)}
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="wcp-back-btn"
           style={{
             position: "absolute",
@@ -642,9 +654,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
         {/* ── Bottom text block — entrance from below, then fades on scroll ── */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="wcp-hero-bottom"
           style={{ position: "absolute", bottom: 56, left: 56, right: 56, zIndex: 10 }}
         >
