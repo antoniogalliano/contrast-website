@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -55,34 +55,34 @@ const projects: Project[] = [
   },
 ];
 
-// ── Individual project row ────────────────────────────────────────────────────
+// ── Row ────────────────────────────────────────────────────────────────────────
 function ProjectRow({
-  project, num, index, isActive, onActivate,
+  project,
+  num,
+  index,
+  isActive,
+  onActivate,
+  revealed,
 }: {
   project: Project;
   num: string;
   index: number;
   isActive: boolean;
   onActivate: () => void;
+  revealed: boolean;
 }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
   const router = useRouter();
 
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-
     if (!("startViewTransition" in document)) {
       router.push(project.href);
       return;
     }
-
-    // Tag the currently active sticky panel image as "case-hero" so the browser
-    // morphs it from its current position/size to the fullscreen case page hero.
+    // Tag the active fullscreen background image for the browser to morph
     const activeImg = document.querySelector("[data-case-hero]") as HTMLElement | null;
     activeImg?.style.setProperty("view-transition-name", "case-hero");
-
     (document as Document & { startViewTransition: (cb: () => void) => void })
       .startViewTransition(() => {
         flushSync(() => { router.push(project.href); });
@@ -91,254 +91,303 @@ function ProjectRow({
 
   return (
     <motion.a
-      ref={ref}
       href={project.href}
       onClick={handleNavigation}
       onMouseEnter={onActivate}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={revealed ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.1 + index * 0.09, ease: [0.22, 1, 0.36, 1] }}
       style={{
         display: "flex",
         alignItems: "center",
         gap: 20,
-        padding: "28px 0 28px 20px",
-        borderBottom: "1px solid #1a1a1a",
+        padding: "clamp(18px, 2.4vh, 30px) 0",
+        borderBottom: "1px solid rgba(255,255,255,0.1)",
         textDecoration: "none",
         cursor: "pointer",
-        borderLeft: `2px solid ${isActive ? ACCENT : "transparent"}`,
-        transition: "border-color 0.3s ease",
         position: "relative",
       }}
     >
       {/* Number */}
-      <span style={{
-        fontFamily: "var(--font-urbanist), sans-serif",
-        fontSize: 12, fontWeight: 500, letterSpacing: "0.12em",
-        color: isActive ? ACCENT : "rgba(255,255,255,0.25)",
-        minWidth: 28, flexShrink: 0,
-        transition: "color 0.3s ease",
-      }}>
+      <span
+        style={{
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: "0.18em",
+          color: isActive ? ACCENT : "rgba(255,255,255,0.28)",
+          minWidth: 36,
+          flexShrink: 0,
+          transition: "color 0.4s ease",
+          paddingTop: 2,
+          alignSelf: "flex-start",
+        }}
+      >
         {num}
       </span>
 
-      {/* Client name + project title */}
+      {/* Client name + subtitle */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontSize: "clamp(22px, 2.5vw, 40px)",
-          fontWeight: 600,
-          color: isActive ? "#ffffff" : "rgba(255,255,255,0.38)",
-          lineHeight: 1.1,
-          letterSpacing: "-0.02em",
-          transition: "color 0.3s ease",
-          marginBottom: 4,
-        }}>
+        <div
+          style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(32px, 4.2vw, 72px)",
+            fontWeight: 700,
+            color: isActive ? "#ffffff" : "rgba(255,255,255,0.28)",
+            lineHeight: 1.0,
+            letterSpacing: "-0.025em",
+            transition: "color 0.4s ease",
+            marginBottom: 6,
+          }}
+        >
           {project.client}
         </div>
-        <div style={{
-          fontFamily: "var(--font-geist), sans-serif",
-          fontSize: 13,
-          color: isActive ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.18)",
-          transition: "color 0.3s ease",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}>
+        <div
+          style={{
+            fontFamily: "var(--font-geist), sans-serif",
+            fontSize: "clamp(12px, 1vw, 14px)",
+            color: isActive ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.18)",
+            transition: "color 0.4s ease",
+            letterSpacing: "0.01em",
+          }}
+        >
           {project.title}
         </div>
       </div>
 
-      {/* Tags — hidden on smaller screens */}
-      <div className="sw-row-tags" style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-        {project.tags.slice(0, 2).map((tag) => (
-          <span key={tag} style={{
-            fontSize: 11, fontWeight: 500,
-            color: isActive ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.16)",
-            padding: "4px 10px", borderRadius: 9999,
-            border: `1px solid ${isActive ? "rgba(255,255,255,0.14)" : "#1e1e1e"}`,
-            fontFamily: "var(--font-urbanist), sans-serif",
-            letterSpacing: "0.2px",
-            whiteSpace: "nowrap",
-            transition: "color 0.3s ease, border-color 0.3s ease",
-          }}>
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      {/* Arrow circle */}
-      <div style={{
-        width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
-        border: `1px solid ${isActive ? ACCENT : "#222"}`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        color: isActive ? ACCENT : "rgba(255,255,255,0.18)",
-        transition: "border-color 0.3s ease, color 0.3s ease",
-      }}>
-        <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-          <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Arrow — top-right ↗ */}
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          border: `1px solid ${isActive ? ACCENT : "rgba(255,255,255,0.16)"}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: isActive ? ACCENT : "rgba(255,255,255,0.22)",
+          flexShrink: 0,
+          transition: "border-color 0.4s ease, color 0.4s ease",
+        }}
+      >
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+          <path
+            d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </div>
     </motion.a>
   );
 }
 
-// ── Main section ─────────────────────────────────────────────────────────────
+// ── Main ───────────────────────────────────────────────────────────────────────
 export default function SelectedWorkSection() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const revealed = useInView(sectionRef, { once: true, amount: 0.15 });
 
   return (
-    <section id="work" style={{ background: "#0a0a0a", paddingBottom: 120 }}>
-
-      {/* ── Section header ── */}
-      <div style={{ padding: "120px 56px 64px", maxWidth: 1440, margin: "0 auto" }}>
+    <section
+      id="work"
+      ref={sectionRef}
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        background: "#0a0a0a",
+      }}
+    >
+      {/* ── Fullscreen background images ── */}
+      {projects.map((p, i) => (
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}
-          className="selected-work-header"
+          key={p.client}
+          style={{ position: "absolute", inset: 0, zIndex: 0 }}
+          animate={{ opacity: i === activeIndex ? 1 : 0 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 style={{
-            fontSize: "clamp(36px, 5vw, 72px)", fontWeight: 600,
-            color: "#ffffff", lineHeight: 1.05, letterSpacing: "-0.025em",
-            margin: 0, fontFamily: "var(--font-urbanist), sans-serif",
-          }}>
+          <motion.img
+            src={p.image}
+            alt={p.client}
+            // Active image is tagged for the view-transition morph on click
+            {...(i === activeIndex ? { "data-case-hero": "active" } : {})}
+            animate={{ scale: i === activeIndex ? 1 : 1.04 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center center",
+              display: "block",
+              transformOrigin: "center center",
+              ...p.imageStyle,
+            }}
+          />
+        </motion.div>
+      ))}
+
+      {/* ── Gradient overlays — keep text readable over any image ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          background:
+            "linear-gradient(to bottom, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.46) 40%, rgba(10,10,10,0.66) 100%)",
+        }}
+      />
+      {/* Left-edge guard */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          background: "linear-gradient(to right, rgba(10,10,10,0.22) 0%, transparent 55%)",
+        }}
+      />
+
+      {/* ── Content layer ── */}
+      <div
+        className="sw-content"
+        style={{
+          position: "relative",
+          zIndex: 2,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          maxWidth: 1360,
+          margin: "0 auto",
+          width: "100%",
+          padding: "0 56px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={revealed ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="sw-header"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "52px 0 0",
+            gap: 24,
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "clamp(13px, 1vw, 15px)",
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.38)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              margin: 0,
+              fontFamily: "var(--font-urbanist), sans-serif",
+            }}
+          >
             Selected Work
           </h2>
           <a
             href="#contact"
             className="btn-gradient-border"
             style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              padding: "12px 24px", borderRadius: 9999,
-              fontSize: 14, fontWeight: 600, color: "#ffffff",
-              textDecoration: "none", flexShrink: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "10px 22px",
+              borderRadius: 9999,
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#ffffff",
+              textDecoration: "none",
+              flexShrink: 0,
               fontFamily: "var(--font-urbanist), sans-serif",
             }}
           >
             Start a Project
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </a>
         </motion.div>
-      </div>
 
-      {/* ── Two-column grid: list + sticky image ── */}
-      <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 56px" }}>
-        <div className="sw-grid" style={{ display: "grid", gridTemplateColumns: "1fr 42%", gap: "0 72px" }}>
+        {/* Project list — vertically centered in remaining space */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "40px 0",
+          }}
+        >
+          {/* Top divider */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={revealed ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              height: 1,
+              background: "rgba(255,255,255,0.1)",
+              transformOrigin: "left",
+            }}
+          />
 
-          {/* LEFT — project list */}
-          <div>
-            <div style={{ height: 1, background: "#1a1a1a" }} />
-            {projects.map((project, i) => (
-              <ProjectRow
-                key={project.client}
-                project={project}
-                num={`0${i + 1}`}
-                index={i}
-                isActive={activeIndex === i}
-                onActivate={() => setActiveIndex(i)}
-              />
-            ))}
-          </div>
-
-          {/* RIGHT — sticky image panel */}
-          <div>
-            <div style={{ position: "sticky", top: "14vh" }}>
-
-              {/* Image stack — all 5 stacked, only active one visible */}
-              <div style={{
-                position: "relative",
-                borderRadius: 16,
-                overflow: "hidden",
-                aspectRatio: "3 / 2",
-                background: "#111",
-              }}>
-                {projects.map((p, i) => (
-                  <motion.div
-                    key={p.client}
-                    style={{ position: "absolute", inset: 0 }}
-                    animate={{ opacity: i === activeIndex ? 1 : 0 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <img
-                      src={p.image}
-                      alt={p.client}
-                      // data-case-hero marks the active image for the view-transition morph
-                      {...(i === activeIndex ? { "data-case-hero": "active" } : {})}
-                      style={{
-                        width: "100%", height: "100%",
-                        objectFit: "cover", objectPosition: "center center",
-                        display: "block",
-                        ...p.imageStyle,
-                      }}
-                    />
-                  </motion.div>
-                ))}
-
-                {/* Subtle top vignette */}
-                <div style={{
-                  position: "absolute", inset: 0, pointerEvents: "none",
-                  background: "linear-gradient(to bottom, rgba(10,10,10,0.12) 0%, transparent 30%)",
-                }} />
-              </div>
-
-              {/* Caption — crossfades with active project */}
-              <div style={{
-                marginTop: 16,
-                display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-              }}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeIndex}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.28, ease: "easeOut" }}
-                  >
-                    <div style={{
-                      fontFamily: "var(--font-urbanist), sans-serif",
-                      fontSize: 13, fontWeight: 600, color: "#ffffff", marginBottom: 3,
-                    }}>
-                      {projects[activeIndex].client}
-                    </div>
-                    <div style={{
-                      fontFamily: "var(--font-geist), sans-serif",
-                      fontSize: 12, color: "rgba(255,255,255,0.35)",
-                    }}>
-                      {projects[activeIndex].title}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Counter */}
-                <div style={{
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  fontSize: 11, letterSpacing: "0.1em",
-                  color: "rgba(255,255,255,0.22)",
-                  flexShrink: 0, paddingTop: 2,
-                }}>
-                  {String(activeIndex + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(projects.length).padStart(2, "0")}
-                </div>
-              </div>
-
-            </div>
-          </div>
-
+          {projects.map((project, i) => (
+            <ProjectRow
+              key={project.client}
+              project={project}
+              num={`0${i + 1}`}
+              index={i}
+              isActive={activeIndex === i}
+              onActivate={() => setActiveIndex(i)}
+              revealed={revealed}
+            />
+          ))}
         </div>
+
+        {/* Counter — bottom right */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={revealed ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "0 0 48px",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 11,
+              letterSpacing: "0.14em",
+              color: "rgba(255,255,255,0.22)",
+            }}
+          >
+            {String(activeIndex + 1).padStart(2, "0")}&nbsp;/&nbsp;
+            {String(projects.length).padStart(2, "0")}
+          </div>
+        </motion.div>
       </div>
 
       <style jsx global>{`
-        @media (max-width: 960px) {
-          .sw-row-tags { display: none !important; }
-        }
         @media (max-width: 768px) {
-          .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
-          .sw-grid { grid-template-columns: 1fr !important; }
-          .sw-grid > div:last-child { display: none !important; }
+          .sw-content { padding: 0 24px !important; }
+          .sw-header { padding-top: 32px !important; }
         }
       `}</style>
     </section>
