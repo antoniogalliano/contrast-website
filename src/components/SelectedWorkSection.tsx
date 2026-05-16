@@ -260,10 +260,10 @@ export default function SelectedWorkSection() {
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
+          width: "calc(100% - 80px)",
           maxWidth: 1360,
           margin: "0 auto",
-          width: "100%",
-          padding: "0 56px",
+          padding: "0",
           boxSizing: "border-box",
         }}
       >
@@ -386,7 +386,7 @@ export default function SelectedWorkSection() {
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          .sw-content { padding: 0 24px !important; }
+          .sw-content { width: calc(100% - 48px) !important; }
           .sw-header { padding-top: 32px !important; }
         }
       `}</style>
