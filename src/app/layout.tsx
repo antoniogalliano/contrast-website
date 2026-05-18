@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Urbanist, Geist } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -26,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${urbanist.variable} ${geist.variable}`}>
-      <body className="antialiased" style={{ background: "#0a0a0a" }}>{children}</body>
+      <body className="antialiased" style={{ background: "#0a0a0a" }}>
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }
