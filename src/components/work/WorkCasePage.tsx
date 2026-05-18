@@ -486,34 +486,44 @@ function ViewAllReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Bento gallery — full-viewport-width, natural-height image grid ──────────
+// ─── Gallery grid ─────────────────────────────────────────────────────────────
 //
-// Reveal animation: clip-path curtain (top → bottom) + counter-scale on the
-// image (1.08 → 1.0). Cells stagger by `delay` seconds.
-// Images are never cropped: width = 100%, height = auto.
+// Rules:
+//  • Images always display at natural aspect ratio — no objectFit crop.
+//  • No empty space: each cell is only as tall as its image (align-items: start).
+//  • Reveal: clip-path curtain top→bottom + counter-scale, staggered per cell.
 
-function BentoCell({ src, alt, delay = 0 }: { src: string; alt: string; delay?: number }) {
+function BentoCell({ src, alt, delay = 0, fullWidth = false }: {
+  src: string;
+  alt: string;
+  delay?: number;
+  fullWidth?: boolean;
+}) {
   const ref   = useRef<HTMLDivElement>(null);
   const ready = usePageReady();
   const inView = useInView(ref, { once: true, amount: 0.06 });
-
   const revealed = inView && ready;
 
   return (
-    <div ref={ref} style={{ overflow: "hidden" }}>
-      {/* Clip-path curtain: reveals the image top → bottom */}
+    <div
+      ref={ref}
+      style={{
+        overflow: "hidden",
+        gridColumn: fullWidth ? "1 / -1" : undefined,
+        borderRadius: 4,
+      }}
+    >
       <motion.div
         initial={{ clipPath: "inset(0 0 100% 0)" }}
         animate={revealed ? { clipPath: "inset(0 0 0% 0)" } : {}}
         transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Image counter-scales during reveal: starts slightly zoomed in */}
         <motion.img
           src={src}
           alt={alt}
-          initial={{ scale: 1.08 }}
+          initial={{ scale: 1.06 }}
           animate={revealed ? { scale: 1 } : {}}
-          transition={{ duration: 1.15, delay, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.1, delay, ease: [0.22, 1, 0.36, 1] }}
           style={{ width: "100%", height: "auto", display: "block" }}
         />
       </motion.div>
@@ -525,57 +535,42 @@ function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
   const n = items.length;
   if (n <= 0) return null;
 
-  const STAGGER = 0.11;
+  const GAP    = 8;
+  const STAGGER = 0.1;
 
+  // 1 image — full width
   if (n === 1) {
-    return <BentoCell src={items[0].src} alt={items[0].alt} />;
-  }
-
-  if (n === 2) {
     return (
-      <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-        <div style={{ flex: 1, minWidth: 0 }}><BentoCell src={items[0].src} alt={items[0].alt} delay={0} /></div>
-        <div style={{ flex: 1, minWidth: 0 }}><BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} /></div>
+      <div style={{ borderRadius: 4, overflow: "hidden" }}>
+        <BentoCell src={items[0].src} alt={items[0].alt} />
       </div>
     );
   }
 
+  // 3 images — first full-width, then two equal columns below
   if (n === 3) {
-    // F-pattern: wide left column + two stacked right
     return (
-      <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-        <div style={{ flex: 3, minWidth: 0 }}>
-          <BentoCell src={items[0].src} alt={items[0].alt} delay={0} />
-        </div>
-        <div style={{ flex: 2, minWidth: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-          <BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} />
-          <BentoCell src={items[2].src} alt={items[2].alt} delay={STAGGER * 2} />
-        </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GAP, alignItems: "start" }}>
+        <BentoCell src={items[0].src} alt={items[0].alt} delay={0}            fullWidth />
+        <BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER}                />
+        <BentoCell src={items[2].src} alt={items[2].alt} delay={STAGGER * 2}            />
       </div>
     );
   }
 
-  if (n === 4) {
-    // Alternating emphasis: wide-left row, then wide-right row
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-          <div style={{ flex: 3, minWidth: 0 }}><BentoCell src={items[0].src} alt={items[0].alt} delay={0} /></div>
-          <div style={{ flex: 2, minWidth: 0 }}><BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER} /></div>
-        </div>
-        <div className="wcp-bento-row" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-          <div style={{ flex: 2, minWidth: 0 }}><BentoCell src={items[2].src} alt={items[2].alt} delay={0} /></div>
-          <div style={{ flex: 3, minWidth: 0 }}><BentoCell src={items[3].src} alt={items[3].alt} delay={STAGGER} /></div>
-        </div>
-      </div>
-    );
-  }
-
-  // 5+ images: single column, all full-width
+  // 2, 4, or 5+ images — clean 2-column grid, images flow naturally
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div
+      className="wcp-gallery-grid"
+      style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GAP, alignItems: "start" }}
+    >
       {items.map((item, i) => (
-        <BentoCell key={item.src} src={item.src} alt={item.alt} delay={i * STAGGER} />
+        <BentoCell
+          key={item.src}
+          src={item.src}
+          alt={item.alt}
+          delay={i * STAGGER}
+        />
       ))}
     </div>
   );
@@ -912,10 +907,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         <GalleryBento items={data.gallery} />
 
         <style jsx global>{`
-          /* Mobile: flex rows collapse to vertical stack */
-          @media (max-width: 768px) {
-            .wcp-bento-row {
-              flex-direction: column !important;
+          @media (max-width: 640px) {
+            .wcp-gallery-grid {
+              grid-template-columns: 1fr !important;
             }
           }
         `}</style>
