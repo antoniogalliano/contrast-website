@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -77,7 +77,8 @@ const roles = [
     type: "Full-time",
     location: "Remote",
     tags: ["UX Design", "Product", "B2B"],
-    desc: "Lead end-to-end product design for complex SaaS platforms — from discovery and system design to polished, production-ready UI. You'll work closely with our clients' product and engineering teams.",
+    about:
+      "Lead end-to-end product design for complex SaaS platforms — from discovery and system design to polished, production-ready UI. You'll work closely with our clients' product and engineering teams, shaping experiences used by thousands of professionals every day.",
     requirements: [
       "5+ years of product design experience",
       "Strong portfolio across web and mobile products",
@@ -85,13 +86,23 @@ const roles = [
       "Comfortable running discovery and user research",
       "Experience with B2B or SaaS products preferred",
     ],
+    duties: [
+      "Own the full design lifecycle — from user research and discovery to pixel-perfect, production-ready screens",
+      "Design and maintain scalable component systems and design tokens in Figma",
+      "Lead design critiques, stakeholder walkthroughs, and discovery workshops",
+      "Work closely with engineering to ensure implementation fidelity",
+      "Translate ambiguous product problems into clear, intuitive UX solutions",
+    ],
+    whyThisRole:
+      "This is a rare opportunity to work across a portfolio of ambitious, design-forward products with the autonomy to shape strategy — not just ship screens. You'll have a direct line to founders and product leaders who take design seriously, and your work will be seen by millions.",
   },
   {
     title: "Brand & Visual Designer",
     type: "Full-time",
     location: "Remote",
     tags: ["Brand", "Visual Design", "Motion"],
-    desc: "Shape the visual identities of ambitious companies — building brand systems, campaign assets, and motion guidelines that turn heads. You'll define how our clients look and feel across every surface.",
+    about:
+      "Shape the visual identities of ambitious companies — building brand systems, campaign assets, and motion guidelines that turn heads. You'll define how our clients look and feel across every surface, from product UI to global campaigns.",
     requirements: [
       "4+ years in brand or visual design",
       "Exceptional typography and layout skills",
@@ -99,13 +110,23 @@ const roles = [
       "Motion design skills (After Effects or Rive) a plus",
       "Mastery of Figma and Adobe Creative Suite",
     ],
+    duties: [
+      "Build end-to-end brand systems — logos, typography, color palettes, and usage guidelines",
+      "Create campaign assets, pitch decks, and marketing materials for client launches",
+      "Develop motion and animation guidelines for digital brand expressions",
+      "Collaborate with product designers to maintain visual coherence across touchpoints",
+      "Present brand directions and rationale to senior stakeholders and founders",
+    ],
+    whyThisRole:
+      "You'll have the rare opportunity to define how ambitious companies present themselves to the world — from zero to launch. Every identity you create here will be seen by millions. If you care deeply about craft and want your work to matter, this is the place.",
   },
   {
     title: "Frontend Developer",
     type: "Contract",
     location: "Remote",
     tags: ["React", "TypeScript", "Animation"],
-    desc: "Turn pixel-perfect Figma designs into high-performance, accessible, and beautifully animated web experiences. You'll work on marketing sites and product interfaces for design-forward clients.",
+    about:
+      "Turn pixel-perfect Figma designs into high-performance, accessible, and beautifully animated web experiences. You'll work on marketing sites and product interfaces for design-forward clients who notice the difference between good and exceptional.",
     requirements: [
       "4+ years in frontend development",
       "Expert-level React and TypeScript",
@@ -113,12 +134,65 @@ const roles = [
       "Eye for design — you care about the gap between spec and output",
       "Experience with Next.js and headless CMS platforms",
     ],
+    duties: [
+      "Implement high-fidelity designs with meticulous attention to spacing, animation, and interaction",
+      "Build performant, accessible web applications using React and Next.js",
+      "Create reusable component libraries and design system implementations",
+      "Optimize Core Web Vitals and ensure smooth rendering across all devices and browsers",
+      "Collaborate directly with designers to close the gap between Figma and production",
+    ],
+    whyThisRole:
+      "You'll work with some of the most design-focused teams in the industry, on projects where front-end quality is a genuine priority — not an afterthought. If you lose sleep over animation curves and pixel-perfect spacing, you'll fit right in.",
   },
 ];
+
+// ─── Shared label style ───────────────────────────────────────────────────────
+const sectionLabel: React.CSSProperties = {
+  margin: "0 0 12px",
+  fontSize: 11,
+  fontWeight: 600,
+  letterSpacing: "0.84px",
+  textTransform: "uppercase",
+  color: "#888888",
+  fontFamily: "var(--font-urbanist), sans-serif",
+};
+
+// ─── Bullet list used across multiple sections ────────────────────────────────
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+      {items.map((item) => (
+        <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14, lineHeight: 1.6, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
+          <span style={{ marginTop: 6, width: 5, height: 5, borderRadius: "50%", background: "#d90cb7", flexShrink: 0 }} />
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// ─── Compact benefit pill used inside expanded card ───────────────────────────
+function BenefitPill({ title }: { title: string }) {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 6,
+      padding: "6px 14px", borderRadius: 9999,
+      border: "1px solid rgba(56,56,56,0.7)",
+      background: "rgba(255,255,255,0.03)",
+      fontSize: 13, color: "#b0b0b0",
+      fontFamily: "var(--font-urbanist), sans-serif",
+      whiteSpace: "nowrap",
+    }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#d90cb7", flexShrink: 0 }} />
+      {title}
+    </span>
+  );
+}
 
 // ─── Role Card ────────────────────────────────────────────────────────────────
 
 function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
+  const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -129,154 +203,133 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
       transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
       style={{
         borderRadius: 16,
-        border: `1px solid ${hovered ? "#d90cb7" : "rgba(56,56,56,0.62)"}`,
-        background: hovered ? "rgba(217,12,183,0.04)" : "rgba(255,255,255,0.02)",
+        border: `1px solid ${hovered || open ? "#d90cb7" : "rgba(56,56,56,0.62)"}`,
+        background: open ? "rgba(217,12,183,0.04)" : "rgba(255,255,255,0.02)",
         transition: "border-color 0.3s ease, background 0.3s ease",
         overflow: "hidden",
-        padding: "32px 32px 28px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* ── Top: tags + meta ── */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {/* ── Collapsed header ── */}
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "28px 32px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+          gap: 24,
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             {role.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontSize: 11,
-                  fontWeight: 500,
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  letterSpacing: "0.7px",
-                  textTransform: "uppercase",
-                  color: "#888888",
-                  background: "rgba(255,255,255,0.05)",
-                  borderRadius: 4,
-                  padding: "3px 8px",
-                }}
-              >
+              <span key={tag} style={{ fontSize: 11, fontWeight: 500, fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.7px", textTransform: "uppercase", color: "#888888", background: "rgba(255,255,255,0.05)", borderRadius: 4, padding: "3px 8px" }}>
                 {tag}
               </span>
             ))}
           </div>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "clamp(18px, 2vw, 22px)",
-              fontWeight: 600,
-              fontFamily: "var(--font-urbanist), sans-serif",
-              color: "#ffffff",
-              lineHeight: 1.2,
-            }}
-          >
+          <h3 style={{ margin: 0, fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", lineHeight: 1.2 }}>
             {role.title}
           </h3>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <span style={{ fontSize: 13, color: "#888888", fontFamily: "var(--font-geist), sans-serif" }}>
-              {role.type}
-            </span>
+            <span style={{ fontSize: 13, color: "#888888", fontFamily: "var(--font-geist), sans-serif" }}>{role.type}</span>
             <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#383838", flexShrink: 0 }} />
-            <span style={{ fontSize: 13, color: "#888888", fontFamily: "var(--font-geist), sans-serif" }}>
-              {role.location}
-            </span>
+            <span style={{ fontSize: 13, color: "#888888", fontFamily: "var(--font-geist), sans-serif" }}>{role.location}</span>
           </div>
         </div>
 
-        {/* Apply button — top-right on desktop */}
-        <a
-          href="https://wkf.ms/4gE1ydY"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-gradient-border careers-apply-btn"
+        {/* Expand / collapse icon */}
+        <motion.div
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "0 24px",
-            height: 46,
-            borderRadius: 9999,
-            fontSize: 13,
-            fontWeight: 500,
-            fontFamily: "var(--font-urbanist), sans-serif",
-            color: "#ffffff",
-            textDecoration: "none",
-            whiteSpace: "nowrap",
-            flexShrink: 0,
+            flexShrink: 0, width: 40, height: 40, borderRadius: "50%",
+            border: `1px solid ${open ? "rgba(217,12,183,0.4)" : "rgba(56,56,56,0.8)"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: open ? "#d90cb7" : "#ffffff",
+            transition: "color 0.25s ease, border-color 0.25s ease",
           }}
         >
-          Apply for this role
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
-        </a>
-      </div>
+        </motion.div>
+      </button>
 
-      {/* ── Divider ── */}
-      <div style={{ height: 1, background: "rgba(56,56,56,0.5)" }} />
+      {/* ── Expanded body ── */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ borderTop: "1px solid rgba(56,56,56,0.4)", padding: "32px 32px 36px", display: "flex", flexDirection: "column", gap: 32 }}>
 
-      {/* ── Description ── */}
-      <p
-        style={{
-          margin: 0,
-          fontSize: 15,
-          lineHeight: 1.7,
-          color: "#b0b0b0",
-          fontFamily: "var(--font-geist), sans-serif",
-          maxWidth: 740,
-        }}
-      >
-        {role.desc}
-      </p>
+              {/* 1 — About the Job */}
+              <div>
+                <p style={sectionLabel}>About the Job</p>
+                <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
+                  {role.about}
+                </p>
+              </div>
 
-      {/* ── Requirements ── */}
-      <div>
-        <p
-          style={{
-            margin: "0 0 12px",
-            fontSize: 12,
-            fontWeight: 600,
-            letterSpacing: "0.7px",
-            textTransform: "uppercase",
-            color: "#888888",
-            fontFamily: "var(--font-urbanist), sans-serif",
-          }}
-        >
-          What we&apos;re looking for
-        </p>
-        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-          {role.requirements.map((req) => (
-            <li
-              key={req}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                fontSize: 14,
-                lineHeight: 1.6,
-                color: "#b0b0b0",
-                fontFamily: "var(--font-geist), sans-serif",
-              }}
-            >
-              <span
-                style={{
-                  marginTop: 6,
-                  width: 5,
-                  height: 5,
-                  borderRadius: "50%",
-                  background: "#d90cb7",
-                  flexShrink: 0,
-                }}
-              />
-              {req}
-            </li>
-          ))}
-        </ul>
-      </div>
+              {/* 2 — Requirements */}
+              <div>
+                <p style={sectionLabel}>Requirements</p>
+                <BulletList items={role.requirements} />
+              </div>
+
+              {/* 3 — Duties & Opportunities */}
+              <div>
+                <p style={sectionLabel}>Duties &amp; Opportunities</p>
+                <BulletList items={role.duties} />
+              </div>
+
+              {/* 4 — Why this role */}
+              <div>
+                <p style={sectionLabel}>Why This Role</p>
+                <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
+                  {role.whyThisRole}
+                </p>
+              </div>
+
+              {/* 5 — Benefits */}
+              <div>
+                <p style={sectionLabel}>Benefits</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {benefits.map((b) => <BenefitPill key={b.title} title={b.title} />)}
+                </div>
+              </div>
+
+              {/* Apply CTA */}
+              <a
+                href="https://wkf.ms/4gE1ydY"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gradient-border"
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "0 24px", height: 46, borderRadius: 9999, fontSize: 13, fontWeight: 500, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", textDecoration: "none", width: "fit-content" }}
+              >
+                Apply for this role
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                  <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
