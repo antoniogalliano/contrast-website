@@ -40,11 +40,7 @@ export default function Header() {
   }, []);
 
   return (
-    /*
-      Positioning wrapper, plain div, Framer Motion never touches this element.
-      Outer: full-width fixed flex shell (no transforms needed).
-      Inner: width-capped slot the animated header fills.
-    */
+    <>
     <div
       className="header-outer"
       style={{
@@ -245,12 +241,13 @@ export default function Header() {
       </div>
     </div>
 
-    <style>{`
+    <style jsx global>{`
       @media (max-width: 640px) {
         .header-outer {
           padding: 0 20px !important;
         }
       }
     `}</style>
+    </>
   );
 }
