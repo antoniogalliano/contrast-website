@@ -24,7 +24,7 @@ export default function Header() {
 
   // Measure the logo's natural screen position so IntroAnimation can morph into it.
   // We use opacity-only entrance (no y-slide) so the logo is already at its true
-  // layout position the moment it's mounted — no transform offset to compensate for.
+  // layout position the moment it's mounted, no transform offset to compensate for.
   useEffect(() => {
     const measure = () => {
       if (!logoRef.current) return;
@@ -41,7 +41,7 @@ export default function Header() {
 
   return (
     /*
-      Positioning wrapper — plain div, Framer Motion never touches this element.
+      Positioning wrapper, plain div, Framer Motion never touches this element.
       Outer: full-width fixed flex shell (no transforms needed).
       Inner: width-capped slot the animated header fills.
     */
@@ -59,7 +59,7 @@ export default function Header() {
     >
       <div style={{ width: "calc(100% - 80px)", maxWidth: 1360, pointerEvents: "auto" }}>
 
-        {/* Opacity-only entrance — no y-slide so logo sits at its true layout position from mount */}
+        {/* Opacity-only entrance, no y-slide so logo sits at its true layout position from mount */}
         <motion.header
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -86,7 +86,7 @@ export default function Header() {
               height:         68,
             }}
           >
-            {/* Logo — ref lets IntroAnimation measure its exact position */}
+            {/* Logo, ref lets IntroAnimation measure its exact position */}
             <a
               ref={logoRef}
               href="/"

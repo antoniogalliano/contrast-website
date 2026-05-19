@@ -14,8 +14,8 @@ const data: WorkCaseData = {
   // Overview
   overviewHeading: "Bringing clarity to complex multi-channel retail data",
   overviewBody: [
-    "Cymbio is a B2B platform that helps retail brands manage and scale their presence across dozens of wholesale and digital marketplaces — all from a single dashboard.",
-    "Contrast redesigned the core product experience — rationalising a complex data environment into a clean, actionable interface that makes multi-channel performance immediately readable, with an AI assistant (CymAI) that surfaces the most relevant insights automatically.",
+    "Cymbio is a B2B platform that helps retail brands manage and scale their presence across dozens of wholesale and digital marketplaces, all from a single dashboard.",
+    "Contrast redesigned the core product experience, rationalising a complex data environment into a clean, actionable interface that makes multi-channel performance immediately readable, with an AI assistant (CymAI) that surfaces the most relevant insights automatically.",
   ],
   metaItems: [
     { label: "Client", value: "Cymbio" },
@@ -37,7 +37,7 @@ const data: WorkCaseData = {
     {
       num: "01",
       title: "Dashboard Architecture",
-      desc: "Redesigned the information architecture so that the most critical KPIs — total sales, net revenue, AOV, cancellations — are visible at a glance, with clear trend indicators.",
+      desc: "Redesigned the information architecture so that the most critical KPIs, total sales, net revenue, AOV, cancellations, are visible at a glance, with clear trend indicators.",
     },
     {
       num: "02",
@@ -47,22 +47,22 @@ const data: WorkCaseData = {
     {
       num: "03",
       title: "Channel Analytics",
-      desc: "Built a multi-channel breakdown view with stackable bar charts, sortable tables, and a per-channel time-series — so teams can drill from macro to micro in seconds.",
+      desc: "Built a multi-channel breakdown view with stackable bar charts, sortable tables, and a per-channel time-series, so teams can drill from macro to micro in seconds.",
     },
     {
       num: "04",
       title: "Design System",
-      desc: "Created a comprehensive component library covering tables, charts, filters, alerts, and empty states — giving Cymbio's engineering team a scalable UI foundation.",
+      desc: "Created a comprehensive component library covering tables, charts, filters, alerts, and empty states, giving Cymbio's engineering team a scalable UI foundation.",
     },
     {
       num: "05",
       title: "Data Visualisation",
-      desc: "Defined a chart language for the platform — including colour encoding for channels, axis conventions, and responsive behaviour — making dense data immediately readable.",
+      desc: "Defined a chart language for the platform, including colour encoding for channels, axis conventions, and responsive behaviour, making dense data immediately readable.",
     },
     {
       num: "06",
       title: "Dev Handoff",
-      desc: "Delivered annotated specs, interactive prototypes, and a full Figma component library — reducing design-to-dev friction and enabling a faster engineering sprint.",
+      desc: "Delivered annotated specs, interactive prototypes, and a full Figma component library, reducing design-to-dev friction and enabling a faster engineering sprint.",
     },
   ],
 

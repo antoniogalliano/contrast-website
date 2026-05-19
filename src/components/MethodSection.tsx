@@ -139,7 +139,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
         flexDirection: "column",
         position: "relative",
       }}>
-        {/* Mouse-follow spotlight — always active on hover */}
+        {/* Mouse-follow spotlight, always active on hover */}
         <div style={{
           position: "absolute",
           inset: 0,
@@ -150,9 +150,9 @@ function DesignTriggersCard({ delay }: { delay: number }) {
           zIndex: 1,
         }} />
 
-        {/* Illustration area — 304px tall */}
+        {/* Illustration area, 304px tall */}
         <div className="method-card-illus" style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
-          {/* Illustration — slides from right + large (default) → centered + small (hover) */}
+          {/* Illustration, slides from right + large (default) → centered + small (hover) */}
           <motion.div
             style={{
               position: "absolute",
@@ -176,7 +176,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               scale: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
             }}
           >
-            {/* Default — tinted to #2E2E2E, fades out on hover */}
+            {/* Default, tinted to #2E2E2E, fades out on hover */}
             <motion.img
               src="/method/design-triggers.svg"
               width={552} height={447}
@@ -188,7 +188,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
                 filter: "brightness(0) invert(1) brightness(0.18)",
               }}
             />
-            {/* Hover — pink accent with pulsing glow, fades in on hover */}
+            {/* Hover, pink accent with pulsing glow, fades in on hover */}
             <motion.img
               src="/method/design-triggers-hover.svg"
               width={552} height={447}
@@ -199,7 +199,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               style={{ position: "absolute", top: 0, left: 0, display: "block" }}
             />
           </motion.div>
-          {/* Expanded text — animates in/out when expanded */}
+          {/* Expanded text, animates in/out when expanded */}
           <AnimatePresence>
             {expanded && (
               <motion.div
@@ -220,13 +220,13 @@ function DesignTriggersCard({ delay }: { delay: number }) {
           </AnimatePresence>
         </div>
 
-        {/* Text panel — always visible */}
+        {/* Text panel, always visible */}
         <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
           <p style={cardTitle}>Design Triggers</p>
           <p style={cardDesc}>Leverages decision-making psychology to drive engagement.</p>
         </div>
 
-        {/* Plus / Close icon — visual affordance only; click handled by card wrapper */}
+        {/* Plus / Close icon, visual affordance only; click handled by card wrapper */}
         <AnimatePresence>
           {active && (
             <motion.div
@@ -308,7 +308,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
         flexDirection: "column",
         position: "relative",
       }}>
-        {/* Mouse-follow spotlight — always active on hover */}
+        {/* Mouse-follow spotlight, always active on hover */}
         <div style={{
           position: "absolute",
           inset: 0,
@@ -319,9 +319,9 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
           zIndex: 1,
         }} />
 
-        {/* Illustration area — 304px tall */}
+        {/* Illustration area, 304px tall */}
         <div className="method-card-illus" style={{ height: 304, flexShrink: 0, position: "relative", zIndex: 2 }}>
-          {/* Illustration — slides from right + large (default) → centered + small (hover) */}
+          {/* Illustration, slides from right + large (default) → centered + small (hover) */}
           <motion.div
             style={{
               position: "absolute",
@@ -345,7 +345,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               scale: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
             }}
           >
-            {/* Default — tinted to #2E2E2E, fades out on hover */}
+            {/* Default, tinted to #2E2E2E, fades out on hover */}
             <motion.img
               src="/method/hero-framework.svg"
               width={620} height={620}
@@ -357,7 +357,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
                 filter: "brightness(0) invert(1) brightness(0.18)",
               }}
             />
-            {/* Hover — pink accent with pulsing glow, fades in on hover */}
+            {/* Hover, pink accent with pulsing glow, fades in on hover */}
             <motion.img
               src="/method/hero-framework-hover.svg"
               width={620} height={620}
@@ -368,7 +368,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               style={{ position: "absolute", top: 0, left: 0, display: "block" }}
             />
           </motion.div>
-          {/* Expanded text — animates in/out when expanded */}
+          {/* Expanded text, animates in/out when expanded */}
           <AnimatePresence>
             {expanded && (
               <motion.div
@@ -382,20 +382,20 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
                 <p style={{ fontFamily: "var(--font-urbanist), sans-serif", fontSize: 18, lineHeight: "26px", color: "#ffffff", margin: 0 }}>
                   <span style={{ fontWeight: 300 }}>The Hero Framework helps teams bridge the gap between business goals and human motivation. </span>
                   <span style={{ fontWeight: 700 }}>We collaborate with founders and product teams to uncover what truly drives their users </span>
-                  <span style={{ fontWeight: 300 }}>— then turn those insights into clear, story-driven product experiences.</span>
+                  <span style={{ fontWeight: 300 }}>and turn those insights into clear, story-driven product experiences.</span>
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Text panel — always visible */}
+        {/* Text panel, always visible */}
         <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
           <p style={cardTitle}>The Hero Framework</p>
           <p style={cardDesc}>Aligns product vision with user needs.</p>
         </div>
 
-        {/* Plus / Close icon — appears on hover or when expanded */}
+        {/* Plus / Close icon, appears on hover or when expanded */}
         <AnimatePresence>
           {active && (
             <motion.div
@@ -480,7 +480,7 @@ export default function MethodSection() {
           className="method-cards"
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}
         >
-          {/* Design Triggers — full interactive 3-state card */}
+          {/* Design Triggers, full interactive 3-state card */}
           <DesignTriggersCard delay={0} />
 
           {/* Hero Framework */}
@@ -507,7 +507,7 @@ export default function MethodSection() {
           }}
           className="method-video-card"
         >
-          {/* Left column — text top, button bottom */}
+          {/* Left column, text top, button bottom */}
           <div className="method-video-col" style={{
             flex: "0 0 auto",
             width: 332,

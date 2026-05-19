@@ -247,7 +247,7 @@ export default function CtaBanner() {
           zIndex: 1,
         }}
       >
-        {/* Blob 1 — large violet→pink pill */}
+        {/* Blob 1, large violet→pink pill */}
         <div style={{
           position: "absolute", left: "50%", top: -387,
           transform: "translate(calc(-50% + 22.86px), 0) rotate(180deg)",
@@ -255,7 +255,7 @@ export default function CtaBanner() {
           background: "linear-gradient(to bottom, rgba(118,12,217,0.75), rgba(217,12,183,0.75))",
           filter: "blur(92.75px)", opacity: 0.65,
         }} />
-        {/* Blob 2 — color-dodge brightening layer */}
+        {/* Blob 2, color-dodge brightening layer */}
         <div style={{
           position: "absolute", left: "50%", top: -335,
           transform: "translate(calc(-50% + 22.86px), 0) rotate(180deg)",
@@ -270,7 +270,7 @@ export default function CtaBanner() {
             width: "auto", height: "auto", display: "block",
           }} />
         </div>
-        {/* Smooth fade to dark at bottom — eliminates hard gradient edge */}
+        {/* Smooth fade to dark at bottom, eliminates hard gradient edge */}
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0,
           height: 220,

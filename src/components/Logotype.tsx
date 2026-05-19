@@ -1,5 +1,5 @@
 /**
- * Logotype — CONTRAST. wordmark (Figma 1:3296)
+ * Logotype, CONTRAST. wordmark (Figma 1:3296)
  * 9 vector paths: C O N T R A S T + magenta dot
  * Original bounding box: 685 × 73.385px
  */

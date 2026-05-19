@@ -22,7 +22,7 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Parallax speeds — higher = moves faster on scroll
+  // Parallax speeds, higher = moves faster on scroll
   const bgY = scrollY * 500;           // background moves slowest
   const headingY = scrollY * 900;      // heading moves medium
   const subtitleY = scrollY * 1100;    // subtitle moves a bit faster

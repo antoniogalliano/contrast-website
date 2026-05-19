@@ -130,7 +130,7 @@ const stats = [
     metric: "conversion rate boost",
     value: 5,
     suffix: "x",
-    description: "5x conversion rate boost — from 4.2% to 20.4% in 90 days.",
+    description: "5x conversion rate boost, from 4.2% to 20.4% in 90 days.",
   },
   {
     client: "Designrr",

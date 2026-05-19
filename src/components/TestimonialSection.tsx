@@ -13,7 +13,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Contrast’s outstanding strategy & design work set the stage — and is directly linked — to the rapid success & eventual acquisition of our startup.",
+      "Contrast’s outstanding strategy & design work set the stage, and is directly linked, to the rapid success & eventual acquisition of our startup.",
     name: "Kieran O’Brien",
     title: "Founder Mediakits · Acquired by Viral Nation",
     photo: "/testimonials/kieran-obrien.png",
@@ -22,7 +22,7 @@ const TESTIMONIALS = [
 
 const AUTO_INTERVAL = 6000;
 
-// ── Avatar — shows photo if it loads, initials otherwise ──────────────────────
+// ── Avatar, shows photo if it loads, initials otherwise ──────────────────────
 function Avatar({ src, name }: { src: string; name: string }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [src]);
@@ -124,7 +124,7 @@ export default function TestimonialSection() {
     setRevealProgress(v);
   });
 
-  // Auto-play — restarts whenever the user manually navigates
+  // Auto-play, restarts whenever the user manually navigates
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {

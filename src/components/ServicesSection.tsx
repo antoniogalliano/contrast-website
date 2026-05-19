@@ -92,7 +92,7 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
           }}
         />
 
-        {/* Icon — 48×48px container, glows pink on hover via stacked opacity (no filter interpolation) */}
+        {/* Icon, 48×48px container, glows pink on hover via stacked opacity (no filter interpolation) */}
         <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
           {/* Base: white icon, fades out on hover */}
           <img

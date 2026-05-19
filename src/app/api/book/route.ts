@@ -103,7 +103,7 @@ function confirmationHtml(data: BookingPayload) {
     + Add to Google Calendar
   </a>
 
-  <p style="color:#888;font-size:13px">See you soon!<br>— Contrast Studio</p>
+  <p style="color:#888;font-size:13px">See you soon!<br>Contrast Studio</p>
 </body>
 </html>`;
 }
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
     const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
-      // Dev fallback — log and succeed so the UI can be tested without email setup
+      // Dev fallback, log and succeed so the UI can be tested without email setup
       console.log("[book] No RESEND_API_KEY. Booking payload:", data);
       return NextResponse.json({ ok: true });
     }

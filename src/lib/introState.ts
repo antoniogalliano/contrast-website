@@ -1,7 +1,7 @@
 /**
  * Shared mutable state between IntroAnimation, HeroBackground, and Header.
  *
- * Zero-overhead live bindings — no React context plumbing needed.
+ * Zero-overhead live bindings, no React context plumbing needed.
  */
 
 /** Position of the "." dot when the intro exits (read by HeroBackground each frame). */
@@ -19,7 +19,7 @@ export function setLogoOrigin(pos: { cx: number; cy: number; width: number } | n
 const INTRO_KEY = "contrast-intro";
 
 /**
- * Returns true when the intro should be skipped — i.e. the user has already
+ * Returns true when the intro should be skipped, i.e. the user has already
  * seen it this session and the current navigation is NOT a hard reload.
  * Always returns false on the server.
  */

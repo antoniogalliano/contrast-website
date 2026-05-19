@@ -124,7 +124,7 @@ function SuccessView({ firstName, dateLabel, motionUrl, onClose }: {
         </p>
       </div>
 
-      {/* Fallback — if popup was blocked */}
+      {/* Fallback, if popup was blocked */}
       <a
         href={motionUrl}
         target="_blank"
@@ -202,19 +202,19 @@ export default function BookingModal({ isOpen, onClose, selectedDate, selectedSl
     // Open Motion in new tab immediately (before any async work so popup isn't blocked)
     const motionWindow = window.open(url, "_blank", "noopener,noreferrer");
 
-    // Fire-and-forget email notification — don't block UX on it
+    // Fire-and-forget email notification, don't block UX on it
     fetch("/api/book", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...form, slot: selectedSlot, date: selectedDate }),
-    }).catch(() => {/* silent — email is bonus, not critical path */});
+    }).catch(() => {/* silent, email is bonus, not critical path */});
 
     // Small delay so user sees the spinner transition
     await new Promise(r => setTimeout(r, 600));
 
     if (!motionWindow) {
-      // Popup was blocked — show the fallback link clearly
-      setErr("Popup was blocked — click the button below to open the booking page.");
+      // Popup was blocked, show the fallback link clearly
+      setErr("Popup was blocked, click the button below to open the booking page.");
     }
 
     setSubmitting(false);
@@ -338,7 +338,7 @@ export default function BookingModal({ isOpen, onClose, selectedDate, selectedSl
                     <Field
                       label="One resource we should check before the call?"
                       name="resource" value={form.resource} onChange={set("resource")}
-                      placeholder="App, website, deck, Loom — anything helpful (optional)"
+                      placeholder="App, website, deck, Loom, anything helpful (optional)"
                     />
 
                     {err && (

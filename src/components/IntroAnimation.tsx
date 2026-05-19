@@ -4,7 +4,7 @@ import { useState, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { setDotOrigin, shouldSkipIntro, markIntroPlayed } from "@/lib/introState";
 
-// ── Logo vectors — identical to Logotype.tsx ──────────────────────────────────
+// ── Logo vectors, identical to Logotype.tsx ──────────────────────────────────
 const VECTORS = [
   { src: "/logo/letter-c.svg",  inset: "0% 89.91% 0% 0%"            },
   { src: "/logo/letter-o.svg",  inset: "0% 76.43% 0% 12.12%"        },
@@ -21,8 +21,8 @@ const DOT_INDEX = 8;
 
 // ── Typing ────────────────────────────────────────────────────────────────────
 const TYPING_TEXT = "We are ";   // trailing space becomes the gap before the logo
-const CHAR_MS     = 95;          // ms per keystroke — feels natural, not too fast
-const LOGO_STAGGER_MS = 85;      // ms per logo letter — slightly faster than text
+const CHAR_MS     = 95;          // ms per keystroke, feels natural, not too fast
+const LOGO_STAGGER_MS = 85;      // ms per logo letter, slightly faster than text
 
 // ── Timeline (all ms from page mount) ────────────────────────────────────────
 //
@@ -31,7 +31,7 @@ const LOGO_STAGGER_MS = 85;      // ms per logo letter — slightly faster than 
 //   495ms        "e" typed  ...etc
 //   1055ms       space typed  (7 chars × 95ms = 665ms + 400ms start)
 //   1055ms       100ms pause, cursor stays
-//   1155ms       logo starts — cursor hides, "C" pops in
+//   1155ms       logo starts, cursor hides, "C" pops in
 //   1155–1835ms  logo letters pop in (9 × 85ms)
 //   1835–2500ms  hold (full phrase visible, ~665ms)
 //   2500ms       dissolve begins (0.75s)
@@ -144,7 +144,7 @@ export default function IntroAnimation() {
                 {TYPING_TEXT.slice(0, typedCount)}
               </span>
 
-              {/* ── Blinking cursor — always in layout, opacity-only ── */}
+              {/* ── Blinking cursor, always in layout, opacity-only ── */}
               <span
                 className={cursorOn ? "intro-cursor" : ""}
                 style={{
@@ -158,7 +158,7 @@ export default function IntroAnimation() {
                 }}
               />
 
-              {/* ── CONTRAST. logo — letters pop in one by one ── */}
+              {/* ── CONTRAST. logo, letters pop in one by one ── */}
               <div
                 style={{
                   position:    "relative",

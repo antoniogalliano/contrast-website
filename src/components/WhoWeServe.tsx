@@ -7,7 +7,7 @@ const ACCENT = "#d90cb7";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /* ═══════════════════════════════════════════
-   ILLUSTRATION — Card 1 (Established Tech)
+   ILLUSTRATION, Card 1 (Established Tech)
 ═══════════════════════════════════════════ */
 function IllustrationCubes({ hovered, hideGradient = false }: { hovered: boolean; hideGradient?: boolean }) {
   const S  = 56.965;
@@ -82,7 +82,7 @@ function IllustrationCubes({ hovered, hideGradient = false }: { hovered: boolean
 }
 
 /* ═══════════════════════════════════════════
-   ILLUSTRATION — Card 3 (Scaling SaaS)
+   ILLUSTRATION, Card 3 (Scaling SaaS)
 ═══════════════════════════════════════════ */
 function IllustrationNested({ hovered }: { hovered: boolean }) {
   const RECTS = [
@@ -115,7 +115,7 @@ function IllustrationNested({ hovered }: { hovered: boolean }) {
 }
 
 /* ═══════════════════════════════════════════
-   ILLUSTRATION — Card 2 (Startups)
+   ILLUSTRATION, Card 2 (Startups)
 ═══════════════════════════════════════════ */
 function IllustrationGrid({ hovered }: { hovered: boolean }) {
   const S  = 48.054;
@@ -218,7 +218,7 @@ const CARDS = [
     title:         "Scaling SaaS Companies",
     blurb:         "Growth is the goal. Great UX is how you accelerate it.",
     expandedTitle: "Scale your SaaS with design that drives growth.",
-    description:   "At the scaling stage, UX becomes your competitive moat. We help SaaS companies improve onboarding, reduce churn, and increase feature adoption through intentional, data-informed design decisions.\n\nEvery design choice we make is tied to your key metrics — activation, retention, and expansion revenue.",
+    description:   "At the scaling stage, UX becomes your competitive moat. We help SaaS companies improve onboarding, reduce churn, and increase feature adoption through intentional, data-informed design decisions.\n\nEvery design choice we make is tied to your key metrics, activation, retention, and expansion revenue.",
     services:      ["Onboarding Optim.", "Retention Design", "Feature Adoption", "Churn Reduction", "Analytics Review", "A/B Testing", "Growth Design"],
     type: "nested" as const,
   },
@@ -268,7 +268,7 @@ function CollapsedCard({ card, hovered }: { card: CardData; hovered: boolean }) 
         </p>
       </div>
 
-      {/* Sphere — grid card only */}
+      {/* Sphere, grid card only */}
       {card.type === "grid" && (
         <>
           <div style={{
@@ -506,7 +506,7 @@ export default function WhoWeServe() {
                   cursor: isActive ? "default" : "pointer",
                 }}
               >
-                {/* ── Content layers — fade between states ── */}
+                {/* ── Content layers, fade between states ── */}
                 <AnimatePresence mode="wait">
                   {isNarrow ? (
                     <motion.div key="narrow"

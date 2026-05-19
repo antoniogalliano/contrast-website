@@ -122,7 +122,7 @@ const benefits = [
       </svg>
     ),
     title: "Async-first, remote forever",
-    desc: "Work from wherever you do your best thinking. We're distributed by design — no mandatory check-ins, no location requirements.",
+    desc: "Work from wherever you do your best thinking. We're distributed by design, no mandatory check-ins, no location requirements.",
   },
   {
     icon: (
@@ -143,7 +143,7 @@ const benefits = [
       </svg>
     ),
     title: "Work that sets the standard",
-    desc: "Every project we take on is a chance to raise the bar. Our clients are leaders in their spaces — so the stakes are real.",
+    desc: "Every project we take on is a chance to raise the bar. Our clients are leaders in their spaces, so the stakes are real.",
   },
   {
     icon: (
@@ -155,7 +155,7 @@ const benefits = [
       </svg>
     ),
     title: "Craft-first culture",
-    desc: "Pixels matter here. We care deeply about quality — from system architecture down to hover states. No rush-and-ship.",
+    desc: "Pixels matter here. We care deeply about quality, from system architecture down to hover states. No rush-and-ship.",
   },
   {
     icon: (
@@ -184,7 +184,7 @@ const roles = [
     location: "Remote",
     tags: ["UX Design", "Product", "B2B"],
     about:
-      "Lead end-to-end product design for complex SaaS platforms — from discovery and system design to polished, production-ready UI. You'll work closely with our clients' product and engineering teams, shaping experiences used by thousands of professionals every day.",
+      "Lead end-to-end product design for complex SaaS platforms, from discovery and system design to polished, production-ready UI. You'll work closely with our clients' product and engineering teams, shaping experiences used by thousands of professionals every day.",
     requirements: [
       "5+ years of product design experience",
       "Strong portfolio across web and mobile products",
@@ -193,14 +193,14 @@ const roles = [
       "Experience with B2B or SaaS products preferred",
     ],
     duties: [
-      "Own the full design lifecycle — from user research and discovery to pixel-perfect, production-ready screens",
+      "Own the full design lifecycle, from user research and discovery to pixel-perfect, production-ready screens",
       "Design and maintain scalable component systems and design tokens in Figma",
       "Lead design critiques, stakeholder walkthroughs, and discovery workshops",
       "Work closely with engineering to ensure implementation fidelity",
       "Translate ambiguous product problems into clear, intuitive UX solutions",
     ],
     whyThisRole:
-      "This is a rare opportunity to work across a portfolio of ambitious, design-forward products with the autonomy to shape strategy — not just ship screens. You'll have a direct line to founders and product leaders who take design seriously, and your work will be seen by millions.",
+      "This is a rare opportunity to work across a portfolio of ambitious, design-forward products with the autonomy to shape strategy, not just ship screens. You'll have a direct line to founders and product leaders who take design seriously, and your work will be seen by millions.",
   },
   {
     title: "Brand & Visual Designer",
@@ -208,7 +208,7 @@ const roles = [
     location: "Remote",
     tags: ["Brand", "Visual Design", "Motion"],
     about:
-      "Shape the visual identities of ambitious companies — building brand systems, campaign assets, and motion guidelines that turn heads. You'll define how our clients look and feel across every surface, from product UI to global campaigns.",
+      "Shape the visual identities of ambitious companies, building brand systems, campaign assets, and motion guidelines that turn heads. You'll define how our clients look and feel across every surface, from product UI to global campaigns.",
     requirements: [
       "4+ years in brand or visual design",
       "Exceptional typography and layout skills",
@@ -217,14 +217,14 @@ const roles = [
       "Mastery of Figma and Adobe Creative Suite",
     ],
     duties: [
-      "Build end-to-end brand systems — logos, typography, color palettes, and usage guidelines",
+      "Build end-to-end brand systems, logos, typography, color palettes, and usage guidelines",
       "Create campaign assets, pitch decks, and marketing materials for client launches",
       "Develop motion and animation guidelines for digital brand expressions",
       "Collaborate with product designers to maintain visual coherence across touchpoints",
       "Present brand directions and rationale to senior stakeholders and founders",
     ],
     whyThisRole:
-      "You'll have the rare opportunity to define how ambitious companies present themselves to the world — from zero to launch. Every identity you create here will be seen by millions. If you care deeply about craft and want your work to matter, this is the place.",
+      "You'll have the rare opportunity to define how ambitious companies present themselves to the world, from zero to launch. Every identity you create here will be seen by millions. If you care deeply about craft and want your work to matter, this is the place.",
   },
   {
     title: "Frontend Developer",
@@ -237,7 +237,7 @@ const roles = [
       "4+ years in frontend development",
       "Expert-level React and TypeScript",
       "Strong feel for animation (Framer Motion, GSAP)",
-      "Eye for design — you care about the gap between spec and output",
+      "Eye for design, you care about the gap between spec and output",
       "Experience with Next.js and headless CMS platforms",
     ],
     duties: [
@@ -248,7 +248,7 @@ const roles = [
       "Collaborate directly with designers to close the gap between Figma and production",
     ],
     whyThisRole:
-      "You'll work with some of the most design-focused teams in the industry, on projects where front-end quality is a genuine priority — not an afterthought. If you lose sleep over animation curves and pixel-perfect spacing, you'll fit right in.",
+      "You'll work with some of the most design-focused teams in the industry, on projects where front-end quality is a genuine priority, not an afterthought. If you lose sleep over animation curves and pixel-perfect spacing, you'll fit right in.",
   },
 ];
 
@@ -382,7 +382,7 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
           >
             <div style={{ borderTop: "1px solid rgba(56,56,56,0.4)", padding: "32px 32px 36px", display: "flex", flexDirection: "column", gap: 32 }}>
 
-              {/* 1 — About the Job */}
+              {/* 1, About the Job */}
               <div>
                 <p style={sectionLabel}>About the Job</p>
                 <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
@@ -390,19 +390,19 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
                 </p>
               </div>
 
-              {/* 2 — Requirements */}
+              {/* 2, Requirements */}
               <div>
                 <p style={sectionLabel}>Requirements</p>
                 <BulletList items={role.requirements} />
               </div>
 
-              {/* 3 — Duties & Opportunities */}
+              {/* 3, Duties & Opportunities */}
               <div>
                 <p style={sectionLabel}>Duties &amp; Opportunities</p>
                 <BulletList items={role.duties} />
               </div>
 
-              {/* 4 — Why this role */}
+              {/* 4, Why this role */}
               <div>
                 <p style={sectionLabel}>Why This Role</p>
                 <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
@@ -410,7 +410,7 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
                 </p>
               </div>
 
-              {/* 5 — Benefits */}
+              {/* 5, Benefits */}
               <div>
                 <p style={sectionLabel}>Benefits</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -497,7 +497,7 @@ export default function CareersPage() {
             style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48 }}
           >
             <p style={{ margin: 0, maxWidth: 580, fontSize: "clamp(15px, 1.3vw, 18px)", lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
-              We&apos;re nearly 20 designers, strategists, and engineers who believe craft and results aren&apos;t a trade-off. Every project raises the bar — and we&apos;re looking for people who want to help raise it.
+              We&apos;re nearly 20 designers, strategists, and engineers who believe craft and results aren&apos;t a trade-off. Every project raises the bar, and we&apos;re looking for people who want to help raise it.
             </p>
             <a
               href="#open-roles"
@@ -513,7 +513,7 @@ export default function CareersPage() {
           </motion.div>
         </div>
 
-        {/* ── Infinite marquee — full viewport width ── */}
+        {/* ── Infinite marquee, full viewport width ── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

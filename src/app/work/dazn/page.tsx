@@ -7,7 +7,7 @@ const data: WorkCaseData = {
   heroTags: ["Sports Streaming", "Web Design & Development", "App Design", "TV App", "Brand Design"],
   heroTitle: "DAZN",
   heroSubtitle:
-    "Redefining how millions of sports fans discover, watch, and experience premium live content — across web, mobile, and the living room.",
+    "Redefining how millions of sports fans discover, watch, and experience premium live content, across web, mobile, and the living room.",
   heroImage: "/work/dazn.png",
   heroImageAlt: "DAZN platform redesign",
   heroObjectPosition: "top center",
@@ -15,8 +15,8 @@ const data: WorkCaseData = {
   // Overview
   overviewHeading: "A global sports platform built for the modern fan",
   overviewBody: [
-    "DAZN is one of the world's leading sports streaming platforms — delivering live and on-demand coverage of boxing, football, MMA, and more to subscribers across 200+ countries.",
-    "Contrast partnered with DAZN to unify the product experience across all surfaces — from the marketing site and web app to native mobile apps and the TV/living-room experience — while reinforcing a bolder, more confident brand identity.",
+    "DAZN is one of the world's leading sports streaming platforms, delivering live and on-demand coverage of boxing, football, MMA, and more to subscribers across 200+ countries.",
+    "Contrast partnered with DAZN to unify the product experience across all surfaces, from the marketing site and web app to native mobile apps and the TV/living-room experience, while reinforcing a bolder, more confident brand identity.",
   ],
   metaItems: [
     { label: "Client", value: "DAZN" },
@@ -24,26 +24,26 @@ const data: WorkCaseData = {
     { label: "Year", value: "2024 - Present" },
   ],
 
-  // Gallery — 4 images: web dashboard × 2 (side by side) + TV app × 2
+  // Gallery, 4 images: web dashboard × 2 (side by side) + TV app × 2
   gallery: [
     { src: "/work/dazn-web-1.jpg",   alt: "DAZN Business account overview",      objectPosition: "center center", pair: true },
     { src: "/work/dazn-web-2.jpg",   alt: "DAZN Business manage devices",        objectPosition: "center center", pair: true },
-    { src: "/work/dazn-tv-1.png",    alt: "DAZN TV app — Live channels",         objectPosition: "center center" },
-    { src: "/work/dazn-tv-2.png",    alt: "DAZN TV app — Channel builder",       objectPosition: "center center" },
+    { src: "/work/dazn-tv-1.png",    alt: "DAZN TV app, Live channels",         objectPosition: "center center" },
+    { src: "/work/dazn-tv-2.png",    alt: "DAZN TV app, Channel builder",       objectPosition: "center center" },
   ],
 
   // What We Did
-  whatWeDidHeading: "Design at every layer — from pixels to platform",
+  whatWeDidHeading: "Design at every layer, from pixels to platform",
   deliverables: [
     {
       num: "01",
       title: "Design System",
-      desc: "Built a unified component library and token system spanning web, iOS, Android, and TV — enabling consistent, scalable UI across all surfaces.",
+      desc: "Built a unified component library and token system spanning web, iOS, Android, and TV, enabling consistent, scalable UI across all surfaces.",
     },
     {
       num: "02",
       title: "Web Redesign",
-      desc: "Overhauled the marketing site and web app — cleaner navigation, better content hierarchy, and a checkout flow that doubled trial sign-ups.",
+      desc: "Overhauled the marketing site and web app, cleaner navigation, better content hierarchy, and a checkout flow that doubled trial sign-ups.",
     },
     {
       num: "03",
@@ -53,7 +53,7 @@ const data: WorkCaseData = {
     {
       num: "04",
       title: "TV App Design",
-      desc: "Created a purpose-built TV experience optimised for 10-foot viewing — simplified navigation, bold content cards, and remote-first interactions.",
+      desc: "Created a purpose-built TV experience optimised for 10-foot viewing, simplified navigation, bold content cards, and remote-first interactions.",
     },
     {
       num: "05",
@@ -63,7 +63,7 @@ const data: WorkCaseData = {
     {
       num: "06",
       title: "UX Research",
-      desc: "Conducted subscriber interviews, usability testing, and competitor analysis — grounding every design decision in real user behaviour.",
+      desc: "Conducted subscriber interviews, usability testing, and competitor analysis, grounding every design decision in real user behaviour.",
     },
   ],
 
@@ -71,7 +71,7 @@ const data: WorkCaseData = {
   moreWork: [
     {
       client: "Down",
-      title: "Dating App — 0→1 Product Design",
+      title: "Dating App, 0→1 Product Design",
       tags: ["Web Design & Development", "App Design"],
       image: "/work/down.png",
       href: "/work/down",

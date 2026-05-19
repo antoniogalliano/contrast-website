@@ -27,7 +27,7 @@ const projects: Project[] = [
   },
   {
     client: "Down",
-    title: "Dating App — 0→1 Product Design",
+    title: "Dating App, 0→1 Product Design",
     tags: ["Web Design & Development", "App Design"],
     image: "/work/down.png",
     href: "/work/down",
@@ -55,7 +55,7 @@ const projects: Project[] = [
   },
 ];
 
-// ── Per-letter title animation (imperative DOM — bypasses Framer Motion WAAPI) ─
+// ── Per-letter title animation (imperative DOM, bypasses Framer Motion WAAPI) ─
 function TitleChar({
   char, sp, rA, rB, xA, xB,
 }: {
@@ -89,7 +89,7 @@ function TitleChar({
   );
 }
 
-// ── Panel layer — scroll animations only, no cursor logic ────────────────────
+// ── Panel layer, scroll animations only, no cursor logic ────────────────────
 function PanelLayer({
   project, num, index, total, sp, onBottomHoverChange,
 }: {
@@ -149,7 +149,7 @@ function PanelLayer({
   // Local [0,1] for this panel
   const lsp = useTransform(sp, [panelStart, panelEnd], [0, 1]);
 
-  // Crossfade opacity — imperative DOM update.
+  // Crossfade opacity, imperative DOM update.
   // Also manages pointer-events so only the visually active panel catches mouse events.
   const XFADE = 0.04;
   useMotionValueEvent(sp, "change", (latest) => {
@@ -168,12 +168,12 @@ function PanelLayer({
       o = Math.max(0, Math.min(1, inn)) * (1 - Math.max(0, Math.min(1, out)));
     }
     el.style.opacity = String(o);
-    // Only the visually dominant panel receives pointer events — prevents
+    // Only the visually dominant panel receives pointer events, prevents
     // invisible panels from intercepting hover/click events
     el.style.pointerEvents = o > 0.3 ? "auto" : "none";
   });
 
-  // Title — travels bottom to top with scroll
+  // Title, travels bottom to top with scroll
   const titleContainerY = useTransform(lsp, [0, 1], ["92vh", "8vh"]);
 
   const REVEAL_START   = 0.05;
@@ -250,7 +250,7 @@ function PanelLayer({
             ))}
           </h3>
 
-          {/* Subtitle + button — travel with title, fade on same timing as chars */}
+          {/* Subtitle + button, travel with title, fade on same timing as chars */}
           <motion.div style={{ marginTop: 20, opacity: subtitleOpacity }}>
             <motion.p style={{
               fontFamily: "var(--font-urbanist), sans-serif",
@@ -291,12 +291,12 @@ function PanelLayer({
   );
 }
 
-// ── Sticky container — owns all cursor/hover state and the single floating button ─
+// ── Sticky container, owns all cursor/hover state and the single floating button ─
 function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp: MotionValue<number> }) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
 
-  // Single shared spring — persists across panel transitions, never resets
+  // Single shared spring, persists across panel transitions, never resets
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   const springX = useSpring(cursorX, { stiffness: 220, damping: 24, mass: 0.5 });
@@ -307,7 +307,7 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
   const [bottomHovered, setBottomHovered] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cursor tracking on the container — events bubble up from all child panels
+  // Cursor tracking on the container, events bubble up from all child panels
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     cursorX.set(e.clientX - rect.left);
@@ -357,7 +357,7 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
         />
       ))}
 
-      {/* Single floating button — lives here so the spring never resets between panels */}
+      {/* Single floating button, lives here so the spring never resets between panels */}
       <motion.div
         style={{
           position: "absolute",

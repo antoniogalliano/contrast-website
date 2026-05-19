@@ -71,7 +71,7 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-// Eyebrow — per-character blur+fade reveal
+// Eyebrow, per-character blur+fade reveal
 function Eyebrow({ children }: { children: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const ready = usePageReady();
@@ -104,7 +104,7 @@ function Eyebrow({ children }: { children: string }) {
   );
 }
 
-// Divider — draws in left → right
+// Divider, draws in left → right
 function Divider() {
   const ref = useRef<HTMLDivElement>(null);
   const ready = usePageReady();
@@ -120,7 +120,7 @@ function Divider() {
   );
 }
 
-// WordReveal — each word rises from a clip-path mask
+// WordReveal, each word rises from a clip-path mask
 function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const ready = usePageReady();
@@ -146,7 +146,7 @@ function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-// AnimatedNumber — counts from 00 up to the target (e.g. "01" → "06")
+// AnimatedNumber, counts from 00 up to the target (e.g. "01" → "06")
 function AnimatedNumber({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
@@ -469,7 +469,7 @@ function DeliverableCell({ item, i }: {
   );
 }
 
-// More Work — "View All Work" button slide-in
+// More Work, "View All Work" button slide-in
 function ViewAllReveal({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const ready = usePageReady();
@@ -489,7 +489,7 @@ function ViewAllReveal({ children }: { children: React.ReactNode }) {
 // ─── Gallery grid ─────────────────────────────────────────────────────────────
 //
 // Rules:
-//  • Images always display at natural aspect ratio — no objectFit crop.
+//  • Images always display at natural aspect ratio, no objectFit crop.
 //  • No empty space: each cell is only as tall as its image (align-items: start).
 //  • Reveal: clip-path curtain top→bottom + counter-scale, staggered per cell.
 
@@ -538,7 +538,7 @@ function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
   const GAP    = 8;
   const STAGGER = 0.1;
 
-  // 1 image — full width
+  // 1 image, full width
   if (n === 1) {
     return (
       <div style={{ borderRadius: 4, overflow: "hidden" }}>
@@ -547,7 +547,7 @@ function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
     );
   }
 
-  // 3 images — first full-width, then two equal columns below
+  // 3 images, first full-width, then two equal columns below
   if (n === 3) {
     return (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GAP, alignItems: "start" }}>
@@ -558,7 +558,7 @@ function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
     );
   }
 
-  // 2, 4, or 5+ images — clean 2-column grid, images flow naturally
+  // 2, 4, or 5+ images, clean 2-column grid, images flow naturally
   return (
     <div
       className="wcp-gallery-grid"
@@ -591,7 +591,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     return () => clearTimeout(t);
   }, []);
 
-  // Runs synchronously inside the React commit phase — fires before flushSync
+  // Runs synchronously inside the React commit phase, fires before flushSync
   // returns, so the view transition's "new" snapshot sees scroll 0 AND the
   // hero image already tagged as "case-hero" for the named cross-dissolve.
   useLayoutEffect(() => {
@@ -619,7 +619,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
   // Track scroll progress while the hero section travels off the top of the viewport.
   // progress 0 = hero top at viewport top  (page load)
-  // progress 1 = hero bottom at viewport top (fully scrolled away — 100vh scroll)
+  // progress 1 = hero bottom at viewport top (fully scrolled away, 100vh scroll)
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -627,7 +627,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
   // Text fades out first (done at ~50 % scroll = ~50 vh)
   const textOpacity = useTransform(heroProgress, [0, 0.5], [1, 0]);
-  // Image lingers longer — fully gone at ~85 % scroll, well before overview is in view
+  // Image lingers longer, fully gone at ~85 % scroll, well before overview is in view
   const imageOpacity = useTransform(heroProgress, [0, 0.85], [1, 0]);
 
   return (
@@ -636,7 +636,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       <Header />
 
       {/* ════════════════════════════════════════════════
-          1. HERO — full-screen image that dissolves on scroll
+          1. HERO, full-screen image that dissolves on scroll
       ════════════════════════════════════════════════ */}
       <section
         ref={heroRef}
@@ -655,13 +655,13 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               display: "block",
             }}
           />
-          {/* Gradient overlays — identical to the home page work panels */}
+          {/* Gradient overlays, identical to the home page work panels */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
         </motion.div>
 
-        {/* ── Back button — top left, clears the fixed header ── */}
+        {/* ── Back button, top left, clears the fixed header ── */}
         <motion.a
           href="/#work"
           onClick={(e) => navigateWithTransition("/#work", e)}
@@ -694,7 +694,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           All Work
         </motion.a>
 
-        {/* ── "CASE STUDY" eyebrow — fires immediately, letter by letter ── */}
+        {/* ── "CASE STUDY" eyebrow, fires immediately, letter by letter ── */}
         <div style={{
           position: "absolute", top: 96, right: 56, zIndex: 10,
           display: "flex", alignItems: "center", gap: 0,
@@ -718,7 +718,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           ))}
         </div>
 
-        {/* ── Bottom text block — entrance from below, then fades on scroll ── */}
+        {/* ── Bottom text block, entrance from below, then fades on scroll ── */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -734,7 +734,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               ))}
             </div>
 
-            {/* Title — word-by-word reveal gated by pageReady */}
+            {/* Title, word-by-word reveal gated by pageReady */}
             <h1
               ref={titleRef}
               style={{
@@ -751,7 +751,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               <WordReveal text={data.heroTitle} />
             </h1>
 
-            {/* Metadata strip — 3 key facts, fades in with pageReady */}
+            {/* Metadata strip, 3 key facts, fades in with pageReady */}
             {data.metaItems.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
@@ -832,7 +832,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               alignItems: "start",
             }}
           >
-            {/* Left — description */}
+            {/* Left, description */}
             <div>
               <Eyebrow>Overview</Eyebrow>
               <h2
@@ -866,7 +866,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               ))}
             </div>
 
-            {/* Right — meta grid */}
+            {/* Right, meta grid */}
             <div
               style={{
                 display: "grid",
@@ -895,7 +895,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       </section>
 
       {/* ════════════════════════════════════════════════
-          3. GALLERY — full-bleed bento grid
+          3. GALLERY, full-bleed bento grid
       ════════════════════════════════════════════════ */}
       <section style={{ paddingBottom: 100, background: "#0a0a0a" }}>
         {/* Divider stays in the content column */}
@@ -903,7 +903,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           <Divider />
         </div>
 
-        {/* Full-viewport-width bento — no horizontal padding */}
+        {/* Full-viewport-width bento, no horizontal padding */}
         <GalleryBento items={data.gallery} />
 
         <style jsx global>{`

@@ -95,7 +95,7 @@ export default function HeroBackground() {
     // Intro overlay always plays on every page load.
     // Delay sphere so particles begin streaming from the dot position
     // right as the intro overlay unmounts (DONE_MS = 3200ms).
-    // INTRO_DURATION = 1000ms — fast convergence so sphere is fully formed quickly:
+    // INTRO_DURATION = 1000ms, fast convergence so sphere is fully formed quickly:
     //   sphere start   (3200ms) → particles leave dot origin
     //   header appears (3800ms) → sphere is ~60% formed
     //   sphere done    (4200ms) → all particles at rest on sphere
@@ -152,7 +152,7 @@ export default function HeroBackground() {
 
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    const INTRO_DURATION = 1000; // ms — time for all particles to reach sphere positions
+    const INTRO_DURATION = 1000; // ms, time for all particles to reach sphere positions
 
     const animate = () => {
       if (!ctx || !canvas) return;
@@ -160,7 +160,7 @@ export default function HeroBackground() {
       const h = window.innerHeight;
       const elapsed = performance.now() - startTimeRef.current;
 
-      // Intro progress (0 → 1). Negative while delayed — particles invisible.
+      // Intro progress (0 → 1). Negative while delayed, particles invisible.
       const introRaw     = Math.min(elapsed / INTRO_DURATION, 1);
       const introComplete = introRaw >= 1;
 
@@ -211,7 +211,7 @@ export default function HeroBackground() {
       const pull2dX = pullNormX;
       const pull2dY = pullNormY;
 
-      // Particles always expand from the sphere's own centre — keeps formation centred.
+      // Particles always expand from the sphere's own centre, keeps formation centred.
       const originX = cx;
       const originY = cy;
 
@@ -265,7 +265,7 @@ export default function HeroBackground() {
           px = lerp(originX, spherePX, eased);
           py = lerp(originY, spherePY, eased);
 
-          // Fade in as each particle leaves the dot — creates a "streaming" look
+          // Fade in as each particle leaves the dot, creates a "streaming" look
           introAlpha = Math.min(pProgress * 3, 1);
         } else {
           px = spherePX;
@@ -285,7 +285,7 @@ export default function HeroBackground() {
 
         plotDot(data, pw, ph, px, py, size, r, g, b, alpha);
 
-        // Stream particles (cursor interaction — only after intro)
+        // Stream particles (cursor interaction, only after intro)
         if (introComplete && dispSq > 0.000225 && Math.random() < dispMag * 1.8) {
           const startX = px / dpr + (Math.random() - 0.5) * 6;
           const startY = py / dpr + (Math.random() - 0.5) * 6;
