@@ -342,38 +342,59 @@ export default function CareersPage() {
       <Header />
 
       {/* ── Hero ── */}
-      <section style={{ padding: "160px 40px 100px" }}>
-        <div className="careers-hero-grid" style={{ maxWidth: 1360, margin: "0 auto", display: "flex", alignItems: "center", gap: "clamp(40px, 6vw, 96px)" }}>
+      <section style={{ paddingTop: 130, background: "#0a0a0a" }}>
+        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
 
-          {/* Left — text */}
+          {/* Row 1 — eyebrow left · stats right */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-            className="careers-hero-text"
-            style={{ flex: "0 0 auto", maxWidth: 520 }}
+            transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" }}
+            className="careers-top-row"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 52 }}
           >
-            {/* Eyebrow */}
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 28, padding: "6px 14px", borderRadius: 9999, border: "1px solid rgba(217,12,183,0.35)", background: "rgba(217,12,183,0.06)" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, border: "1px solid rgba(217,12,183,0.35)", background: "rgba(217,12,183,0.06)" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d90cb7", display: "block", animation: "pulse-dot 2s ease-in-out infinite" }} />
               <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.84px", textTransform: "uppercase", color: "#d90cb7", fontFamily: "var(--font-urbanist), sans-serif" }}>
                 We&apos;re hiring
               </span>
             </div>
 
-            <h1 style={{ margin: "0 0 24px", fontSize: "clamp(38px, 5vw, 68px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              <span style={{ color: "#888888" }}>Build the future of </span>
-              <span style={{ color: "#ffffff" }}>digital design</span>
-              <span style={{ color: "#888888" }}> with us.</span>
-            </h1>
+            <div className="careers-stats" style={{ display: "flex", alignItems: "center", gap: 48 }}>
+              {([["~20", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as const).map(([n, label]) => (
+                <div key={label} style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1, letterSpacing: "-0.02em" }}>{n}</div>
+                  <div style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-urbanist), sans-serif", marginTop: 5, letterSpacing: "0.15px" }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
-            <p style={{ margin: "0 0 40px", fontSize: "clamp(15px, 1.4vw, 18px)", lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
-              We&apos;re a small, senior team obsessed with craft. Every project we take on raises the bar — and we&apos;re looking for people who want to help raise it.
+          {/* Row 2 — display headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ margin: "0 0 52px", fontSize: "clamp(54px, 8vw, 112px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.0, letterSpacing: "-0.03em" }}
+          >
+            <span style={{ color: "#888888" }}>Where great design</span><br />
+            <span style={{ color: "#ffffff" }}>meets real impact.</span>
+          </motion.h1>
+
+          {/* Row 3 — description left · CTA right */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.34, ease: "easeOut" }}
+            className="careers-desc-row"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48, marginBottom: 72 }}
+          >
+            <p style={{ margin: 0, maxWidth: 580, fontSize: "clamp(15px, 1.3vw, 18px)", lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
+              We&apos;re nearly 20 designers, strategists, and engineers who believe craft and results aren&apos;t a trade-off. Every project raises the bar — and we&apos;re looking for people who want to help raise it.
             </p>
-
             <a
               href="#open-roles"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, background: "#ffffff", color: "#000000", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, transition: "opacity 0.2s" }}
+              style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, background: "#ffffff", color: "#000000", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, whiteSpace: "nowrap", transition: "opacity 0.2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
@@ -383,50 +404,30 @@ export default function CareersPage() {
               </svg>
             </a>
           </motion.div>
+        </div>
 
-          {/* Right — photo collage */}
-          <div className="careers-hero-photos" style={{ flex: 1, minWidth: 0, display: "flex", gap: 12 }}>
-            {/* Left photo column — shifted down */}
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, marginTop: 48 }}>
+        {/* Photo strip — edge-to-edge within maxWidth, varying heights, bottom-anchored */}
+        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
+          <div className="careers-photo-strip" style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+            {[
+              { src: "https://randomuser.me/api/portraits/women/44.jpg", h: 390, flex: 1.1 },
+              { src: "https://randomuser.me/api/portraits/men/32.jpg",   h: 300, flex: 0.88 },
+              { src: "https://randomuser.me/api/portraits/women/67.jpg", h: 460, flex: 1.2 },
+              { src: "https://randomuser.me/api/portraits/men/18.jpg",   h: 330, flex: 0.9 },
+              { src: "https://randomuser.me/api/portraits/women/21.jpg", h: 410, flex: 1.05 },
+              { src: "https://randomuser.me/api/portraits/men/55.jpg",   h: 310, flex: 0.87 },
+            ].map(({ src, h, flex }, i) => (
               <motion.img
-                src="https://randomuser.me/api/portraits/women/44.jpg"
-                alt="Team member"
-                initial={{ opacity: 0, y: 24 }}
+                key={i}
+                src={src}
+                alt="Contrast team member"
+                initial={{ opacity: 0, y: 48 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-                style={{ width: "100%", height: 280, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
+                transition={{ duration: 0.75, delay: 0.42 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                style={{ flex, minWidth: 0, height: h, objectFit: "cover", objectPosition: "top center", borderRadius: "14px 14px 0 0", display: "block" }}
               />
-              <motion.img
-                src="https://randomuser.me/api/portraits/men/55.jpg"
-                alt="Team member"
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
-                style={{ width: "100%", height: 200, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
-              />
-            </div>
-
-            {/* Right photo column — normal position */}
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
-              <motion.img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                alt="Team member"
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-                style={{ width: "100%", height: 200, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
-              />
-              <motion.img
-                src="https://randomuser.me/api/portraits/women/67.jpg"
-                alt="Team member"
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-                style={{ width: "100%", height: 280, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
-              />
-            </div>
+            ))}
           </div>
-
         </div>
       </section>
 
@@ -613,18 +614,27 @@ export default function CareersPage() {
           50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        @media (max-width: 900px) {
-          .careers-hero-grid {
+        @media (max-width: 768px) {
+          .careers-top-row {
             flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 24px !important;
           }
-          .careers-hero-text {
-            max-width: 100% !important;
+          .careers-stats {
+            gap: 24px !important;
           }
-          .careers-hero-photos {
-            width: 100% !important;
+          .careers-stats > div {
+            text-align: left !important;
           }
-          .careers-hero-photos > div {
-            margin-top: 0 !important;
+          .careers-desc-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+          .careers-photo-strip {
+            gap: 6px !important;
+          }
+          .careers-photo-strip img {
+            border-radius: 10px 10px 0 0 !important;
           }
         }
 
