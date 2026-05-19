@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
 const ACCENT = "#d90cb7";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -428,6 +428,96 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
 }
 
 /* ═══════════════════════════════════════════
+   Single card — owns its own in-view ref so
+   mobile can mirror the desktop hover state
+   when the card scrolls into view.
+═══════════════════════════════════════════ */
+function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, isMobile }: {
+  card: CardData;
+  i: number;
+  expanded: number | null;
+  setExpanded: (v: number | null) => void;
+  hoveredIdx: number | null;
+  setHoveredIdx: (v: number | null) => void;
+  isMobile: boolean;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const inView  = useInView(cardRef, { amount: 0.5 });
+
+  const isActive  = expanded === i;
+  const isNarrow  = !isMobile && expanded !== null && !isActive;
+  const isHovered = hoveredIdx === i && !isActive;
+  // On mobile: treat in-view as hovered; on desktop: use real hover state
+  const effectiveHovered = isHovered || (isMobile && inView && !isActive);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className={isActive ? "who-expanded" : undefined}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7, delay: i * 0.1, ease: "easeOut" }}
+      onClick={() => !isActive && setExpanded(i)}
+      onMouseEnter={() => !isActive && setHoveredIdx(i)}
+      onMouseLeave={() => setHoveredIdx(null)}
+      style={{
+        flexGrow:   isActive ? 5 : isNarrow ? 0 : 1,
+        flexShrink: 0,
+        flexBasis:  isNarrow ? `${NARROW_W}px` : "0px",
+        transition: [
+          "flex-grow 0.55s cubic-bezier(0.4,0,0.2,1)",
+          "flex-basis 0.55s cubic-bezier(0.4,0,0.2,1)",
+          "border-color 0.3s ease",
+          "box-shadow 0.3s ease",
+        ].join(", "),
+        minWidth: 0,
+        height: CARD_H,
+        borderRadius: 16,
+        border: `1px solid ${isActive ? ACCENT : effectiveHovered ? ACCENT : "#383838"}`,
+        boxShadow: effectiveHovered && !isActive
+          ? "0 0 48px rgba(217,12,183,0.1), inset 0 1px 0 rgba(217,12,183,0.15)"
+          : "none",
+        background: "#0a0a0a",
+        overflow: "hidden",
+        position: "relative",
+        cursor: isActive ? "default" : "pointer",
+      }}
+    >
+      <AnimatePresence mode="wait">
+        {isNarrow ? (
+          <motion.div key="narrow"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{ position: "absolute", inset: 0 }}
+          >
+            <NarrowCard card={card} />
+          </motion.div>
+
+        ) : isActive ? (
+          <motion.div key="expanded"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, delay: 0.18 }}
+            style={{ position: "absolute", inset: 0 }}
+          >
+            <ExpandedCard card={card} onClose={() => { setExpanded(null); setHoveredIdx(null); }} />
+          </motion.div>
+
+        ) : (
+          <motion.div key="collapsed"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ position: "absolute", inset: 0 }}
+          >
+            <CollapsedCard card={card} hovered={effectiveHovered} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════
    Section
 ═══════════════════════════════════════════ */
 export default function WhoWeServe() {
@@ -466,79 +556,18 @@ export default function WhoWeServe() {
 
         {/* ── Horizontal accordion ── */}
         <div className="who-row" style={{ display: "flex", gap: 16 }}>
-          {CARDS.map((card, i) => {
-            const isActive = expanded === i;
-            const isNarrow = !isMobile && expanded !== null && !isActive;
-            const isHovered = hoveredIdx === i && !isActive;
-
-            return (
-              <motion.div
-                key={i}
-                className={isActive ? "who-expanded" : undefined}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: "easeOut" }}
-                onClick={() => !isActive && setExpanded(i)}
-                onMouseEnter={() => !isActive && setHoveredIdx(i)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                style={{
-                  // Accordion width via flex transitions
-                  flexGrow:   isActive ? 5 : isNarrow ? 0 : 1,
-                  flexShrink: 0,
-                  flexBasis:  isNarrow ? `${NARROW_W}px` : "0px",
-                  transition: [
-                    "flex-grow 0.55s cubic-bezier(0.4,0,0.2,1)",
-                    "flex-basis 0.55s cubic-bezier(0.4,0,0.2,1)",
-                    "border-color 0.3s ease",
-                    "box-shadow 0.3s ease",
-                  ].join(", "),
-                  minWidth: 0,
-                  height: CARD_H,
-                  borderRadius: 16,
-                  border: `1px solid ${isActive ? ACCENT : isHovered ? ACCENT : "#383838"}`,
-                  boxShadow: isHovered && !isActive
-                    ? "0 0 48px rgba(217,12,183,0.1), inset 0 1px 0 rgba(217,12,183,0.15)"
-                    : "none",
-                  background: "#0a0a0a",
-                  overflow: "hidden",
-                  position: "relative",
-                  cursor: isActive ? "default" : "pointer",
-                }}
-              >
-                {/* ── Content layers, fade between states ── */}
-                <AnimatePresence mode="wait">
-                  {isNarrow ? (
-                    <motion.div key="narrow"
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      transition={{ duration: 0.18 }}
-                      style={{ position: "absolute", inset: 0 }}
-                    >
-                      <NarrowCard card={card} />
-                    </motion.div>
-
-                  ) : isActive ? (
-                    <motion.div key="expanded"
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      transition={{ duration: 0.28, delay: 0.18 }}
-                      style={{ position: "absolute", inset: 0 }}
-                    >
-                      <ExpandedCard card={card} onClose={() => { setExpanded(null); setHoveredIdx(null); }} />
-                    </motion.div>
-
-                  ) : (
-                    <motion.div key="collapsed"
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      style={{ position: "absolute", inset: 0 }}
-                    >
-                      <CollapsedCard card={card} hovered={isHovered} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+          {CARDS.map((card, i) => (
+            <CardItem
+              key={i}
+              card={card}
+              i={i}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              hoveredIdx={hoveredIdx}
+              setHoveredIdx={setHoveredIdx}
+              isMobile={isMobile}
+            />
+          ))}
         </div>
       </div>
 
