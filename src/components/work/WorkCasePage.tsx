@@ -591,16 +591,8 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     return () => clearTimeout(t);
   }, []);
 
-  // Runs synchronously inside the React commit phase, fires before flushSync
-  // returns, so the view transition's "new" snapshot sees scroll 0 AND the
-  // hero image already tagged as "case-hero" for the named cross-dissolve.
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
-    heroImg?.style.setProperty("view-transition-name", "case-hero");
-    return () => {
-      heroImg?.style.removeProperty("view-transition-name");
-    };
   }, []);
 
   const metaCols = data.metaItems.length === 3 ? 3 : 2;
@@ -608,9 +600,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    // Strip name before the snapshot so back-navigation uses a plain crossfade.
-    const heroImg = heroRef.current?.querySelector("img") as HTMLElement | null;
-    heroImg?.style.removeProperty("view-transition-name");
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href); });
@@ -642,23 +631,30 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         ref={heroRef}
         style={{ position: "relative", height: "100vh", overflow: "hidden" }}
       >
-        {/* ── Background image (scroll-fade-out; entrance handled by view transition) ── */}
+        {/* ── Background image: outer div fades on scroll, inner div reveals on mount ── */}
         <motion.div style={{ opacity: imageOpacity, position: "absolute", inset: 0 }}>
-          <img
-            src={data.heroImage}
-            alt={data.heroImageAlt}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: data.heroObjectPosition ?? "center center",
-              display: "block",
-            }}
-          />
-          {/* Gradient overlays, identical to the home page work panels */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "absolute", inset: 0 }}
+          >
+            <img
+              src={data.heroImage}
+              alt={data.heroImageAlt}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: data.heroObjectPosition ?? "center center",
+                display: "block",
+              }}
+            />
+            {/* Gradient overlays, identical to the home page work panels */}
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
+          </motion.div>
         </motion.div>
 
         {/* ── Back button, top left, clears the fixed header ── */}
