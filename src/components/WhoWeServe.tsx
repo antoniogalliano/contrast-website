@@ -447,7 +447,7 @@ function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, i
   // as soon as any card pixel enters that band.
   const inView  = useInView(cardRef, {
     amount: isMobile ? 0 : 0.5,
-    margin: isMobile ? "-46% 0px" : "0px",
+    margin: isMobile ? "-47.6% 0px" : "0px",
   });
 
   const isActive  = expanded === i;
