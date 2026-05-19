@@ -6,11 +6,11 @@ import Logotype from "./Logotype";
 import { setLogoOrigin, shouldSkipIntro } from "@/lib/introState";
 
 const navLinks = [
-  { label: "The Hero Framework", href: "#framework" },
-  { label: "Work", href: "#work" },
-  { label: "Our services", href: "#services" },
+  { label: "The Hero Framework", href: "/#framework" },
+  { label: "Work", href: "/#work" },
+  { label: "Our services", href: "/#services" },
   { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Header() {
@@ -120,7 +120,7 @@ export default function Header() {
 
             {/* CTA */}
             <a
-              href="#plan"
+              href="/#contact"
               className="btn-gradient-border hidden lg:flex"
               style={{
                 alignItems:     "center",
@@ -206,7 +206,7 @@ export default function Header() {
                     </a>
                   ))}
                   <a
-                    href="#plan"
+                    href="/#contact"
                     className="btn-gradient-border"
                     style={{
                       display:        "flex",
