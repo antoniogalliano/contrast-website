@@ -853,15 +853,17 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           <Divider />
         </div>
 
-        {/* Screenshots stack edge-to-edge, each 100vh */}
-        {data.gallery.map((item) => (
-          <ParallaxScreenshot
-            key={item.src}
-            src={item.src}
-            alt={item.alt}
-            objectPosition={item.objectPosition}
-          />
-        ))}
+        {/* Screenshots stack edge-to-edge, each 100vh, 32px gap between */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+          {data.gallery.map((item) => (
+            <ParallaxScreenshot
+              key={item.src}
+              src={item.src}
+              alt={item.alt}
+              objectPosition={item.objectPosition}
+            />
+          ))}
+        </div>
       </section>
 
       {/* ════════════════════════════════════════════════
