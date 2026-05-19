@@ -5,6 +5,109 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+// ─── Team photos — replace src + name with real data when available ───────────
+
+const TEAM_ROW_1 = [
+  { src: "https://randomuser.me/api/portraits/women/44.jpg",  name: "Sarah K."  },
+  { src: "https://randomuser.me/api/portraits/men/32.jpg",    name: "Marcus L." },
+  { src: "https://randomuser.me/api/portraits/women/67.jpg",  name: "Priya M."  },
+  { src: "https://randomuser.me/api/portraits/men/18.jpg",    name: "Daniel R." },
+  { src: "https://randomuser.me/api/portraits/women/21.jpg",  name: "Yuki T."   },
+  { src: "https://randomuser.me/api/portraits/men/55.jpg",    name: "Alex C."   },
+  { src: "https://randomuser.me/api/portraits/women/76.jpg",  name: "Mia F."    },
+  { src: "https://randomuser.me/api/portraits/men/43.jpg",    name: "James O."  },
+  { src: "https://randomuser.me/api/portraits/women/9.jpg",   name: "Clara B."  },
+  { src: "https://randomuser.me/api/portraits/men/62.jpg",    name: "Noah P."   },
+];
+
+const TEAM_ROW_2 = [
+  { src: "https://randomuser.me/api/portraits/men/8.jpg",     name: "Ryan S."   },
+  { src: "https://randomuser.me/api/portraits/women/14.jpg",  name: "Leila A."  },
+  { src: "https://randomuser.me/api/portraits/men/70.jpg",    name: "Oscar D."  },
+  { src: "https://randomuser.me/api/portraits/women/56.jpg",  name: "Eva N."    },
+  { src: "https://randomuser.me/api/portraits/men/22.jpg",    name: "Kai H."    },
+  { src: "https://randomuser.me/api/portraits/women/85.jpg",  name: "Sofia R."  },
+  { src: "https://randomuser.me/api/portraits/men/15.jpg",    name: "Ben W."    },
+  { src: "https://randomuser.me/api/portraits/women/33.jpg",  name: "Hana I."   },
+  { src: "https://randomuser.me/api/portraits/men/80.jpg",    name: "Luis G."   },
+  { src: "https://randomuser.me/api/portraits/women/2.jpg",   name: "Aisha M."  },
+];
+
+// ─── Photo card ───────────────────────────────────────────────────────────────
+
+function PhotoCard({ src, name, height }: { src: string; name: string; height: number }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        flexShrink: 0,
+        width: Math.round(height * 0.72),
+        height,
+        borderRadius: 14,
+        overflow: "hidden",
+        border: "1px solid #1e1e1e",
+        transform: hovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
+        transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+        cursor: "default",
+      }}
+    >
+      <img
+        src={src}
+        alt={name}
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }}
+      />
+      {/* Name overlay */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(to top, rgba(10,10,10,0.88) 0%, transparent 55%)",
+        display: "flex", alignItems: "flex-end", padding: "14px 16px",
+        opacity: hovered ? 1 : 0,
+        transition: "opacity 0.3s ease",
+      }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.1px" }}>
+          {name}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Infinite marquee row ─────────────────────────────────────────────────────
+
+function MarqueeRow({ photos, direction, height, duration }: {
+  photos: typeof TEAM_ROW_1;
+  direction: "left" | "right";
+  height: number;
+  duration: number;
+}) {
+  const [paused, setPaused] = useState(false);
+  const doubled = [...photos, ...photos];
+  const animName = direction === "left" ? "marquee-left" : "marquee-right";
+
+  return (
+    <div
+      style={{ overflow: "hidden", width: "100%" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div style={{
+        display: "flex",
+        gap: 10,
+        width: "max-content",
+        animation: `${animName} ${duration}s linear infinite`,
+        animationPlayState: paused ? "paused" : "running",
+      }}>
+        {doubled.map((p, i) => (
+          <PhotoCard key={i} src={p.src} name={p.name} height={height} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const benefits = [
@@ -342,10 +445,12 @@ export default function CareersPage() {
       <Header />
 
       {/* ── Hero ── */}
-      <section style={{ paddingTop: 130, background: "#0a0a0a" }}>
-        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
+      <section style={{ paddingTop: 130, paddingBottom: 0, background: "#0a0a0a" }}>
 
-          {/* Row 1 — eyebrow left · stats right */}
+        {/* Text content */}
+        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px", marginBottom: 72 }}>
+
+          {/* Eyebrow + stats */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -359,18 +464,17 @@ export default function CareersPage() {
                 We&apos;re hiring
               </span>
             </div>
-
             <div className="careers-stats" style={{ display: "flex", alignItems: "center", gap: 48 }}>
-              {([["~20", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as const).map(([n, label]) => (
+              {([["~20", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as [string, string][]).map(([n, label]) => (
                 <div key={label} style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1, letterSpacing: "-0.02em" }}>{n}</div>
-                  <div style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-urbanist), sans-serif", marginTop: 5, letterSpacing: "0.15px" }}>{label}</div>
+                  <div style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-urbanist), sans-serif", marginTop: 5 }}>{label}</div>
                 </div>
               ))}
             </div>
           </motion.div>
 
-          {/* Row 2 — display headline */}
+          {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -381,13 +485,13 @@ export default function CareersPage() {
             <span style={{ color: "#ffffff" }}>meets real impact.</span>
           </motion.h1>
 
-          {/* Row 3 — description left · CTA right */}
+          {/* Description + CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.34, ease: "easeOut" }}
             className="careers-desc-row"
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48, marginBottom: 72 }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48 }}
           >
             <p style={{ margin: 0, maxWidth: 580, fontSize: "clamp(15px, 1.3vw, 18px)", lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
               We&apos;re nearly 20 designers, strategists, and engineers who believe craft and results aren&apos;t a trade-off. Every project raises the bar — and we&apos;re looking for people who want to help raise it.
@@ -406,33 +510,27 @@ export default function CareersPage() {
           </motion.div>
         </div>
 
-        {/* Photo strip — edge-to-edge within maxWidth, varying heights, bottom-anchored */}
-        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
-          <div className="careers-photo-strip" style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-            {[
-              { src: "https://randomuser.me/api/portraits/women/44.jpg", h: 390, flex: 1.1 },
-              { src: "https://randomuser.me/api/portraits/men/32.jpg",   h: 300, flex: 0.88 },
-              { src: "https://randomuser.me/api/portraits/women/67.jpg", h: 460, flex: 1.2 },
-              { src: "https://randomuser.me/api/portraits/men/18.jpg",   h: 330, flex: 0.9 },
-              { src: "https://randomuser.me/api/portraits/women/21.jpg", h: 410, flex: 1.05 },
-              { src: "https://randomuser.me/api/portraits/men/55.jpg",   h: 310, flex: 0.87 },
-            ].map(({ src, h, flex }, i) => (
-              <motion.img
-                key={i}
-                src={src}
-                alt="Contrast team member"
-                initial={{ opacity: 0, y: 48 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.75, delay: 0.42 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                style={{ flex, minWidth: 0, height: h, objectFit: "cover", objectPosition: "top center", borderRadius: "14px 14px 0 0", display: "block" }}
-              />
-            ))}
+        {/* ── Infinite marquee — full viewport width ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+          style={{ position: "relative" }}
+        >
+          {/* Edge fades */}
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to right, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to left, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <MarqueeRow photos={TEAM_ROW_1} direction="left"  height={300} duration={55} />
+            <MarqueeRow photos={TEAM_ROW_2} direction="right" height={260} duration={45} />
           </div>
-        </div>
+        </motion.div>
+
       </section>
 
       {/* ── Divider ── */}
-      <div style={{ padding: "0 40px" }}>
+      <div style={{ padding: "0 40px", marginTop: 80 }}>
         <div style={{ maxWidth: 1360, margin: "0 auto", height: 1, background: "#383838" }} />
       </div>
 
@@ -611,7 +709,22 @@ export default function CareersPage() {
       <style jsx global>{`
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(0.85); }
+          50%       { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        @keyframes marquee-left {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+          0%   { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          [style*="marquee-left"], [style*="marquee-right"] {
+            animation: none !important;
+          }
         }
 
         @media (max-width: 768px) {
@@ -629,12 +742,6 @@ export default function CareersPage() {
           .careers-desc-row {
             flex-direction: column !important;
             align-items: flex-start !important;
-          }
-          .careers-photo-strip {
-            gap: 6px !important;
-          }
-          .careers-photo-strip img {
-            border-radius: 10px 10px 0 0 !important;
           }
         }
 
