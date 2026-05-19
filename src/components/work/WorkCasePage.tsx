@@ -505,7 +505,7 @@ function ParallaxScreenshot({ src, alt }: {
   const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
 
   return (
-    <div ref={ref} style={{ overflow: "hidden", borderRadius: 4 }}>
+    <div ref={ref} style={{ overflow: "hidden", borderRadius: 16 }}>
       <motion.img
         src={src}
         alt={alt}
