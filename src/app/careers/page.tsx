@@ -301,7 +301,9 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
               </div>
 
               <a
-                href={`mailto:hello@contrast.studio?subject=Application: ${role.title}`}
+                href="https://wkf.ms/4gE1ydY"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-gradient-border careers-apply-btn"
                 style={{
                   display: "inline-flex",
