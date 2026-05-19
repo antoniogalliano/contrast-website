@@ -421,7 +421,7 @@ export default function SelectedWorkSection() {
   return (
     <section id="work" style={{ background: "#0a0a0a" }}>
       {/* Header */}
-      <div style={{ padding: "120px 56px 72px", maxWidth: 1440, margin: "0 auto" }}>
+      <div className="selected-work-outer" style={{ padding: "120px 56px 72px", maxWidth: 1440, margin: "0 auto" }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -467,6 +467,9 @@ export default function SelectedWorkSection() {
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
           .selected-work-title { left: 24px !important; right: 24px !important; }
+        }
+        @media (max-width: 640px) {
+          .selected-work-outer { padding: 60px 20px 40px !important; }
         }
       `}</style>
     </section>
