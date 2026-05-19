@@ -486,92 +486,46 @@ function ViewAllReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Gallery grid ─────────────────────────────────────────────────────────────
+// ─── Full-screen parallax screenshot ─────────────────────────────────────────
 //
-// Rules:
-//  • Images always display at natural aspect ratio, no objectFit crop.
-//  • No empty space: each cell is only as tall as its image (align-items: start).
-//  • Reveal: clip-path curtain top→bottom + counter-scale, staggered per cell.
+// Each screenshot occupies a full 100vh slot. The image is 120px taller than
+// its container and shifts ±60px on scroll, so the image moves at ~half the
+// scroll rate — classic parallax without any CSS trickery.
 
-function BentoCell({ src, alt, delay = 0, fullWidth = false }: {
+function ParallaxScreenshot({ src, alt, objectPosition = "center center" }: {
   src: string;
   alt: string;
-  delay?: number;
-  fullWidth?: boolean;
+  objectPosition?: string;
 }) {
-  const ref   = useRef<HTMLDivElement>(null);
-  const ready = usePageReady();
-  const inView = useInView(ref, { once: true, amount: 0.06 });
-  const revealed = inView && ready;
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  // Entering viewport: y = +60 (image anchored to top of its container)
+  // Exiting viewport:  y = -60 (image has crept upward, revealing the bottom)
+  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
     <div
       ref={ref}
-      style={{
-        overflow: "hidden",
-        gridColumn: fullWidth ? "1 / -1" : undefined,
-        borderRadius: 4,
-      }}
+      style={{ position: "relative", height: "100vh", overflow: "hidden" }}
     >
-      <motion.div
-        initial={{ clipPath: "inset(0 0 100% 0)" }}
-        animate={revealed ? { clipPath: "inset(0 0 0% 0)" } : {}}
-        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <motion.img
-          src={src}
-          alt={alt}
-          initial={{ scale: 1.06 }}
-          animate={revealed ? { scale: 1 } : {}}
-          transition={{ duration: 1.1, delay, ease: [0.22, 1, 0.36, 1] }}
-          style={{ width: "100%", height: "auto", display: "block" }}
-        />
-      </motion.div>
-    </div>
-  );
-}
-
-function GalleryBento({ items }: { items: WorkCaseData["gallery"] }) {
-  const n = items.length;
-  if (n <= 0) return null;
-
-  const GAP    = 8;
-  const STAGGER = 0.1;
-
-  // 1 image, full width
-  if (n === 1) {
-    return (
-      <div style={{ borderRadius: 4, overflow: "hidden" }}>
-        <BentoCell src={items[0].src} alt={items[0].alt} />
-      </div>
-    );
-  }
-
-  // 3 images, first full-width, then two equal columns below
-  if (n === 3) {
-    return (
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GAP, alignItems: "start" }}>
-        <BentoCell src={items[0].src} alt={items[0].alt} delay={0}            fullWidth />
-        <BentoCell src={items[1].src} alt={items[1].alt} delay={STAGGER}                />
-        <BentoCell src={items[2].src} alt={items[2].alt} delay={STAGGER * 2}            />
-      </div>
-    );
-  }
-
-  // 2, 4, or 5+ images, clean 2-column grid, images flow naturally
-  return (
-    <div
-      className="wcp-gallery-grid"
-      style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GAP, alignItems: "start" }}
-    >
-      {items.map((item, i) => (
-        <BentoCell
-          key={item.src}
-          src={item.src}
-          alt={item.alt}
-          delay={i * STAGGER}
-        />
-      ))}
+      <motion.img
+        src={src}
+        alt={alt}
+        style={{
+          position: "absolute",
+          top:    "-60px",
+          left:   0,
+          width:  "100%",
+          height: "calc(100% + 120px)",
+          objectFit: "cover",
+          objectPosition,
+          display: "block",
+          y,
+        }}
+      />
     </div>
   );
 }
@@ -891,24 +845,23 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       </section>
 
       {/* ════════════════════════════════════════════════
-          3. GALLERY, full-bleed bento grid
+          3. SCREENSHOTS, full-screen stacked with parallax
       ════════════════════════════════════════════════ */}
-      <section style={{ paddingBottom: 100, background: "#0a0a0a" }}>
+      <section style={{ background: "#0a0a0a" }}>
         {/* Divider stays in the content column */}
         <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px 48px" }}>
           <Divider />
         </div>
 
-        {/* Full-viewport-width bento, no horizontal padding */}
-        <GalleryBento items={data.gallery} />
-
-        <style jsx global>{`
-          @media (max-width: 640px) {
-            .wcp-gallery-grid {
-              grid-template-columns: 1fr !important;
-            }
-          }
-        `}</style>
+        {/* Screenshots stack edge-to-edge, each 100vh */}
+        {data.gallery.map((item) => (
+          <ParallaxScreenshot
+            key={item.src}
+            src={item.src}
+            alt={item.alt}
+            objectPosition={item.objectPosition}
+          />
+        ))}
       </section>
 
       {/* ════════════════════════════════════════════════
