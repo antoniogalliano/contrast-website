@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -119,7 +119,6 @@ const roles = [
 // ─── Role Card ────────────────────────────────────────────────────────────────
 
 function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
-  const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -130,31 +129,21 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
       transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
       style={{
         borderRadius: 16,
-        border: `1px solid ${hovered || open ? "#d90cb7" : "rgba(56,56,56,0.62)"}`,
-        background: open ? "rgba(217,12,183,0.04)" : "rgba(255,255,255,0.02)",
+        border: `1px solid ${hovered ? "#d90cb7" : "rgba(56,56,56,0.62)"}`,
+        background: hovered ? "rgba(217,12,183,0.04)" : "rgba(255,255,255,0.02)",
         transition: "border-color 0.3s ease, background 0.3s ease",
         overflow: "hidden",
+        padding: "32px 32px 28px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 24,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Header row */}
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "28px 32px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "left",
-          gap: 24,
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minWidth: 0 }}>
+      {/* ── Top: tags + meta ── */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             {role.tags.map((tag) => (
               <span
@@ -198,137 +187,96 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
           </div>
         </div>
 
-        {/* Expand chevron */}
-        <motion.div
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
+        {/* Apply button — top-right on desktop */}
+        <a
+          href="https://wkf.ms/4gE1ydY"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-gradient-border careers-apply-btn"
           style={{
-            flexShrink: 0,
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            border: "1px solid rgba(56,56,56,0.8)",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            justifyContent: "center",
-            color: open ? "#d90cb7" : "#ffffff",
-            transition: "color 0.25s ease, border-color 0.25s ease",
-            borderColor: open ? "rgba(217,12,183,0.4)" : "rgba(56,56,56,0.8)",
+            gap: 8,
+            padding: "0 24px",
+            height: 46,
+            borderRadius: 9999,
+            fontSize: 13,
+            fontWeight: 500,
+            fontFamily: "var(--font-urbanist), sans-serif",
+            color: "#ffffff",
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          Apply for this role
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-        </motion.div>
-      </button>
+        </a>
+      </div>
 
-      {/* Expanded body */}
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="body"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
-            style={{ overflow: "hidden" }}
-          >
-            <div
+      {/* ── Divider ── */}
+      <div style={{ height: 1, background: "rgba(56,56,56,0.5)" }} />
+
+      {/* ── Description ── */}
+      <p
+        style={{
+          margin: 0,
+          fontSize: 15,
+          lineHeight: 1.7,
+          color: "#b0b0b0",
+          fontFamily: "var(--font-geist), sans-serif",
+          maxWidth: 740,
+        }}
+      >
+        {role.desc}
+      </p>
+
+      {/* ── Requirements ── */}
+      <div>
+        <p
+          style={{
+            margin: "0 0 12px",
+            fontSize: 12,
+            fontWeight: 600,
+            letterSpacing: "0.7px",
+            textTransform: "uppercase",
+            color: "#888888",
+            fontFamily: "var(--font-urbanist), sans-serif",
+          }}
+        >
+          What we&apos;re looking for
+        </p>
+        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+          {role.requirements.map((req) => (
+            <li
+              key={req}
               style={{
-                padding: "0 32px 32px",
                 display: "flex",
-                flexDirection: "column",
-                gap: 24,
-                borderTop: "1px solid rgba(56,56,56,0.4)",
-                marginTop: 0,
+                alignItems: "flex-start",
+                gap: 10,
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: "#b0b0b0",
+                fontFamily: "var(--font-geist), sans-serif",
               }}
             >
-              <p
+              <span
                 style={{
-                  margin: "24px 0 0",
-                  fontSize: 15,
-                  lineHeight: 1.7,
-                  color: "#b0b0b0",
-                  fontFamily: "var(--font-geist), sans-serif",
-                  maxWidth: 680,
+                  marginTop: 6,
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: "#d90cb7",
+                  flexShrink: 0,
                 }}
-              >
-                {role.desc}
-              </p>
-
-              <div>
-                <p
-                  style={{
-                    margin: "0 0 12px",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: "0.7px",
-                    textTransform: "uppercase",
-                    color: "#888888",
-                    fontFamily: "var(--font-urbanist), sans-serif",
-                  }}
-                >
-                  What we're looking for
-                </p>
-                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-                  {role.requirements.map((req) => (
-                    <li
-                      key={req}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        fontSize: 14,
-                        lineHeight: 1.6,
-                        color: "#b0b0b0",
-                        fontFamily: "var(--font-geist), sans-serif",
-                      }}
-                    >
-                      <span
-                        style={{
-                          marginTop: 6,
-                          width: 5,
-                          height: 5,
-                          borderRadius: "50%",
-                          background: "#d90cb7",
-                          flexShrink: 0,
-                        }}
-                      />
-                      {req}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <a
-                href="https://wkf.ms/4gE1ydY"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-gradient-border careers-apply-btn"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "0 24px",
-                  height: 46,
-                  borderRadius: 9999,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  color: "#ffffff",
-                  textDecoration: "none",
-                  width: "fit-content",
-                }}
-              >
-                Apply for this role
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                  <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              />
+              {req}
+            </li>
+          ))}
+        </ul>
+      </div>
     </motion.div>
   );
 }
