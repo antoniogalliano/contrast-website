@@ -77,7 +77,7 @@ export default function Header() {
               display:        "flex",
               alignItems:     "center",
               justifyContent: "space-between",
-              padding:        "0 28px",
+              padding:        "0 13px 0 28px",
               height:         68,
             }}
           >
@@ -121,7 +121,8 @@ export default function Header() {
                 alignItems:     "center",
                 gap:            6,
                 borderRadius:   9999,
-                padding:        "11px 11px",
+                padding:        "0 20px",
+                height:         42,
                 fontSize:       13,
                 fontWeight:     500,
                 color:          "#ffffff",
