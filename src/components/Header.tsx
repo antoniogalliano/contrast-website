@@ -57,7 +57,7 @@ export default function Header() {
         pointerEvents:  "none",
       }}
     >
-      <div style={{ width: "calc(100% - 80px)", maxWidth: 1360, pointerEvents: "auto" }}>
+      <div className="header-shell" style={{ width: "calc(100% - 80px)", maxWidth: 1360, pointerEvents: "auto" }}>
 
         {/* Opacity-only entrance, no y-slide so logo sits at its true layout position from mount */}
         <motion.header
@@ -241,5 +241,13 @@ export default function Header() {
 
       </div>
     </div>
+
+    <style>{`
+      @media (max-width: 640px) {
+        .header-shell {
+          width: calc(100% - 40px) !important;
+        }
+      }
+    `}</style>
   );
 }
