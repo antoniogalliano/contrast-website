@@ -46,6 +46,7 @@ export default function Header() {
       Inner: width-capped slot the animated header fills.
     */
     <div
+      className="header-outer"
       style={{
         position:       "fixed",
         top:            20,
@@ -54,10 +55,12 @@ export default function Header() {
         zIndex:         50,
         display:        "flex",
         justifyContent: "center",
+        padding:        "0 40px",
+        boxSizing:      "border-box",
         pointerEvents:  "none",
       }}
     >
-      <div className="header-shell" style={{ width: "calc(100% - 80px)", maxWidth: 1360, pointerEvents: "auto" }}>
+      <div style={{ width: "100%", maxWidth: 1360, pointerEvents: "auto" }}>
 
         {/* Opacity-only entrance, no y-slide so logo sits at its true layout position from mount */}
         <motion.header
@@ -244,8 +247,8 @@ export default function Header() {
 
     <style>{`
       @media (max-width: 640px) {
-        .header-shell {
-          width: calc(100% - 40px) !important;
+        .header-outer {
+          padding: 0 20px !important;
         }
       }
     `}</style>
