@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent, useInView, useMotionValue, useSpring, type MotionValue } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 
@@ -55,339 +55,418 @@ const projects: Project[] = [
   },
 ];
 
-// ── Row ────────────────────────────────────────────────────────────────────────
-function ProjectRow({
-  project,
-  num,
-  index,
-  isActive,
-  onActivate,
-  revealed,
+// ── Per-letter title animation (imperative DOM — bypasses Framer Motion WAAPI) ─
+function TitleChar({
+  char, sp, rA, rB, xA, xB,
+}: {
+  char: string;
+  sp: MotionValue<number>;
+  rA: number; rB: number;
+  xA: number; xB: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useMotionValueEvent(sp, "change", (latest) => {
+    const el = ref.current;
+    if (!el) return;
+    const rP = rB > rA ? Math.max(0, Math.min(1, (latest - rA) / (rB - rA))) : latest >= rA ? 1 : 0;
+    const xP = xB > xA ? Math.max(0, Math.min(1, (latest - xA) / (xB - xA))) : latest >= xA ? 1 : 0;
+    const opacity = rP * (1 - xP);
+    const y = (1 - rP) * 44 - xP * 32;
+    const blur = (1 - rP) * 40 + xP * 40;
+    el.style.opacity = String(opacity);
+    el.style.transform = `translateY(${y}px)`;
+    el.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
+  });
+
+  return (
+    <span
+      ref={ref}
+      style={{ display: "inline-block", opacity: 0, transform: "translateY(44px)", filter: "blur(40px)", willChange: "transform, opacity, filter" }}
+    >
+      {char === " " ? "\u00A0" : char}
+    </span>
+  );
+}
+
+// ── Panel layer — scroll animations only, no cursor logic ────────────────────
+function PanelLayer({
+  project, num, index, total, sp, onBottomHoverChange,
 }: {
   project: Project;
   num: string;
   index: number;
-  isActive: boolean;
-  onActivate: () => void;
-  revealed: boolean;
+  total: number;
+  sp: MotionValue<number>;
+  onBottomHoverChange: (v: boolean) => void;
 }) {
+  const [bottomHovered, setBottomHovered] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const isLast = index === total - 1;
   const router = useRouter();
 
+  // Named view-transition: tag this panel's <img> as "case-hero" right before
+  // the "old" snapshot so the browser cross-dissolves it with the case page
+  // hero (same photo, same full-screen size → image appears frozen while the
+  // page UI transitions around it). Clean up the name after the animation.
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) {
-      router.push(project.href);
+      router.push(project.href, { scroll: false });
       return;
     }
-    // Tag the active fullscreen background image for the browser to morph
-    const activeImg = document.querySelector("[data-case-hero]") as HTMLElement | null;
-    activeImg?.style.setProperty("view-transition-name", "case-hero");
-    (document as Document & { startViewTransition: (cb: () => void) => void })
-      .startViewTransition(() => {
-        flushSync(() => { router.push(project.href); });
+    const panelImg = wrapperRef.current?.querySelector("img") as HTMLElement | null;
+    panelImg?.style.setProperty("view-transition-name", "case-hero");
+
+    // Reset individual TitleChar spans to clean visible state so the
+    // view-transition snapshot captures solid text, not scattered/blurred letters.
+    if (titleRef.current) {
+      titleRef.current.querySelectorAll("span").forEach((span) => {
+        (span as HTMLElement).style.opacity = "1";
+        (span as HTMLElement).style.transform = "translateY(0px)";
+        (span as HTMLElement).style.filter = "none";
       });
+      titleRef.current.style.setProperty("view-transition-name", "case-title");
+    }
+
+    const vt = (document as Document & {
+      startViewTransition: (cb: () => void) => { finished: Promise<void> };
+    }).startViewTransition(() => {
+      flushSync(() => { router.push(project.href, { scroll: false }); });
+    });
+
+    vt.finished.then(() => {
+      panelImg?.style.removeProperty("view-transition-name");
+      titleRef.current?.style.removeProperty("view-transition-name");
+    });
+  };
+
+  const panelStart = index / total;
+  const panelEnd   = (index + 1) / total;
+
+  // Local [0,1] for this panel
+  const lsp = useTransform(sp, [panelStart, panelEnd], [0, 1]);
+
+  // Crossfade opacity — imperative DOM update.
+  // Also manages pointer-events so only the visually active panel catches mouse events.
+  const XFADE = 0.04;
+  useMotionValueEvent(sp, "change", (latest) => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    let o: number;
+    if (index === 0) {
+      const out = (latest - (panelEnd - XFADE)) / (2 * XFADE);
+      o = 1 - Math.max(0, Math.min(1, out));
+    } else if (isLast) {
+      const inn = (latest - (panelStart - XFADE)) / (2 * XFADE);
+      o = Math.max(0, Math.min(1, inn));
+    } else {
+      const inn = (latest - (panelStart - XFADE)) / (2 * XFADE);
+      const out = (latest - (panelEnd   - XFADE)) / (2 * XFADE);
+      o = Math.max(0, Math.min(1, inn)) * (1 - Math.max(0, Math.min(1, out)));
+    }
+    el.style.opacity = String(o);
+    // Only the visually dominant panel receives pointer events — prevents
+    // invisible panels from intercepting hover/click events
+    el.style.pointerEvents = o > 0.3 ? "auto" : "none";
+  });
+
+  // Title — travels bottom to top with scroll
+  const titleContainerY = useTransform(lsp, [0, 1], ["92vh", "8vh"]);
+
+  const REVEAL_START   = 0.05;
+  const REVEAL_STAGGER = 0.012;
+  const REVEAL_DUR     = 0.10;
+  const EXIT_START     = 0.82;
+  const EXIT_STAGGER   = 0.008;
+  const EXIT_DUR       = 0.07;
+  const chars = project.client.split("");
+
+  const subtitleOpacity = useTransform(lsp, [0, REVEAL_START, REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
+  const numOpacity     = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
+
+  const handleBottomEnter = () => {
+    setBottomHovered(true);
+    onBottomHoverChange(true);
+  };
+  const handleBottomLeave = () => {
+    setBottomHovered(false);
+    onBottomHoverChange(false);
   };
 
   return (
-    <motion.a
-      href={project.href}
-      onClick={handleNavigation}
-      onMouseEnter={onActivate}
-      initial={{ opacity: 0, y: 24 }}
-      animate={revealed ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: 0.1 + index * 0.09, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 20,
-        padding: "clamp(18px, 2.4vh, 30px) 0",
-        borderBottom: "1px solid rgba(255,255,255,0.1)",
-        textDecoration: "none",
-        cursor: "pointer",
-        position: "relative",
-      }}
+    <div
+      ref={wrapperRef}
+      style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
     >
-      {/* Number */}
-      <span
-        style={{
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: "0.18em",
-          color: isActive ? ACCENT : "rgba(255,255,255,0.28)",
-          minWidth: 36,
-          flexShrink: 0,
-          transition: "color 0.4s ease",
-          paddingTop: 2,
-          alignSelf: "flex-start",
-        }}
+      <a
+        href={project.href}
+        onClick={handleNavigation}
+        style={{ display: "block", position: "absolute", inset: 0, overflow: "hidden", cursor: "inherit", textDecoration: "none" }}
       >
-        {num}
-      </span>
-
-      {/* Client name + subtitle */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: "clamp(32px, 4.2vw, 72px)",
-            fontWeight: 700,
-            color: isActive ? "#ffffff" : "rgba(255,255,255,0.28)",
-            lineHeight: 1.0,
-            letterSpacing: "-0.025em",
-            transition: "color 0.4s ease",
-            marginBottom: 6,
-          }}
-        >
-          {project.client}
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--font-geist), sans-serif",
-            fontSize: "clamp(12px, 1vw, 14px)",
-            color: isActive ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.18)",
-            transition: "color 0.4s ease",
-            letterSpacing: "0.01em",
-          }}
-        >
-          {project.title}
-        </div>
-      </div>
-
-      {/* Arrow — top-right ↗ */}
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          border: `1px solid ${isActive ? ACCENT : "rgba(255,255,255,0.16)"}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: isActive ? ACCENT : "rgba(255,255,255,0.22)",
-          flexShrink: 0,
-          transition: "border-color 0.4s ease, color 0.4s ease",
-        }}
-      >
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-          <path
-            d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* Background image */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+          <img
+            src={project.image}
+            alt={project.client}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", display: "block", ...project.imageStyle }}
           />
-        </svg>
-      </div>
-    </motion.a>
+        </div>
+
+        {/* Gradient overlays */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 10%)" }} />
+
+        {/* Number */}
+        <motion.div style={{
+          position: "absolute", top: 44, left: 56, zIndex: 5,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontSize: 13, fontWeight: 500, letterSpacing: "0.14em",
+          color: "rgba(255,255,255,0.38)",
+          opacity: numOpacity,
+        }}>
+          {num} /
+        </motion.div>
+
+        {/* Title */}
+        <motion.div className="selected-work-title" style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
+          <h3 ref={titleRef} style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(56px, 10vw, 140px)",
+            fontWeight: 600, color: "#ffffff",
+            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+          }}>
+            {chars.map((char, i) => (
+              <TitleChar
+                key={i} char={char} sp={lsp}
+                rA={REVEAL_START + i * REVEAL_STAGGER}
+                rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
+                xA={EXIT_START + i * EXIT_STAGGER}
+                xB={EXIT_START + i * EXIT_STAGGER + EXIT_DUR}
+              />
+            ))}
+          </h3>
+
+          {/* Subtitle + button — travel with title, fade on same timing as chars */}
+          <motion.div style={{ marginTop: 20, opacity: subtitleOpacity }}>
+            <motion.p style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 17, fontWeight: 400, color: "rgba(255,255,255,0.72)",
+              margin: "0 0 18px",
+            }}>
+              {project.title}
+            </motion.p>
+            <div
+              onMouseEnter={handleBottomEnter}
+              onMouseLeave={handleBottomLeave}
+            >
+              <button
+                type="button"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 7,
+                  padding: "9px 20px", borderRadius: 9999,
+                  fontFamily: "var(--font-urbanist), sans-serif",
+                  fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+                  color: "#ffffff",
+                  cursor: "pointer",
+                  border: `1px solid ${bottomHovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
+                  background: bottomHovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
+                  backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+                  transition: "border-color 0.35s ease, background 0.35s ease",
+                }}
+              >
+                View Work
+                <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                  <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </a>
+    </div>
   );
 }
 
-// ── Main ───────────────────────────────────────────────────────────────────────
-export default function SelectedWorkSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
-  const revealed = useInView(sectionRef, { once: true, amount: 0.15 });
+// ── Sticky container — owns all cursor/hover state and the single floating button ─
+function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp: MotionValue<number> }) {
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(stickyRef, { once: true, amount: 0.01 });
+
+  // Single shared spring — persists across panel transitions, never resets
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const springX = useSpring(cursorX, { stiffness: 220, damping: 24, mass: 0.5 });
+  const springY = useSpring(cursorY, { stiffness: 220, damping: 24, mass: 0.5 });
+
+  const [isHovered,    setIsHovered]    = useState(false);
+  const [mouseMoving,  setMouseMoving]  = useState(false);
+  const [bottomHovered, setBottomHovered] = useState(false);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cursor tracking on the container — events bubble up from all child panels
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    cursorX.set(e.clientX - rect.left);
+    cursorY.set(e.clientY - rect.top);
+
+    if (!mouseMoving) setMouseMoving(true);
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = setTimeout(() => setMouseMoving(false), 3000);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setMouseMoving(false);
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+  };
+
+  useEffect(() => {
+    return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
+  }, []);
+
+  // Button is visible only while mouse is moving (hides after 3 s idle)
+  const showButton = isHovered && mouseMoving;
 
   return (
-    <section
-      id="work"
-      ref={sectionRef}
+    <div
+      ref={stickyRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       style={{
-        position: "relative",
-        minHeight: "100vh",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        background: "#0a0a0a",
+        position: "sticky", top: 0, height: "100vh", overflow: "hidden",
+        opacity: inView ? 1 : 0,
+        transition: "opacity 0.8s ease",
+        // Hide native cursor while button is visible (restore when over bottom button)
+        cursor: showButton && !bottomHovered ? "none" : "auto",
       }}
     >
-      {/* ── Fullscreen background images ── */}
-      {projects.map((p, i) => (
-        <motion.div
-          key={p.client}
-          style={{ position: "absolute", inset: 0, zIndex: 0 }}
-          animate={{ opacity: i === activeIndex ? 1 : 0 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.img
-            src={p.image}
-            alt={p.client}
-            // Active image is tagged for the view-transition morph on click
-            {...(i === activeIndex ? { "data-case-hero": "active" } : {})}
-            animate={{ scale: i === activeIndex ? 1 : 1.04 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center center",
-              display: "block",
-              transformOrigin: "center center",
-              ...p.imageStyle,
-            }}
-          />
-        </motion.div>
+      {projects.map((project, i) => (
+        <PanelLayer
+          key={project.client}
+          project={project}
+          num={`0${i + 1}`}
+          index={i}
+          total={N}
+          sp={sp}
+          onBottomHoverChange={setBottomHovered}
+        />
       ))}
 
-      {/* ── Gradient overlays — keep text readable over any image ── */}
-      <div
+      {/* Single floating button — lives here so the spring never resets between panels */}
+      <motion.div
         style={{
           position: "absolute",
-          inset: 0,
-          zIndex: 1,
-          background:
-            "linear-gradient(to bottom, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.46) 40%, rgba(10,10,10,0.66) 100%)",
+          left: 0, top: 0,
+          x: springX,
+          y: springY,
+          translateX: "-50%",
+          translateY: "-50%",
+          zIndex: 20,
+          pointerEvents: "none",
         }}
-      />
-      {/* Left-edge guard */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 1,
-          background: "linear-gradient(to right, rgba(10,10,10,0.22) 0%, transparent 55%)",
-        }}
-      />
-
-      {/* ── Content layer ── */}
-      <div
-        className="sw-content"
-        style={{
-          position: "relative",
-          zIndex: 2,
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          width: "calc(100% - 80px)",
-          maxWidth: 1360,
-          margin: "0 auto",
-          padding: "0",
-          boxSizing: "border-box",
-        }}
+        animate={!showButton ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+        initial={{ scale: 0.5, opacity: 0 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Header */}
+        {/* Inner layer: blur-out when hovering the bottom "View Work" button */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="sw-header"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "52px 0 0",
-            gap: 24,
+          animate={
+            bottomHovered && isHovered
+              ? { opacity: 0, filter: "blur(22px)" }
+              : { opacity: 1, filter: "blur(0px)" }
+          }
+          transition={{
+            duration: bottomHovered && isHovered ? 0.93 : 0.35,
+            ease: [0.22, 1, 0.36, 1],
           }}
+          style={{ display: "inline-flex" }}
         >
-          <h2
-            style={{
-              fontSize: "clamp(13px, 1vw, 15px)",
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.38)",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              margin: 0,
-              fontFamily: "var(--font-urbanist), sans-serif",
-            }}
-          >
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 7,
+            padding: "9px 20px", borderRadius: 9999,
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+            color: "#ffffff",
+            border: "1px solid rgba(255,255,255,0.22)",
+            background: "rgba(255,255,255,0.06)",
+            backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+            whiteSpace: "nowrap",
+          }}>
+            View Work
+            <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+export default function SelectedWorkSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress: sp } = useScroll({
+    target: scrollRef,
+    offset: ["start start", "end end"],
+  });
+
+  const N = projects.length;
+
+  return (
+    <section id="work" style={{ background: "#0a0a0a" }}>
+      {/* Header */}
+      <div style={{ padding: "120px 56px 72px", maxWidth: 1440, margin: "0 auto" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}
+          className="selected-work-header"
+        >
+          <h2 style={{
+            fontSize: "clamp(36px, 5vw, 72px)", fontWeight: 600,
+            color: "#ffffff", lineHeight: 1.05, letterSpacing: "-0.025em",
+            margin: 0, fontFamily: "var(--font-urbanist), sans-serif",
+          }}>
             Selected Work
           </h2>
           <a
             href="#contact"
             className="btn-gradient-border"
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "10px 22px",
-              borderRadius: 9999,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-              flexShrink: 0,
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "12px 24px", borderRadius: 9999,
+              fontSize: 14, fontWeight: 600, color: "#ffffff",
+              textDecoration: "none", flexShrink: 0,
               fontFamily: "var(--font-urbanist), sans-serif",
             }}
           >
             Start a Project
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
         </motion.div>
-
-        {/* Project list — vertically centered in remaining space */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "40px 0",
-          }}
-        >
-          {/* Top divider */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={revealed ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              height: 1,
-              background: "rgba(255,255,255,0.1)",
-              transformOrigin: "left",
-            }}
-          />
-
-          {projects.map((project, i) => (
-            <ProjectRow
-              key={project.client}
-              project={project}
-              num={`0${i + 1}`}
-              index={i}
-              isActive={activeIndex === i}
-              onActivate={() => setActiveIndex(i)}
-              revealed={revealed}
-            />
-          ))}
-        </div>
-
-        {/* Counter — bottom right */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={revealed ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            padding: "0 0 48px",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 11,
-              letterSpacing: "0.14em",
-              color: "rgba(255,255,255,0.22)",
-            }}
-          >
-            {String(activeIndex + 1).padStart(2, "0")}&nbsp;/&nbsp;
-            {String(projects.length).padStart(2, "0")}
-          </div>
-        </motion.div>
       </div>
+
+      {/* Scroll container */}
+      <div ref={scrollRef} style={{ height: `${N * 220}vh`, position: "relative" }}>
+        <StickyPanels projects={projects} N={N} sp={sp} />
+      </div>
+
+      <div style={{ height: 120 }} />
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          .sw-content { width: calc(100% - 48px) !important; }
-          .sw-header { padding-top: 32px !important; }
+          .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
+          .selected-work-title { left: 24px !important; right: 24px !important; }
         }
       `}</style>
     </section>

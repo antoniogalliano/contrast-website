@@ -79,10 +79,16 @@ export default function Footer() {
           <div className="footer-nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             {/* Nav */}
             <nav className="footer-nav" style={{ display: "flex", alignItems: "center", gap: 24 }}>
-              {["The Hero Framework", "Work", "Our services", "Contact"].map((label) => (
+              {[
+                { label: "The Hero Framework", href: "#the-hero-framework" },
+                { label: "Work", href: "#work" },
+                { label: "Our services", href: "#our-services" },
+                { label: "Careers", href: "/careers" },
+                { label: "Contact", href: "#contact" },
+              ].map(({ label, href }) => (
                 <a
                   key={label}
-                  href={`#${label.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={href}
                   style={{
                     fontFamily: "var(--font-urbanist), sans-serif",
                     fontWeight: 500,

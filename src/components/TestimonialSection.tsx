@@ -1,36 +1,31 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
 
 const TESTIMONIALS = [
   {
     quote:
-      "We appreciate the vision and creativity Contrast brought to our website, and the fact that they understood our approach and could help us shape the story. We look forward to building on the foundation we\u2019ve developed with Contrast!",
-    name: "Benjamin Oakes",
-    title: "Co-founder & CEO / Scribe Therapeutics",
-    photo: "/testimonials/benjamin-oakes.jpg",
-  },
-  {
-    quote:
-      "Contrast\u2019s strategic approach paired with their pixel-perfect designs are an inseparable part of the Post.news launch and results.",
+      "Contrast’s strategic approach paired with their pixel-perfect designs are an inseparable part of the Post.news launch and results.",
     name: "Noam Bardin",
-    title: "Founder Post.news \u00b7 Former CEO of Waze",
+    title: "Founder Post.news · Former CEO of Waze",
     photo: "/testimonials/noam-bardin.jpg",
   },
   {
     quote:
-      "Contrast\u2019s outstanding strategy & design work set the stage \u2014 and is directly linked \u2014 to the rapid success & eventual acquisition of our startup.",
-    name: "Kieran O\u2019Brien",
-    title: "Founder Mediakits \u00b7 Acquired by Viral Nation",
+      "Contrast’s outstanding strategy & design work set the stage — and is directly linked — to the rapid success & eventual acquisition of our startup.",
+    name: "Kieran O’Brien",
+    title: "Founder Mediakits · Acquired by Viral Nation",
     photo: "/testimonials/kieran-obrien.png",
   },
 ];
 
+const AUTO_INTERVAL = 6000;
+
 // ── Avatar — shows photo if it loads, initials otherwise ──────────────────────
 function Avatar({ src, name }: { src: string; name: string }) {
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [src]);          // reset when photo changes
+  useEffect(() => setFailed(false), [src]);
 
   const initials = name
     .split(" ")
@@ -113,8 +108,9 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
 }
 
 export default function TestimonialSection() {
-  const [current, setCurrent]           = useState(0);
+  const [current, setCurrent] = useState(0);
   const [revealProgress, setRevealProgress] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -124,12 +120,27 @@ export default function TestimonialSection() {
   });
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
 
-  // Store 0–1 progress so any testimonial can use it
   useMotionValueEvent(smoothProgress, "change", (v) => {
     setRevealProgress(v);
   });
 
-  const goTo = (index: number) => setCurrent(index);
+  // Auto-play — restarts whenever the user manually navigates
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(i => (i + 1) % TESTIMONIALS.length);
+    }, AUTO_INTERVAL);
+  }, []);
+
+  useEffect(() => {
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [startTimer]);
+
+  const goTo = (index: number) => {
+    setCurrent(index);
+    startTimer();
+  };
   const goPrev = () => goTo((current - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   const goNext = () => goTo((current + 1) % TESTIMONIALS.length);
 
@@ -150,7 +161,7 @@ export default function TestimonialSection() {
     <section ref={sectionRef} style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", flexDirection: "column", gap: 96 }}>
 
-        {/* Quote — always word-by-word, fades when switching slides */}
+        {/* Quote */}
         <AnimatePresence mode="wait">
           <motion.p
             key={current}
@@ -210,7 +221,7 @@ export default function TestimonialSection() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Controls: arrows + pagination dots */}
+          {/* Controls */}
           <div className="testimonial-controls" style={{ display: "flex", gap: 16, alignItems: "center", flexShrink: 0 }}>
             <NavButton direction="left" onClick={goPrev} />
 

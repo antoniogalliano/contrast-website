@@ -159,12 +159,12 @@ function CyclingHeadline() {
 
   useEffect(() => {
     if (!inView) return;
-    const id = setInterval(() => setIndex(i => (i + 1) % PHRASES.length), 4800);
+    const id = setInterval(() => setIndex(i => (i + 1) % PHRASES.length), 2400);
     return () => clearInterval(id);
   }, [inView]);
 
   const chars = PHRASES[index].split("");
-  const STAGGER = 0.047;
+  const STAGGER = 0.024;
 
   return (
     <div
@@ -200,7 +200,7 @@ function CyclingHeadline() {
               animate={{ opacity: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0, filter: "blur(22px)" }}
               transition={{
-                duration: 0.93,
+                duration: 0.47,
                 delay: i * STAGGER,
                 ease: [0.22, 1, 0.36, 1],
               }}
