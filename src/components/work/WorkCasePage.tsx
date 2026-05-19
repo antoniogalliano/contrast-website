@@ -613,7 +613,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           style={{
             position: "absolute",
             top: 96,
-            left: 56,
+            left: 40,
             zIndex: 10,
             display: "inline-flex",
             alignItems: "center",
@@ -637,7 +637,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
 
         {/* ── "CASE STUDY" eyebrow, fires immediately, letter by letter ── */}
         <div style={{
-          position: "absolute", top: 96, right: 56, zIndex: 10,
+          position: "absolute", top: 96, right: 40, zIndex: 10,
           display: "flex", alignItems: "center", gap: 0,
         }}>
           {"CASE STUDY".split("").map((char, i) => (
@@ -665,8 +665,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="wcp-hero-bottom"
-          style={{ position: "absolute", bottom: 56, left: 56, right: 56, zIndex: 10 }}
+          style={{ position: "absolute", bottom: 56, left: 0, right: 0, zIndex: 10 }}
         >
+          <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
           <motion.div style={{ opacity: textOpacity }}>
             {/* Tags */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
@@ -740,18 +741,20 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               {data.heroSubtitle}
             </motion.p>
           </motion.div>
+          </div>
         </motion.div>
 
         <style jsx global>{`
           @media (max-width: 768px) {
             .wcp-back-btn {
               top: 80px !important;
-              left: 24px !important;
+              left: 20px !important;
             }
             .wcp-hero-bottom {
-              left: 24px !important;
-              right: 24px !important;
               bottom: 40px !important;
+            }
+            .wcp-hero-bottom > div {
+              padding: 0 20px !important;
             }
           }
         `}</style>
@@ -838,14 +841,11 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
       {/* ════════════════════════════════════════════════
           3. SCREENSHOTS, full-screen stacked with parallax
       ════════════════════════════════════════════════ */}
-      <section style={{ background: "#0a0a0a" }}>
-        {/* Divider stays in the content column */}
-        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px 48px" }}>
-          <Divider />
-        </div>
-
-        {/* Screenshots constrained to content column, 32px gap between */}
-        <div style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px" }}>
+      <section style={{ padding: "0 40px 100px", background: "#0a0a0a" }}>
+        <div style={{ maxWidth: 1360, margin: "0 auto" }}>
+          <div style={{ paddingBottom: 48 }}>
+            <Divider />
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
             {data.gallery.map((item) => (
               <ParallaxScreenshot
