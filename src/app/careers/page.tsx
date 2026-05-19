@@ -5,32 +5,35 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-// ─── Team photos — replace src + name with real data when available ───────────
+// ─── Team photos ─────────────────────────────────────────────────────────────
 
 const TEAM_ROW_1 = [
-  { src: "https://randomuser.me/api/portraits/women/44.jpg",  name: "Sarah K."  },
-  { src: "https://randomuser.me/api/portraits/men/32.jpg",    name: "Marcus L." },
-  { src: "https://randomuser.me/api/portraits/women/67.jpg",  name: "Priya M."  },
-  { src: "https://randomuser.me/api/portraits/men/18.jpg",    name: "Daniel R." },
-  { src: "https://randomuser.me/api/portraits/women/21.jpg",  name: "Yuki T."   },
-  { src: "https://randomuser.me/api/portraits/men/55.jpg",    name: "Alex C."   },
-  { src: "https://randomuser.me/api/portraits/women/76.jpg",  name: "Mia F."    },
-  { src: "https://randomuser.me/api/portraits/men/43.jpg",    name: "James O."  },
-  { src: "https://randomuser.me/api/portraits/women/9.jpg",   name: "Clara B."  },
-  { src: "https://randomuser.me/api/portraits/men/62.jpg",    name: "Noah P."   },
+  { src: "/team/01.png", name: "Team member" },
+  { src: "/team/02.png", name: "Team member" },
+  { src: "/team/03.png", name: "Team member" },
+  { src: "/team/04.png", name: "Team member" },
+  { src: "/team/05.png", name: "Team member" },
+  { src: "/team/06.png", name: "Team member" },
+  { src: "/team/07.png", name: "Team member" },
+  { src: "/team/08.png", name: "Team member" },
+  { src: "/team/09.png", name: "Team member" },
+  { src: "/team/10.png", name: "Team member" },
+  { src: "/team/11.png", name: "Team member" },
+  { src: "/team/12.png", name: "Team member" },
 ];
 
 const TEAM_ROW_2 = [
-  { src: "https://randomuser.me/api/portraits/men/8.jpg",     name: "Ryan S."   },
-  { src: "https://randomuser.me/api/portraits/women/14.jpg",  name: "Leila A."  },
-  { src: "https://randomuser.me/api/portraits/men/70.jpg",    name: "Oscar D."  },
-  { src: "https://randomuser.me/api/portraits/women/56.jpg",  name: "Eva N."    },
-  { src: "https://randomuser.me/api/portraits/men/22.jpg",    name: "Kai H."    },
-  { src: "https://randomuser.me/api/portraits/women/85.jpg",  name: "Sofia R."  },
-  { src: "https://randomuser.me/api/portraits/men/15.jpg",    name: "Ben W."    },
-  { src: "https://randomuser.me/api/portraits/women/33.jpg",  name: "Hana I."   },
-  { src: "https://randomuser.me/api/portraits/men/80.jpg",    name: "Luis G."   },
-  { src: "https://randomuser.me/api/portraits/women/2.jpg",   name: "Aisha M."  },
+  { src: "/team/13.png", name: "Team member" },
+  { src: "/team/14.png", name: "Team member" },
+  { src: "/team/15.png", name: "Team member" },
+  { src: "/team/16.png", name: "Team member" },
+  { src: "/team/17.png", name: "Team member" },
+  { src: "/team/18.png", name: "Team member" },
+  { src: "/team/19.png", name: "Team member" },
+  { src: "/team/20.png", name: "Team member" },
+  { src: "/team/21.png", name: "Team member" },
+  { src: "/team/22.png", name: "Team member" },
+  { src: "/team/23.png", name: "Team member" },
 ];
 
 // ─── Photo card ───────────────────────────────────────────────────────────────
