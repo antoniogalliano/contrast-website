@@ -102,14 +102,9 @@ function PanelLayer({
 }) {
   const [bottomHovered, setBottomHovered] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const isLast = index === total - 1;
   const router = useRouter();
 
-  // Named view-transition: tag this panel's <img> as "case-hero" right before
-  // the "old" snapshot so the browser cross-dissolves it with the case page
-  // hero (same photo, same full-screen size → image appears frozen while the
-  // page UI transitions around it). Clean up the name after the animation.
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
@@ -117,29 +112,10 @@ function PanelLayer({
       router.push(project.href, { scroll: false });
       return;
     }
-    const panelImg = wrapperRef.current?.querySelector("img") as HTMLElement | null;
-    panelImg?.style.setProperty("view-transition-name", "case-hero");
-
-    // Reset individual TitleChar spans to clean visible state so the
-    // view-transition snapshot captures solid text, not scattered/blurred letters.
-    if (titleRef.current) {
-      titleRef.current.querySelectorAll("span").forEach((span) => {
-        (span as HTMLElement).style.opacity = "1";
-        (span as HTMLElement).style.transform = "translateY(0px)";
-        (span as HTMLElement).style.filter = "none";
-      });
-      titleRef.current.style.setProperty("view-transition-name", "case-title");
-    }
-
-    const vt = (document as Document & {
+    (document as Document & {
       startViewTransition: (cb: () => void) => { finished: Promise<void> };
     }).startViewTransition(() => {
       flushSync(() => { router.push(project.href, { scroll: false }); });
-    });
-
-    vt.finished.then(() => {
-      panelImg?.style.removeProperty("view-transition-name");
-      titleRef.current?.style.removeProperty("view-transition-name");
     });
   };
 
@@ -233,7 +209,7 @@ function PanelLayer({
 
         {/* Title */}
         <motion.div className="selected-work-title" style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
-          <h3 ref={titleRef} style={{
+          <h3 style={{
             fontFamily: "var(--font-urbanist), sans-serif",
             fontSize: "clamp(56px, 10vw, 140px)",
             fontWeight: 600, color: "#ffffff",
