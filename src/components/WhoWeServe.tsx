@@ -442,7 +442,13 @@ function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, i
   isMobile: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const inView  = useInView(cardRef, { amount: 0.5 });
+  // On mobile: shrink the detection root to a ~60px band in the vertical
+  // centre so only one card can be "active" at a time. amount:0 = trigger
+  // as soon as any card pixel enters that band.
+  const inView  = useInView(cardRef, {
+    amount: isMobile ? 0 : 0.5,
+    margin: isMobile ? "-46% 0px" : "0px",
+  });
 
   const isActive  = expanded === i;
   const isNarrow  = !isMobile && expanded !== null && !isActive;
