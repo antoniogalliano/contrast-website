@@ -342,109 +342,92 @@ export default function CareersPage() {
       <Header />
 
       {/* ── Hero ── */}
-      <section
-        style={{
-          padding: "180px 40px 120px",
-          maxWidth: 1360,
-          margin: "0 auto",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-          style={{ maxWidth: 800 }}
-        >
-          {/* Eyebrow */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              marginBottom: 28,
-              padding: "6px 14px",
-              borderRadius: 9999,
-              border: "1px solid rgba(217,12,183,0.35)",
-              background: "rgba(217,12,183,0.06)",
-            }}
+      <section style={{ padding: "160px 40px 100px" }}>
+        <div className="careers-hero-grid" style={{ maxWidth: 1360, margin: "0 auto", display: "flex", alignItems: "center", gap: "clamp(40px, 6vw, 96px)" }}>
+
+          {/* Left — text */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+            className="careers-hero-text"
+            style={{ flex: "0 0 auto", maxWidth: 520 }}
           >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#d90cb7",
-                display: "block",
-                animation: "pulse-dot 2s ease-in-out infinite",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                letterSpacing: "0.84px",
-                textTransform: "uppercase",
-                color: "#d90cb7",
-                fontFamily: "var(--font-urbanist), sans-serif",
-              }}
+            {/* Eyebrow */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 28, padding: "6px 14px", borderRadius: 9999, border: "1px solid rgba(217,12,183,0.35)", background: "rgba(217,12,183,0.06)" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d90cb7", display: "block", animation: "pulse-dot 2s ease-in-out infinite" }} />
+              <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.84px", textTransform: "uppercase", color: "#d90cb7", fontFamily: "var(--font-urbanist), sans-serif" }}>
+                We&apos;re hiring
+              </span>
+            </div>
+
+            <h1 style={{ margin: "0 0 24px", fontSize: "clamp(38px, 5vw, 68px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+              <span style={{ color: "#888888" }}>Build the future of </span>
+              <span style={{ color: "#ffffff" }}>digital design</span>
+              <span style={{ color: "#888888" }}> with us.</span>
+            </h1>
+
+            <p style={{ margin: "0 0 40px", fontSize: "clamp(15px, 1.4vw, 18px)", lineHeight: 1.7, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
+              We&apos;re a small, senior team obsessed with craft. Every project we take on raises the bar — and we&apos;re looking for people who want to help raise it.
+            </p>
+
+            <a
+              href="#open-roles"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, background: "#ffffff", color: "#000000", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, transition: "opacity 0.2s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
-              We&apos;re hiring
-            </span>
+              See open roles
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </a>
+          </motion.div>
+
+          {/* Right — photo collage */}
+          <div className="careers-hero-photos" style={{ flex: 1, minWidth: 0, display: "flex", gap: 12 }}>
+            {/* Left photo column — shifted down */}
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, marginTop: 48 }}>
+              <motion.img
+                src="https://randomuser.me/api/portraits/women/44.jpg"
+                alt="Team member"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+                style={{ width: "100%", height: 280, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
+              />
+              <motion.img
+                src="https://randomuser.me/api/portraits/men/55.jpg"
+                alt="Team member"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
+                style={{ width: "100%", height: 200, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
+              />
+            </div>
+
+            {/* Right photo column — normal position */}
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
+              <motion.img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Team member"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+                style={{ width: "100%", height: 200, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
+              />
+              <motion.img
+                src="https://randomuser.me/api/portraits/women/67.jpg"
+                alt="Team member"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
+                style={{ width: "100%", height: 280, objectFit: "cover", objectPosition: "top", borderRadius: 16, border: "1px solid #242323", display: "block" }}
+              />
+            </div>
           </div>
 
-          <h1
-            style={{
-              margin: "0 0 24px",
-              fontSize: "clamp(40px, 5.5vw, 72px)",
-              fontWeight: 700,
-              fontFamily: "var(--font-urbanist), sans-serif",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            <span style={{ color: "#888888" }}>Build the future of </span>
-            <span style={{ color: "#ffffff" }}>digital design</span>
-            <span style={{ color: "#888888" }}> with us.</span>
-          </h1>
-
-          <p
-            style={{
-              margin: "0 0 40px",
-              fontSize: "clamp(16px, 1.5vw, 20px)",
-              lineHeight: 1.65,
-              color: "#b0b0b0",
-              fontFamily: "var(--font-geist), sans-serif",
-              maxWidth: 600,
-            }}
-          >
-            We&apos;re a small, senior team obsessed with craft. Every project we take on raises the bar — and we&apos;re looking for people who want to help raise it.
-          </p>
-
-          <a
-            href="#open-roles"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "14px 28px",
-              borderRadius: 9999,
-              background: "#ffffff",
-              color: "#000000",
-              textDecoration: "none",
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontWeight: 600,
-              fontSize: 14,
-              transition: "opacity 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-          >
-            See open roles
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-              <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-          </a>
-        </motion.div>
+        </div>
       </section>
 
       {/* ── Divider ── */}
@@ -628,6 +611,21 @@ export default function CareersPage() {
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        @media (max-width: 900px) {
+          .careers-hero-grid {
+            flex-direction: column !important;
+          }
+          .careers-hero-text {
+            max-width: 100% !important;
+          }
+          .careers-hero-photos {
+            width: 100% !important;
+          }
+          .careers-hero-photos > div {
+            margin-top: 0 !important;
+          }
         }
 
         .careers-benefits-grid {
