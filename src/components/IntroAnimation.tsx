@@ -2,7 +2,7 @@
 
 import { useState, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { setDotOrigin } from "@/lib/introState";
+import { setDotOrigin, shouldSkipIntro, markIntroPlayed } from "@/lib/introState";
 
 // ── Logo vectors — identical to Logotype.tsx ──────────────────────────────────
 const VECTORS = [
@@ -53,6 +53,12 @@ export default function IntroAnimation() {
   const dotRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    if (shouldSkipIntro()) {
+      setShow(false);
+      return;
+    }
+
+    markIntroPlayed();
     document.body.style.overflow = "hidden";
 
     const T: ReturnType<typeof setTimeout>[] = [];

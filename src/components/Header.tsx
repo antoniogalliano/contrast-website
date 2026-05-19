@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logotype from "./Logotype";
-import { setLogoOrigin } from "@/lib/introState";
+import { setLogoOrigin, shouldSkipIntro } from "@/lib/introState";
 
 const navLinks = [
   { label: "The Hero Framework", href: "#framework" },
@@ -15,7 +15,12 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [introDelay, setIntroDelay] = useState(3.8);
   const logoRef = useRef<HTMLAnchorElement>(null);
+
+  useLayoutEffect(() => {
+    if (shouldSkipIntro()) setIntroDelay(0);
+  }, []);
 
   // Measure the logo's natural screen position so IntroAnimation can morph into it.
   // We use opacity-only entrance (no y-slide) so the logo is already at its true
@@ -58,7 +63,7 @@ export default function Header() {
         <motion.header
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 3.8, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: introDelay, ease: "easeOut" }}
           style={{
             width:                "100%",
             borderRadius:         mobileOpen ? 24 : 9999,
