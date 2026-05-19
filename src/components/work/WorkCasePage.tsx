@@ -486,43 +486,34 @@ function ViewAllReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Full-screen parallax screenshot ─────────────────────────────────────────
+// ─── Full-size parallax screenshot ───────────────────────────────────────────
 //
-// Each screenshot occupies a full 100vh slot. The image is 120px taller than
-// its container and shifts ±60px on scroll, so the image moves at ~half the
-// scroll rate — classic parallax without any CSS trickery.
+// Image displays at natural dimensions (width: 100%, height: auto — no crop).
+// A scale: 1.06 grows the image ~6% in all directions, creating invisible
+// overflow that the container clips. The ±30px parallax y-shift stays inside
+// that buffer so no edge gaps are ever visible.
 
-function ParallaxScreenshot({ src, alt, objectPosition = "center center" }: {
+function ParallaxScreenshot({ src, alt }: {
   src: string;
   alt: string;
-  objectPosition?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
-  // Entering viewport: y = +60 (image anchored to top of its container)
-  // Exiting viewport:  y = -60 (image has crept upward, revealing the bottom)
-  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
 
   return (
-    <div
-      ref={ref}
-      style={{ position: "relative", height: "100vh", overflow: "hidden" }}
-    >
+    <div ref={ref} style={{ overflow: "hidden", borderRadius: 4 }}>
       <motion.img
         src={src}
         alt={alt}
         style={{
-          position: "absolute",
-          top:    "-60px",
-          left:   0,
-          width:  "100%",
-          height: "calc(100% + 120px)",
-          objectFit: "cover",
-          objectPosition,
+          width:   "100%",
+          height:  "auto",
           display: "block",
+          scale:   1.06,
           y,
         }}
       />
@@ -861,7 +852,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                 key={item.src}
                 src={item.src}
                 alt={item.alt}
-                objectPosition={item.objectPosition}
               />
             ))}
           </div>
