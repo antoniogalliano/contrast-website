@@ -21,6 +21,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip; /* clip (not hidden) — prevents horizontal overflow without creating a scroll container, so position:sticky still works */
 }
 
 body {

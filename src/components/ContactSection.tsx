@@ -6,7 +6,7 @@ const MOTION_URL = "https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-cal
 
 export default function ContactSection() {
   return (
-    <section id="contact" style={{ padding: "120px 40px 300px", background: "#0a0a0a" }}>
+    <section id="contact" style={{ padding: "120px 40px 300px", background: "#0a0a0a", overflow: "hidden" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", justifyContent: "center" }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
