@@ -470,6 +470,8 @@ export default function SelectedWorkSection() {
         }
         @media (max-width: 640px) {
           .selected-work-outer { padding: 60px 20px 40px !important; }
+          /* Cancel the global section padding rule — panels must stay full-bleed */
+          #work { padding-left: 0 !important; padding-right: 0 !important; }
         }
       `}</style>
     </section>
