@@ -234,12 +234,30 @@ export default function TestimonialSection() {
                     height: 4,
                     width: i === current ? 76 : 8,
                     borderRadius: 45,
-                    background: i === current ? "#ffffff" : "rgba(255,255,255,0.3)",
+                    background: "rgba(255,255,255,0.3)",
                     cursor: "pointer",
-                    transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease",
+                    transition: "width 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
                     flexShrink: 0,
+                    overflow: "hidden",
+                    position: "relative",
                   }}
-                />
+                >
+                  {i === current && (
+                    <motion.div
+                      key={current}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: AUTO_INTERVAL / 1000, ease: "linear" }}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "#ffffff",
+                        borderRadius: 45,
+                        transformOrigin: "left center",
+                      }}
+                    />
+                  )}
+                </div>
               ))}
             </div>
 

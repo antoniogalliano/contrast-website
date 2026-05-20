@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 
 type ServiceCard = {
   label: string;
@@ -24,10 +24,17 @@ const ROW2: ServiceCard[] = [
   { label: "Team Training",              icon: "/services/team-training.svg",   iconW: 28 },
 ];
 
-function Card({ card, delay }: { card: ServiceCard; delay: number }) {
+function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isMobile: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
+
+  const inView = useInView(ref, {
+    amount: isMobile ? 0 : 0.5,
+    margin: isMobile ? "-47.6% 0px" : "0px",
+  });
+
+  const effectiveHovered = hovered || (isMobile && inView);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -35,13 +42,18 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
     setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
+  // On mobile, gradient originates from card center; on desktop follows mouse
+  const gradientPos = isMobile ? "50% 50%" : `${mouse.x}px ${mouse.y}px`;
+  const gradientUnit = isMobile ? "" : "";
+
   // Border is the 1px gap between outer (gradient) and inner (#0a0a0a) div
-  const borderBg = hovered
-    ? `radial-gradient(circle 240px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+  const borderBg = effectiveHovered
+    ? `radial-gradient(circle 240px at ${gradientPos}, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
     : "rgba(56,56,56,0.62)";
 
-  // Inner spotlight glow follows mouse (offset by 1px for the border)
-  const spotlightBg = `radial-gradient(circle 280px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.15) 0%, transparent 70%)`;
+  // Inner spotlight glow follows mouse on desktop; centered on mobile
+  const spotlightPos = isMobile ? "50% 50%" : `${mouse.x - 1}px ${mouse.y - 1}px`;
+  const spotlightBg = `radial-gradient(circle 280px at ${spotlightPos}, rgba(217,12,183,0.15) 0%, transparent 70%)`;
 
   return (
     <motion.div
@@ -59,8 +71,8 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
         padding: 1,
         borderRadius: 13,
         background: borderBg,
-        // No transition when hovered so spotlight tracks instantly; fade back on leave
-        transition: hovered ? "none" : "background 0.4s ease",
+        // No transition when hovered on desktop so spotlight tracks instantly; fade on leave or mobile
+        transition: (effectiveHovered && !isMobile) ? "none" : "background 0.4s ease",
         cursor: "default",
       }}
     >
@@ -86,8 +98,8 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
-            opacity: hovered ? 1 : 0,
-            transition: hovered ? "opacity 0.2s ease" : "opacity 0.4s ease",
+            opacity: effectiveHovered ? 1 : 0,
+            transition: effectiveHovered ? "opacity 0.2s ease" : "opacity 0.4s ease",
             background: spotlightBg,
           }}
         />
@@ -103,7 +115,7 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
               position: "absolute",
               width: card.iconW,
               height: "auto",
-              opacity: hovered ? 0 : 1,
+              opacity: effectiveHovered ? 0 : 1,
               transition: "opacity 0.3s ease",
             }}
           />
@@ -117,7 +129,7 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
               width: card.iconW,
               height: "auto",
               filter: "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93) drop-shadow(0 0 8px #d90cb7)",
-              opacity: hovered ? 1 : 0,
+              opacity: effectiveHovered ? 1 : 0,
               transition: "opacity 0.3s ease",
             }}
           />
@@ -144,7 +156,7 @@ function Card({ card, delay }: { card: ServiceCard; delay: number }) {
   );
 }
 
-function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) {
+function Row({ cards, baseDelay, isMobile }: { cards: ServiceCard[]; baseDelay: number; isMobile: boolean }) {
   return (
     <div
       className="services-row"
@@ -156,13 +168,23 @@ function Row({ cards, baseDelay }: { cards: ServiceCard[]; baseDelay: number }) 
       }}
     >
       {cards.map((card, i) => (
-        <Card key={card.label} card={card} delay={baseDelay + i * 0.07} />
+        <Card key={card.label} card={card} delay={baseDelay + i * 0.07} isMobile={isMobile} />
       ))}
     </div>
   );
 }
 
 export default function ServicesSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
     <>
     <section style={{ padding: "200px 40px 120px", background: "#0a0a0a" }}>
@@ -187,8 +209,8 @@ export default function ServicesSection() {
 
         {/* 2-row grid */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <Row cards={ROW1} baseDelay={0} />
-          <Row cards={ROW2} baseDelay={0.28} />
+          <Row cards={ROW1} baseDelay={0} isMobile={isMobile} />
+          <Row cards={ROW2} baseDelay={0.28} isMobile={isMobile} />
         </div>
 
         {/* CTA */}
