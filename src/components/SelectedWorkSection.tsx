@@ -170,11 +170,11 @@ function PanelLayer({
       style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
     >
       {/* ── Left panel: dark bg + animated text ── */}
-      <div className="sw-left-panel" style={{ position: "absolute", left: 0, top: 0, width: "50%", height: "100%", background: "#0a0a0a" }}>
+      <div className="sw-left-panel" style={{ position: "absolute", left: 0, top: 0, width: "25%", height: "100%", background: "#0a0a0a" }}>
 
         {/* Project number */}
         <motion.div style={{
-          position: "absolute", top: 44, left: 56, zIndex: 5,
+          position: "absolute", top: 44, left: 32, zIndex: 5,
           fontFamily: "var(--font-urbanist), sans-serif",
           fontSize: 13, fontWeight: 500, letterSpacing: "0.14em",
           color: "rgba(255,255,255,0.38)",
@@ -186,7 +186,7 @@ function PanelLayer({
         {/* Client name + project info */}
         <motion.div
           className="selected-work-title"
-          style={{ position: "absolute", top: 0, left: 56, right: 48, y: titleContainerY, zIndex: 5 }}
+          style={{ position: "absolute", top: 0, left: 32, right: 24, y: titleContainerY, zIndex: 5 }}
         >
           <h3 style={{
             fontFamily: "var(--font-urbanist), sans-serif",
@@ -254,7 +254,7 @@ function PanelLayer({
         style={{
           display: "block",
           position: "absolute", right: 0, top: 0,
-          width: "50%", height: "100%",
+          width: "75%", height: "100%",
           padding: "24px 40px 24px 0",
           textDecoration: "none",
           cursor: "inherit",
