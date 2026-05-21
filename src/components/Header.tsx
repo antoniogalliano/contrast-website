@@ -119,7 +119,9 @@ export default function Header() {
 
             {/* CTA */}
             <a
-              href="/#contact"
+              href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn-gradient-border hidden lg:flex"
               style={{
                 alignItems:     "center",
@@ -205,7 +207,9 @@ export default function Header() {
                     </a>
                   ))}
                   <a
-                    href="/#contact"
+                    href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn-gradient-border"
                     style={{
                       display:        "flex",

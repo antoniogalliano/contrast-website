@@ -299,7 +299,9 @@ export default function CtaBanner() {
 
       {/* ── CTA button ── */}
       <motion.a
-        href="#contact"
+        href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+        target="_blank"
+        rel="noopener noreferrer"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}

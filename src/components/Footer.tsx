@@ -110,7 +110,9 @@ export default function Footer() {
 
             {/* "Book a Call", white pill button */}
             <a
-              href="#contact"
+              href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
