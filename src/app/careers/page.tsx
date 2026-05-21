@@ -468,7 +468,7 @@ export default function CareersPage() {
               </span>
             </div>
             <div className="careers-stats" style={{ display: "flex", alignItems: "center", gap: 48 }}>
-              {([["~20", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as [string, string][]).map(([n, label]) => (
+              {([["20+", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as [string, string][]).map(([n, label]) => (
                 <div key={label} style={{ textAlign: "right" }}>
                   <div style={{ fontSize: 26, fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1, letterSpacing: "-0.02em" }}>{n}</div>
                   <div style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-urbanist), sans-serif", marginTop: 5 }}>{label}</div>
