@@ -539,7 +539,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const [heroReady, setHeroReady] = useState(!fromTransition.current);
   useEffect(() => {
     if (!fromTransition.current) return;
-    const t = setTimeout(() => setHeroReady(true), 860);
+    const t = setTimeout(() => setHeroReady(true), 1700);
     return () => clearTimeout(t);
   }, []);
 

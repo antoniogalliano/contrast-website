@@ -68,10 +68,10 @@ body {
 
 /* Full page fade — old view out, new view in with no gap between them */
 ::view-transition-old(root) {
-  animation: 360ms ease-in both vt-fade-out;
+  animation: 720ms ease-in both vt-fade-out;
 }
 ::view-transition-new(root) {
-  animation: 480ms ease-out 360ms both vt-fade-in;
+  animation: 960ms ease-out 720ms both vt-fade-in;
 }
 
 @media (prefers-reduced-motion: reduce) {
