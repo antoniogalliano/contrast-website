@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
 
 // ── Sparkle field ─────────────────────────────────────────────────────────────
 function SparkleField() {
@@ -177,8 +176,6 @@ export default function NotFound() {
           zIndex: 0,
         }}
       />
-
-      <Header />
 
       <main
         style={{
