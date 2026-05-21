@@ -104,9 +104,9 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
           }}
         />
 
-        {/* Icon, 48×48px container, glows pink on hover via stacked opacity (no filter interpolation) */}
+        {/* Icon: white base always visible; pink layer fades in on top — no crossfade gap */}
         <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-          {/* Base: white icon, fades out on hover */}
+          {/* Base: white icon, always at full opacity */}
           <img
             src={card.icon}
             alt=""
@@ -115,11 +115,9 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               position: "absolute",
               width: card.iconW,
               height: "auto",
-              opacity: effectiveHovered ? 0 : 1,
-              transition: effectiveHovered ? "opacity 0.35s ease" : "opacity 0.35s ease 0.05s",
             }}
           />
-          {/* Pink layer: always fully tinted, fades in on hover with slight delay so white exits first */}
+          {/* Pink layer: overlays white, fades in on hover */}
           <img
             src={card.icon}
             alt=""
@@ -130,7 +128,7 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               height: "auto",
               filter: "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93) drop-shadow(0 0 8px #d90cb7)",
               opacity: effectiveHovered ? 1 : 0,
-              transition: effectiveHovered ? "opacity 0.35s ease 0.05s" : "opacity 0.35s ease",
+              transition: "opacity 0.4s ease",
             }}
           />
         </div>
