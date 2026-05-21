@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TESTIMONIALS = [
   {
@@ -109,20 +109,23 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
 
 export default function TestimonialSection() {
   const [current, setCurrent] = useState(0);
-  const [revealProgress, setRevealProgress] = useState(0);
+  const [wordProgress, setWordProgress] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rafRef = useRef<number | null>(null);
 
-  const sectionRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.8", "start 0.2"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 18, restDelta: 0.001 });
-
-  useMotionValueEvent(smoothProgress, "change", (v) => {
-    setRevealProgress(v);
-  });
+  // Word reveal — runs for AUTO_INTERVAL ms, resets on every slide change
+  useEffect(() => {
+    setWordProgress(0);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / AUTO_INTERVAL, 1);
+      setWordProgress(progress);
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [current]);
 
   // Auto-play, restarts whenever the user manually navigates
   const startTimer = useCallback(() => {
@@ -146,7 +149,7 @@ export default function TestimonialSection() {
 
   const t = TESTIMONIALS[current];
   const words = t.quote.split(" ");
-  const revealedCount = Math.round(revealProgress * words.length);
+  const revealedCount = Math.round(wordProgress * words.length);
 
   const quoteBase: React.CSSProperties = {
     margin: 0,
@@ -158,7 +161,7 @@ export default function TestimonialSection() {
   };
 
   return (
-    <section ref={sectionRef} style={{ padding: "120px 40px", background: "#0a0a0a" }}>
+    <section style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", flexDirection: "column", gap: 96 }}>
 
         {/* Quote */}
