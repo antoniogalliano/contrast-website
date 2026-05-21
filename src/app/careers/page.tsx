@@ -482,7 +482,7 @@ export default function CareersPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            style={{ margin: "0 0 52px", fontSize: "clamp(54px, 8vw, 112px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.0, letterSpacing: "-0.03em" }}
+            style={{ margin: "0 0 40px", fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.03em" }}
           >
             <span style={{ color: "#888888" }}>Where great design</span><br />
             <span style={{ color: "#ffffff" }}>meets real impact.</span>
@@ -493,17 +493,15 @@ export default function CareersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.34, ease: "easeOut" }}
-            className="careers-desc-row"
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48 }}
+            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 32 }}
           >
             <p style={{ margin: 0, maxWidth: 580, fontSize: "clamp(15px, 1.3vw, 18px)", lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif" }}>
               We&apos;re nearly 20 designers, strategists, and engineers who believe craft and results aren&apos;t a trade-off. Every project raises the bar, and we&apos;re looking for people who want to help raise it.
             </p>
             <a
               href="#open-roles"
-              style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, background: "#ffffff", color: "#000000", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, whiteSpace: "nowrap", transition: "opacity 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              className="btn-gradient-border"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, color: "#ffffff", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, whiteSpace: "nowrap" }}
             >
               See open roles
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -741,10 +739,6 @@ export default function CareersPage() {
           }
           .careers-stats > div {
             text-align: left !important;
-          }
-          .careers-desc-row {
-            flex-direction: column !important;
-            align-items: flex-start !important;
           }
         }
 
