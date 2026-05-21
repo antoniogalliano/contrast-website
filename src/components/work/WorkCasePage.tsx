@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, animate } f
 import React, { useState, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
+import { markViewTransition, consumeViewTransition } from "@/lib/transitionState";
 import Header from "@/components/Header";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
@@ -204,6 +205,7 @@ function CaseCard({
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
+    markViewTransition();
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href, { scroll: false }); });
     });
@@ -528,6 +530,19 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
 
+  // If we arrived via startViewTransition, keep the hero invisible during the
+  // transition (old page fades out 360ms, new fades in 360–840ms). Reveal the
+  // hero after 860ms — just after the transition finishes — so the user sees
+  // everything fade to black and then the full page appears cleanly.
+  // For direct URL loads the flag is false and heroReady starts as true.
+  const fromTransition = useRef(consumeViewTransition());
+  const [heroReady, setHeroReady] = useState(!fromTransition.current);
+  useEffect(() => {
+    if (!fromTransition.current) return;
+    const t = setTimeout(() => setHeroReady(true), 860);
+    return () => clearTimeout(t);
+  }, []);
+
   // Gate all section animations for 1 s so the user has time to settle
   // on the hero before any content below starts revealing.
   const [pageReady, setPageReady] = useState(false);
@@ -546,6 +561,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
+    markViewTransition();
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href); });
     });
@@ -576,9 +592,15 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         ref={heroRef}
         style={{ position: "relative", height: "100vh", overflow: "hidden" }}
       >
-        {/* ── Background image: fades on scroll; appears immediately so view-transition captures it fully ── */}
+        {/* ── Background image: hidden during view-transition, revealed after it completes ── */}
         <motion.div style={{ opacity: imageOpacity, position: "absolute", inset: 0 }}>
-          <div style={{ position: "absolute", inset: 0 }}>
+          <div
+            style={{
+              position: "absolute", inset: 0,
+              opacity: heroReady ? 1 : 0,
+              transition: heroReady ? "opacity 0.45s ease-out" : "none",
+            }}
+          >
             <img
               src={data.heroImage}
               alt={data.heroImageAlt}

@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent, useInView, useMot
 import { useRef, useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
+import { markViewTransition } from "@/lib/transitionState";
 
 const ACCENT = "#d90cb7";
 
@@ -112,6 +113,7 @@ function PanelLayer({
       router.push(project.href, { scroll: false });
       return;
     }
+    markViewTransition();
     (document as Document & {
       startViewTransition: (cb: () => void) => { finished: Promise<void> };
     }).startViewTransition(() => {
