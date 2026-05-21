@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, animate } f
 import React, { useState, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
-import { markViewTransition, consumeViewTransition } from "@/lib/transitionState";
 import Header from "@/components/Header";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
@@ -205,7 +204,6 @@ function CaseCard({
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
-    markViewTransition();
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href, { scroll: false }); });
     });
@@ -530,19 +528,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
 
-  // If we arrived via startViewTransition, keep the hero invisible during the
-  // transition (old page fades out 360ms, new fades in 360–840ms). Reveal the
-  // hero after 860ms — just after the transition finishes — so the user sees
-  // everything fade to black and then the full page appears cleanly.
-  // For direct URL loads the flag is false and heroReady starts as true.
-  const fromTransition = useRef(consumeViewTransition());
-  const [heroReady, setHeroReady] = useState(!fromTransition.current);
-  useEffect(() => {
-    if (!fromTransition.current) return;
-    const t = setTimeout(() => setHeroReady(true), 1700);
-    return () => clearTimeout(t);
-  }, []);
-
   // Gate all section animations for 1 s so the user has time to settle
   // on the hero before any content below starts revealing.
   const [pageReady, setPageReady] = useState(false);
@@ -561,7 +546,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
-    markViewTransition();
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
       flushSync(() => { router.push(href); });
     });
@@ -592,14 +576,15 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         ref={heroRef}
         style={{ position: "relative", height: "100vh", overflow: "hidden" }}
       >
-        {/* ── Background image: hidden during view-transition, revealed after it completes ── */}
+        {/* ── Background image: starts invisible so view-transition captures a dark new page;
+               animates to opacity:1 in 500ms — done well before ::view-transition-new starts
+               fading in at 720ms, so the hero is fully visible when the page appears. ── */}
         <motion.div style={{ opacity: imageOpacity, position: "absolute", inset: 0 }}>
-          <div
-            style={{
-              position: "absolute", inset: 0,
-              opacity: heroReady ? 1 : 0,
-              transition: heroReady ? "opacity 0.45s ease-out" : "none",
-            }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "absolute", inset: 0 }}
           >
             <img
               src={data.heroImage}
@@ -617,7 +602,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* ── Back button, top left, clears the fixed header ── */}
