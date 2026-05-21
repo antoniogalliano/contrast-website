@@ -205,6 +205,7 @@ function CaseCard({
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
       flushSync(() => { router.push(href, { scroll: false }); });
     });
   };
@@ -547,6 +548,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
       flushSync(() => { router.push(href); });
     });
   };
@@ -576,17 +578,13 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         ref={heroRef}
         style={{ position: "relative", height: "100vh", overflow: "hidden" }}
       >
-        {/* ── Background image: outer div fades on scroll, inner div reveals on mount ── */}
+        {/* ── Background image: fades on scroll; appears immediately so view-transition captures it fully ── */}
         <motion.div style={{ opacity: imageOpacity, position: "absolute", inset: 0 }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            style={{ position: "absolute", inset: 0 }}
-          >
+          <div style={{ position: "absolute", inset: 0 }}>
             <img
               src={data.heroImage}
               alt={data.heroImageAlt}
+              fetchPriority="high"
               style={{
                 width: "100%",
                 height: "100%",
@@ -595,11 +593,11 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                 display: "block",
               }}
             />
-            {/* Gradient overlays, identical to the home page work panels */}
+            {/* Gradient overlays */}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* ── Back button, top left, clears the fixed header ── */}
