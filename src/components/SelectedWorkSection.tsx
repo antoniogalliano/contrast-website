@@ -23,7 +23,7 @@ const projects: Project[] = [
     tags: ["Web Design & Development", "App Design", "TV App", "Brand Design"],
     image: "/work/dazn.png",
     href: "/work/dazn",
-    imageStyle: { objectFit: "contain" as const, objectPosition: "center center" },
+    imageStyle: { objectFit: "cover" as const, objectPosition: "center center" },
   },
   {
     client: "Down",
@@ -55,7 +55,7 @@ const projects: Project[] = [
   },
 ];
 
-// ── Per-letter title animation (imperative DOM, bypasses Framer Motion WAAPI) ─
+// ── Per-letter title animation ───────────────────────────────────────────────
 function TitleChar({
   char, sp, rA, rB, xA, xB,
 }: {
@@ -84,12 +84,12 @@ function TitleChar({
       ref={ref}
       style={{ display: "inline-block", opacity: 0, transform: "translateY(44px)", filter: "blur(40px)", willChange: "transform, opacity, filter" }}
     >
-      {char === " " ? "\u00A0" : char}
+      {char === " " ? " " : char}
     </span>
   );
 }
 
-// ── Panel layer, scroll animations only, no cursor logic ────────────────────
+// ── Panel layer ──────────────────────────────────────────────────────────────
 function PanelLayer({
   project, num, index, total, sp, onBottomHoverChange,
 }: {
@@ -121,12 +121,9 @@ function PanelLayer({
 
   const panelStart = index / total;
   const panelEnd   = (index + 1) / total;
-
-  // Local [0,1] for this panel
   const lsp = useTransform(sp, [panelStart, panelEnd], [0, 1]);
 
-  // Crossfade opacity, imperative DOM update.
-  // Also manages pointer-events so only the visually active panel catches mouse events.
+  // Cross-fade opacity between panels
   const XFADE = 0.04;
   useMotionValueEvent(sp, "change", (latest) => {
     const el = wrapperRef.current;
@@ -144,13 +141,11 @@ function PanelLayer({
       o = Math.max(0, Math.min(1, inn)) * (1 - Math.max(0, Math.min(1, out)));
     }
     el.style.opacity = String(o);
-    // Only the visually dominant panel receives pointer events, prevents
-    // invisible panels from intercepting hover/click events
     el.style.pointerEvents = o > 0.3 ? "auto" : "none";
   });
 
-  // Title, travels bottom to top with scroll
-  const titleContainerY = useTransform(lsp, [0, 1], ["92vh", "8vh"]);
+  // Title travels bottom → top as panel scrolls
+  const titleContainerY = useTransform(lsp, [0, 1], ["88vh", "10vh"]);
 
   const REVEAL_START   = 0.05;
   const REVEAL_STAGGER = 0.012;
@@ -161,42 +156,23 @@ function PanelLayer({
   const chars = project.client.split("");
 
   const subtitleOpacity = useTransform(lsp, [0, REVEAL_START, REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
-  const numOpacity     = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
+  const numOpacity      = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
 
-  const handleBottomEnter = () => {
-    setBottomHovered(true);
-    onBottomHoverChange(true);
-  };
-  const handleBottomLeave = () => {
-    setBottomHovered(false);
-    onBottomHoverChange(false);
-  };
+  // Image parallax: image shifts ±50px as panel progresses
+  const imageParallaxY = useTransform(lsp, [0, 1], [-50, 50]);
+
+  const handleBottomEnter = () => { setBottomHovered(true);  onBottomHoverChange(true);  };
+  const handleBottomLeave = () => { setBottomHovered(false); onBottomHoverChange(false); };
 
   return (
     <div
       ref={wrapperRef}
       style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
     >
-      <a
-        href={project.href}
-        onClick={handleNavigation}
-        style={{ display: "block", position: "absolute", inset: 0, overflow: "hidden", cursor: "inherit", textDecoration: "none" }}
-      >
-        {/* Background image */}
-        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-          <img
-            src={project.image}
-            alt={project.client}
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", display: "block", ...project.imageStyle }}
-          />
-        </div>
+      {/* ── Left panel: dark bg + animated text ── */}
+      <div className="sw-left-panel" style={{ position: "absolute", left: 0, top: 0, width: "50%", height: "100%", background: "#0a0a0a" }}>
 
-        {/* Gradient overlays */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 10%)" }} />
-
-        {/* Number */}
+        {/* Project number */}
         <motion.div style={{
           position: "absolute", top: 44, left: 56, zIndex: 5,
           fontFamily: "var(--font-urbanist), sans-serif",
@@ -207,11 +183,14 @@ function PanelLayer({
           {num} /
         </motion.div>
 
-        {/* Title */}
-        <motion.div className="selected-work-title" style={{ position: "absolute", top: 0, left: 56, right: 56, y: titleContainerY, zIndex: 5 }}>
+        {/* Client name + project info */}
+        <motion.div
+          className="selected-work-title"
+          style={{ position: "absolute", top: 0, left: 56, right: 48, y: titleContainerY, zIndex: 5 }}
+        >
           <h3 style={{
             fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: "clamp(56px, 10vw, 140px)",
+            fontSize: "clamp(44px, 7vw, 100px)",
             fontWeight: 600, color: "#ffffff",
             lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
           }}>
@@ -226,21 +205,24 @@ function PanelLayer({
             ))}
           </h3>
 
-          {/* Subtitle + button, travel with title, fade on same timing as chars */}
           <motion.div style={{ marginTop: 20, opacity: subtitleOpacity }}>
-            <motion.p style={{
+            <p style={{
               fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 17, fontWeight: 400, color: "rgba(255,255,255,0.72)",
+              fontSize: 17, fontWeight: 400,
+              color: "rgba(255,255,255,0.72)",
               margin: "0 0 18px",
             }}>
               {project.title}
-            </motion.p>
-            <div
-              onMouseEnter={handleBottomEnter}
-              onMouseLeave={handleBottomLeave}
-            >
+            </p>
+            <div onMouseEnter={handleBottomEnter} onMouseLeave={handleBottomLeave}>
               <button
                 type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const anchor = document.createElement("a");
+                  anchor.href = project.href;
+                  anchor.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+                }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 7,
                   padding: "9px 20px", borderRadius: 9999,
@@ -262,32 +244,74 @@ function PanelLayer({
             </div>
           </motion.div>
         </motion.div>
+      </div>
+
+      {/* ── Right panel: image thumbnail with parallax ── */}
+      <a
+        href={project.href}
+        onClick={handleNavigation}
+        className="sw-right-panel"
+        style={{
+          display: "block",
+          position: "absolute", right: 0, top: 0,
+          width: "50%", height: "100%",
+          padding: "24px 40px 24px 0",
+          textDecoration: "none",
+          cursor: "inherit",
+        }}
+      >
+        {/* Rounded image container — clips the parallax overflow */}
+        <div style={{ height: "100%", borderRadius: 20, overflow: "hidden", position: "relative" }}>
+          <motion.div
+            style={{
+              position: "absolute",
+              top: -60, left: 0, right: 0,
+              height: "calc(100% + 120px)",
+              y: imageParallaxY,
+            }}
+          >
+            <img
+              src={project.image}
+              alt={project.client}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+                display: "block",
+                ...project.imageStyle,
+              }}
+            />
+          </motion.div>
+        </div>
       </a>
     </div>
   );
 }
 
-// ── Sticky container, owns all cursor/hover state and the single floating button ─
+// ── Sticky container ─────────────────────────────────────────────────────────
 function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp: MotionValue<number> }) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
 
-  // Single shared spring, persists across panel transitions, never resets
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   const springX = useSpring(cursorX, { stiffness: 220, damping: 24, mass: 0.5 });
   const springY = useSpring(cursorY, { stiffness: 220, damping: 24, mass: 0.5 });
 
-  const [isHovered,    setIsHovered]    = useState(false);
-  const [mouseMoving,  setMouseMoving]  = useState(false);
+  const [isHovered,     setIsHovered]     = useState(false);
+  const [mouseMoving,   setMouseMoving]   = useState(false);
+  const [isRightHalf,   setIsRightHalf]   = useState(false);
   const [bottomHovered, setBottomHovered] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cursor tracking on the container, events bubble up from all child panels
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    cursorX.set(e.clientX - rect.left);
-    cursorY.set(e.clientY - rect.top);
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    cursorX.set(x);
+    cursorY.set(y);
+    setIsRightHalf(x > rect.width / 2);
 
     if (!mouseMoving) setMouseMoving(true);
     if (idleTimer.current) clearTimeout(idleTimer.current);
@@ -297,6 +321,7 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
   const handleMouseLeave = () => {
     setIsHovered(false);
     setMouseMoving(false);
+    setIsRightHalf(false);
     if (idleTimer.current) clearTimeout(idleTimer.current);
   };
 
@@ -304,8 +329,8 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
     return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
   }, []);
 
-  // Button is visible only while mouse is moving (hides after 3 s idle)
-  const showButton = isHovered && mouseMoving;
+  // Only show cursor button when hovering the image (right half)
+  const showButton = isHovered && mouseMoving && isRightHalf;
 
   return (
     <div
@@ -317,7 +342,6 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
         opacity: inView ? 1 : 0,
         transition: "opacity 0.8s ease",
-        // Hide native cursor while button is visible (restore when over bottom button)
         cursor: showButton && !bottomHovered ? "none" : "auto",
       }}
     >
@@ -333,7 +357,7 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
         />
       ))}
 
-      {/* Single floating button, lives here so the spring never resets between panels */}
+      {/* Floating cursor button — only visible over right (image) half */}
       <motion.div
         style={{
           position: "absolute",
@@ -349,7 +373,6 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
         initial={{ scale: 0.5, opacity: 0 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Inner layer: blur-out when hovering the bottom "View Work" button */}
         <motion.div
           animate={
             bottomHovered && isHovered
@@ -442,11 +465,12 @@ export default function SelectedWorkSection() {
       <style jsx global>{`
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
-          .selected-work-title { left: 24px !important; right: 24px !important; }
+          .selected-work-title  { left: 24px !important; right: 24px !important; }
+          .sw-left-panel        { width: 100% !important; }
+          .sw-right-panel       { display: none !important; }
         }
         @media (max-width: 640px) {
           .selected-work-outer { padding: 60px 20px 40px !important; }
-          /* Cancel the global section padding rule — panels must stay full-bleed */
           #work { padding-left: 0 !important; padding-right: 0 !important; }
         }
       `}</style>
