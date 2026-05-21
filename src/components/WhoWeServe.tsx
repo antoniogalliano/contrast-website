@@ -593,16 +593,16 @@ export default function WhoWeServe() {
             height: 480px !important;
           }
           .who-row > div.who-expanded {
-            height: auto !important;
-            min-height: 380px !important;
+            height: 480px !important;
           }
           .who-expanded-layout {
             flex-direction: column !important;
           }
           .who-expanded-text {
             width: 100% !important;
-            padding: 68px 28px 32px !important;
+            padding: 60px 28px 24px !important;
             justify-content: flex-start !important;
+            overflow-y: auto;
           }
           .who-expanded-illus {
             display: none !important;
