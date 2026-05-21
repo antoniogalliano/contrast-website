@@ -116,10 +116,10 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               width: card.iconW,
               height: "auto",
               opacity: effectiveHovered ? 0 : 1,
-              transition: "opacity 0.3s ease",
+              transition: effectiveHovered ? "opacity 0.35s ease" : "opacity 0.35s ease 0.05s",
             }}
           />
-          {/* Pink layer: always fully tinted, fades in on hover */}
+          {/* Pink layer: always fully tinted, fades in on hover with slight delay so white exits first */}
           <img
             src={card.icon}
             alt=""
@@ -130,7 +130,7 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               height: "auto",
               filter: "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93) drop-shadow(0 0 8px #d90cb7)",
               opacity: effectiveHovered ? 1 : 0,
-              transition: "opacity 0.3s ease",
+              transition: effectiveHovered ? "opacity 0.35s ease 0.05s" : "opacity 0.35s ease",
             }}
           />
         </div>

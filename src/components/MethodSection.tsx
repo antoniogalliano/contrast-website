@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 
 const YT_ID = "dXev23xFw4A";
 
@@ -92,12 +92,15 @@ const cardDesc: React.CSSProperties = {
 };
 
 // ── Design Triggers Card ───────────────────────────────────────────────────────
-function DesignTriggersCard({ delay }: { delay: number }) {
+function DesignTriggersCard({ delay, isMobile }: { delay: number; isMobile: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
-  const active = hovered || expanded;
+
+  const inView = useInView(ref, { amount: 0, margin: isMobile ? "-47.6% 0px" : "0px" });
+  const effectiveHovered = hovered || (isMobile && inView);
+  const active = effectiveHovered || expanded;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -105,10 +108,12 @@ function DesignTriggersCard({ delay }: { delay: number }) {
     setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
+  const gradientPos = isMobile ? "50% 50%" : `${mouse.x}px ${mouse.y}px`;
   const borderBg = active
-    ? `radial-gradient(circle 360px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    ? `radial-gradient(circle 360px at ${gradientPos}, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
     : "rgba(56,56,56,0.62)";
-  const spotlightBg = `radial-gradient(circle 400px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.12) 0%, transparent 70%)`;
+  const spotlightPos = isMobile ? "50% 50%" : `${mouse.x - 1}px ${mouse.y - 1}px`;
+  const spotlightBg = `radial-gradient(circle 400px at ${spotlightPos}, rgba(217,12,183,0.12) 0%, transparent 70%)`;
 
   return (
     <motion.div
@@ -125,7 +130,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
         padding: 1,
         borderRadius: 17,
         background: borderBg,
-        transition: active ? "none" : "background 0.4s ease",
+        transition: (active && !isMobile) ? "none" : "background 0.4s ease",
         cursor: "pointer",
       }}
     >
@@ -145,8 +150,8 @@ function DesignTriggersCard({ delay }: { delay: number }) {
           inset: 0,
           pointerEvents: "none",
           background: spotlightBg,
-          opacity: hovered ? 1 : 0,
-          transition: hovered ? "none" : "opacity 0.4s ease",
+          opacity: effectiveHovered ? 1 : 0,
+          transition: (effectiveHovered && !isMobile) ? "none" : "opacity 0.4s ease",
           zIndex: 1,
         }} />
 
@@ -165,9 +170,9 @@ function DesignTriggersCard({ delay }: { delay: number }) {
             }}
             animate={{
               opacity: expanded ? 0.1 : 1,
-              x: hovered && !expanded ? 0 : 180,
-              y: hovered && !expanded ? 0 : 71,
-              scale: hovered && !expanded ? 0.4 : 1,
+              x: effectiveHovered && !expanded ? 0 : 180,
+              y: effectiveHovered && !expanded ? 0 : 71,
+              scale: effectiveHovered && !expanded ? 0.4 : 1,
             }}
             transition={{
               opacity: { duration: 0.4, ease: "easeInOut" },
@@ -181,7 +186,7 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               src="/method/design-triggers.svg"
               width={552} height={447}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered && !expanded ? 0 : 1 }}
+              animate={{ opacity: effectiveHovered && !expanded ? 0 : 1 }}
               transition={{ duration: 0.4 }}
               style={{
                 position: "absolute", top: 0, left: 0, display: "block",
@@ -193,9 +198,9 @@ function DesignTriggersCard({ delay }: { delay: number }) {
               src="/method/design-triggers-hover.svg"
               width={552} height={447}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered && !expanded ? 1 : 0 }}
+              animate={{ opacity: effectiveHovered && !expanded ? 1 : 0 }}
               transition={{ duration: 0.4 }}
-              className={hovered && !expanded ? "method-dt-glow" : ""}
+              className={effectiveHovered && !expanded ? "method-dt-glow" : ""}
               style={{ position: "absolute", top: 0, left: 0, display: "block" }}
             />
           </motion.div>
@@ -261,12 +266,15 @@ function DesignTriggersCard({ delay }: { delay: number }) {
 }
 
 // ── Hero Framework Card ───────────────────────────────────────────────────────
-function HeroFrameworkCard({ delay }: { delay: number }) {
+function HeroFrameworkCard({ delay, isMobile }: { delay: number; isMobile: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
-  const active = hovered || expanded;
+
+  const inView = useInView(ref, { amount: 0, margin: isMobile ? "-47.6% 0px" : "0px" });
+  const effectiveHovered = hovered || (isMobile && inView);
+  const active = effectiveHovered || expanded;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -274,10 +282,12 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
     setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
+  const gradientPos = isMobile ? "50% 50%" : `${mouse.x}px ${mouse.y}px`;
   const borderBg = active
-    ? `radial-gradient(circle 360px at ${mouse.x}px ${mouse.y}px, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
+    ? `radial-gradient(circle 360px at ${gradientPos}, #d90cb7 0%, rgba(56,56,56,0.62) 55%)`
     : "rgba(56,56,56,0.62)";
-  const spotlightBg = `radial-gradient(circle 400px at ${mouse.x - 1}px ${mouse.y - 1}px, rgba(217,12,183,0.12) 0%, transparent 70%)`;
+  const spotlightPos = isMobile ? "50% 50%" : `${mouse.x - 1}px ${mouse.y - 1}px`;
+  const spotlightBg = `radial-gradient(circle 400px at ${spotlightPos}, rgba(217,12,183,0.12) 0%, transparent 70%)`;
 
   return (
     <motion.div
@@ -294,7 +304,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
         padding: 1,
         borderRadius: 17,
         background: borderBg,
-        transition: active ? "none" : "background 0.4s ease",
+        transition: (active && !isMobile) ? "none" : "background 0.4s ease",
         cursor: "pointer",
       }}
     >
@@ -314,8 +324,8 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
           inset: 0,
           pointerEvents: "none",
           background: spotlightBg,
-          opacity: hovered ? 1 : 0,
-          transition: hovered ? "none" : "opacity 0.4s ease",
+          opacity: effectiveHovered ? 1 : 0,
+          transition: (effectiveHovered && !isMobile) ? "none" : "opacity 0.4s ease",
           zIndex: 1,
         }} />
 
@@ -334,9 +344,9 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
             }}
             animate={{
               opacity: expanded ? 0.1 : 1,
-              x: hovered && !expanded ? 0 : 180,
-              y: hovered && !expanded ? 0 : 71,
-              scale: hovered && !expanded ? 0.4 : 1,
+              x: effectiveHovered && !expanded ? 0 : 180,
+              y: effectiveHovered && !expanded ? 0 : 71,
+              scale: effectiveHovered && !expanded ? 0.4 : 1,
             }}
             transition={{
               opacity: { duration: 0.4, ease: "easeInOut" },
@@ -350,7 +360,7 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               src="/method/hero-framework.svg"
               width={620} height={620}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered && !expanded ? 0 : 1 }}
+              animate={{ opacity: effectiveHovered && !expanded ? 0 : 1 }}
               transition={{ duration: 0.4 }}
               style={{
                 position: "absolute", top: 0, left: 0, display: "block",
@@ -362,9 +372,9 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
               src="/method/hero-framework-hover.svg"
               width={620} height={620}
               alt="" aria-hidden="true"
-              animate={{ opacity: hovered && !expanded ? 1 : 0 }}
+              animate={{ opacity: effectiveHovered && !expanded ? 1 : 0 }}
               transition={{ duration: 0.4 }}
-              className={hovered && !expanded ? "method-dt-glow" : ""}
+              className={effectiveHovered && !expanded ? "method-dt-glow" : ""}
               style={{ position: "absolute", top: 0, left: 0, display: "block" }}
             />
           </motion.div>
@@ -431,6 +441,16 @@ function HeroFrameworkCard({ delay }: { delay: number }) {
 
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function MethodSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
     <section id="framework" className="method-section" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
@@ -481,10 +501,10 @@ export default function MethodSection() {
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}
         >
           {/* Design Triggers, full interactive 3-state card */}
-          <DesignTriggersCard delay={0} />
+          <DesignTriggersCard delay={0} isMobile={isMobile} />
 
           {/* Hero Framework */}
-          <HeroFrameworkCard delay={0.15} />
+          <HeroFrameworkCard delay={0.15} isMobile={isMobile} />
         </div>
 
         {/* Video card */}
