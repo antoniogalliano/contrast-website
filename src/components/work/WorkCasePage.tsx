@@ -205,7 +205,6 @@ function CaseCard({
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
-      window.scrollTo({ top: 0, behavior: "instant" });
       flushSync(() => { router.push(href, { scroll: false }); });
     });
   };
@@ -548,7 +547,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     e.preventDefault();
     if (!("startViewTransition" in document)) { router.push(href); return; }
     (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
-      window.scrollTo({ top: 0, behavior: "instant" });
       flushSync(() => { router.push(href); });
     });
   };

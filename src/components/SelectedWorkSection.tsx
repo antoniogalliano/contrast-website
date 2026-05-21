@@ -115,7 +115,6 @@ function PanelLayer({
     (document as Document & {
       startViewTransition: (cb: () => void) => { finished: Promise<void> };
     }).startViewTransition(() => {
-      window.scrollTo({ top: 0, behavior: "instant" });
       flushSync(() => { router.push(project.href, { scroll: false }); });
     });
   };
