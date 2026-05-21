@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ACCENT = "#d90cb7";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -432,7 +432,7 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
    mobile can mirror the desktop hover state
    when the card scrolls into view.
 ═══════════════════════════════════════════ */
-function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, isMobile }: {
+function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, isMobile, isScrollActive, registerRef }: {
   card: CardData;
   i: number;
   expanded: number | null;
@@ -440,21 +440,21 @@ function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, i
   hoveredIdx: number | null;
   setHoveredIdx: (v: number | null) => void;
   isMobile: boolean;
+  isScrollActive: boolean;
+  registerRef: (el: HTMLDivElement | null) => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  // On mobile: shrink the detection root to a ~60px band in the vertical
-  // centre so only one card can be "active" at a time. amount:0 = trigger
-  // as soon as any card pixel enters that band.
-  const inView  = useInView(cardRef, {
-    amount: isMobile ? 0 : 0.5,
-    margin: isMobile ? "-47.6% 0px" : "0px",
-  });
+
+  useEffect(() => {
+    registerRef(cardRef.current);
+    return () => { registerRef(null); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isActive  = expanded === i;
   const isNarrow  = !isMobile && expanded !== null && !isActive;
   const isHovered = hoveredIdx === i && !isActive;
-  // On mobile: treat in-view as hovered; on desktop: use real hover state
-  const effectiveHovered = isHovered || (isMobile && inView && !isActive);
+  const effectiveHovered = isHovered || (isMobile && isScrollActive && !isActive);
 
   return (
     <motion.div
@@ -527,9 +527,11 @@ function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, i
    Section
 ═══════════════════════════════════════════ */
 export default function WhoWeServe() {
-  const [expanded,   setExpanded]   = useState<number | null>(null);
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [isMobile,   setIsMobile]   = useState(false);
+  const [expanded,        setExpanded]        = useState<number | null>(null);
+  const [hoveredIdx,      setHoveredIdx]      = useState<number | null>(null);
+  const [isMobile,        setIsMobile]        = useState(false);
+  const [mobileActiveIdx, setMobileActiveIdx] = useState<number | null>(null);
+  const cardDomRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 900px)");
@@ -538,6 +540,30 @@ export default function WhoWeServe() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  // On mobile: track which card's center is closest to viewport center — guarantees
+  // exactly one active card, unlike IntersectionObserver which can fire on multiple.
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileActiveIdx(null);
+      return;
+    }
+    const handleScroll = () => {
+      const vcY = window.innerHeight / 2;
+      let bestIdx: number | null = null;
+      let bestDist = window.innerHeight * 0.6;
+      cardDomRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top + rect.height / 2 - vcY);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+      setMobileActiveIdx(bestIdx);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isMobile]);
 
   return (
     <section id="services" style={{ padding: "120px 40px 40px", background: "#0a0a0a" }}>
@@ -572,6 +598,8 @@ export default function WhoWeServe() {
               hoveredIdx={hoveredIdx}
               setHoveredIdx={setHoveredIdx}
               isMobile={isMobile}
+              isScrollActive={mobileActiveIdx === i}
+              registerRef={(el) => { cardDomRefs.current[i] = el; }}
             />
           ))}
         </div>
