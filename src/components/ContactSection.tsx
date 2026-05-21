@@ -18,11 +18,11 @@ export default function ContactSection() {
         >
           {/* ── Background glows ── */}
           <div style={{ position: "absolute", left: 132.5, bottom: 0, width: 535, height: 32, pointerEvents: "none", mixBlendMode: "plus-lighter", zIndex: 0 }}>
-            <div style={{ width: "100%", height: "100%", borderRadius: 153.675, filter: "blur(28.8px)", background: "linear-gradient(to right, rgba(217,12,183,0.27), rgba(217,12,183,0.75) 53%, rgba(118,12,217,0.75))" }} />
+            <div style={{ width: "100%", height: "100%", borderRadius: 153.675, filter: "blur(28.8px)", background: "linear-gradient(to right, rgba(217,12,183,0.1), rgba(217,12,183,0.28) 53%, rgba(118,12,217,0.28))" }} />
           </div>
           <div style={{ position: "absolute", left: "50%", top: 237, transform: "translateX(-50%)", width: 769, height: 289, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", mixBlendMode: "plus-lighter", zIndex: 0 }}>
             <div style={{ flexShrink: 0, transform: "rotate(90deg)" }}>
-              <div style={{ width: 289, height: 769, borderRadius: 607.666, filter: "blur(178.645px)", background: "linear-gradient(to bottom, rgba(217,12,183,0.27), rgba(217,12,183,0.75) 53.103%, rgba(118,12,217,0.75))" }} />
+              <div style={{ width: 289, height: 769, borderRadius: 607.666, filter: "blur(178.645px)", background: "linear-gradient(to bottom, rgba(217,12,183,0.1), rgba(217,12,183,0.28) 53.103%, rgba(118,12,217,0.28))" }} />
             </div>
           </div>
 
@@ -41,29 +41,25 @@ export default function ContactSection() {
             href={MOTION_URL}
             target="_blank"
             rel="noopener noreferrer"
+            className="btn-gradient-border"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
             style={{
               position: "relative", zIndex: 1,
               display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "18px 48px",
+              padding: "16px 40px",
               borderRadius: 9999,
-              background: "#ffffff",
-              border: "1px solid rgba(10,10,10,0.01)",
               textDecoration: "none",
               fontFamily: "var(--font-urbanist), sans-serif",
-              fontWeight: 600, fontSize: 18,
-              color: "#000000",
+              fontWeight: 600, fontSize: 16,
+              color: "#ffffff",
               whiteSpace: "nowrap",
-              boxShadow: "0 0 48px rgba(217,12,183,0.25)",
             }}
           >
             Book a Call
-            <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.a>
