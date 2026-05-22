@@ -1,13 +1,15 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 type ServiceCard = {
   label: string;
   icon: string;
   iconW: number; // rendered width in px; height is auto (preserves aspect ratio)
 };
+
+type RegisterRef = (index: number, el: HTMLDivElement | null) => void;
 
 // iconW matches Figma's rendered icon size within the 48px container
 const ROW1: ServiceCard[] = [
@@ -24,17 +26,25 @@ const ROW2: ServiceCard[] = [
   { label: "Team Training",              icon: "/services/team-training.svg",   iconW: 28 },
 ];
 
-function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isMobile: boolean }) {
+function Card({ card, delay, isMobile, globalIndex, registerRef, isScrollActive }: {
+  card: ServiceCard;
+  delay: number;
+  isMobile: boolean;
+  globalIndex: number;
+  registerRef: RegisterRef;
+  isScrollActive: boolean;
+}) {
   const [hovered, setHovered] = useState(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
 
-  const inView = useInView(ref, {
-    amount: isMobile ? 0 : 0.5,
-    margin: isMobile ? "-47.6% 0px" : "0px",
-  });
+  useEffect(() => {
+    registerRef(globalIndex, ref.current);
+    return () => { registerRef(globalIndex, null); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalIndex]);
 
-  const effectiveHovered = hovered || (isMobile && inView);
+  const effectiveHovered = hovered || (isMobile && isScrollActive);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -44,7 +54,6 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
 
   // On mobile, gradient originates from card center; on desktop follows mouse
   const gradientPos = isMobile ? "50% 50%" : `${mouse.x}px ${mouse.y}px`;
-  const gradientUnit = isMobile ? "" : "";
 
   // Border is the 1px gap between outer (gradient) and inner (#0a0a0a) div
   const borderBg = effectiveHovered
@@ -71,8 +80,8 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
         padding: 1,
         borderRadius: 13,
         background: borderBg,
-        // No transition when hovered on desktop so spotlight tracks instantly; fade on leave or mobile
-        transition: (effectiveHovered && !isMobile) ? "none" : "background 0.4s ease",
+        // Snap border on activation (same feel as desktop mouse-enter); fade on leave
+        transition: effectiveHovered ? "none" : "background 0.4s ease",
         cursor: "default",
       }}
     >
@@ -92,19 +101,20 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
           height: "100%",
         }}
       >
-        {/* Inner mouse-follow spotlight glow */}
+        {/* Inner spotlight glow */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
             opacity: effectiveHovered ? 1 : 0,
-            transition: effectiveHovered ? "opacity 0.2s ease" : "opacity 0.4s ease",
+            // Snap in on activation, fade out on leave — matches desktop hover feel
+            transition: effectiveHovered ? "none" : "opacity 0.4s ease",
             background: spotlightBg,
           }}
         />
 
-        {/* Icon: white base always visible; pink layer fades in on top — no crossfade gap */}
+        {/* Icon: white base always visible; pink layer fades in on top */}
         <div style={{ width: 48, height: 48, flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
           {/* Base: white icon, always at full opacity */}
           <img
@@ -117,7 +127,7 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               height: "auto",
             }}
           />
-          {/* Pink layer: overlays white, fades in on hover */}
+          {/* Pink layer: overlays white, fades in smoothly */}
           <img
             src={card.icon}
             alt=""
@@ -129,6 +139,7 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
               filter: "brightness(0) saturate(100%) invert(18%) sepia(89%) saturate(6000%) hue-rotate(283deg) brightness(0.93) drop-shadow(0 0 8px #d90cb7)",
               opacity: effectiveHovered ? 1 : 0,
               transition: "opacity 0.4s ease",
+              willChange: "opacity",
             }}
           />
         </div>
@@ -154,7 +165,14 @@ function Card({ card, delay, isMobile }: { card: ServiceCard; delay: number; isM
   );
 }
 
-function Row({ cards, baseDelay, isMobile }: { cards: ServiceCard[]; baseDelay: number; isMobile: boolean }) {
+function Row({ cards, baseDelay, isMobile, startIndex, registerRef, mobileActiveIdx }: {
+  cards: ServiceCard[];
+  baseDelay: number;
+  isMobile: boolean;
+  startIndex: number;
+  registerRef: RegisterRef;
+  mobileActiveIdx: number | null;
+}) {
   return (
     <div
       className="services-row"
@@ -166,7 +184,15 @@ function Row({ cards, baseDelay, isMobile }: { cards: ServiceCard[]; baseDelay: 
       }}
     >
       {cards.map((card, i) => (
-        <Card key={card.label} card={card} delay={baseDelay + i * 0.07} isMobile={isMobile} />
+        <Card
+          key={card.label}
+          card={card}
+          delay={baseDelay + i * 0.07}
+          isMobile={isMobile}
+          globalIndex={startIndex + i}
+          registerRef={registerRef}
+          isScrollActive={mobileActiveIdx === startIndex + i}
+        />
       ))}
     </div>
   );
@@ -174,6 +200,8 @@ function Row({ cards, baseDelay, isMobile }: { cards: ServiceCard[]; baseDelay: 
 
 export default function ServicesSection() {
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileActiveIdx, setMobileActiveIdx] = useState<number | null>(null);
+  const allCardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
@@ -182,6 +210,33 @@ export default function ServicesSection() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  const registerRef = useCallback<RegisterRef>((index, el) => {
+    allCardRefs.current[index] = el;
+  }, []);
+
+  // On mobile: pick exactly the card whose center is closest to viewport center
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileActiveIdx(null);
+      return;
+    }
+    const handleScroll = () => {
+      const vcY = window.innerHeight / 2;
+      let bestIdx: number | null = null;
+      let bestDist = window.innerHeight * 0.6;
+      allCardRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top + rect.height / 2 - vcY);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+      setMobileActiveIdx(bestIdx);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isMobile]);
 
   return (
     <>
@@ -207,8 +262,8 @@ export default function ServicesSection() {
 
         {/* 2-row grid */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <Row cards={ROW1} baseDelay={0} isMobile={isMobile} />
-          <Row cards={ROW2} baseDelay={0.28} isMobile={isMobile} />
+          <Row cards={ROW1} baseDelay={0} isMobile={isMobile} startIndex={0} registerRef={registerRef} mobileActiveIdx={mobileActiveIdx} />
+          <Row cards={ROW2} baseDelay={0.28} isMobile={isMobile} startIndex={4} registerRef={registerRef} mobileActiveIdx={mobileActiveIdx} />
         </div>
 
         {/* CTA */}
