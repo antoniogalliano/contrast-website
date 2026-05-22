@@ -6,8 +6,8 @@ const MOTION_URL = "https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-cal
 
 export default function ContactSection() {
   return (
-    <section id="contact" style={{ padding: "120px 40px 300px", background: "radial-gradient(ellipse 900px 600px at 50% 40%, rgba(217,12,183,0.14) 0%, rgba(118,12,217,0.08) 45%, transparent 70%), #0a0a0a", overflow: "hidden" }}>
-      <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", justifyContent: "center" }}>
+    <section id="contact" style={{ minHeight: "560px", display: "flex", alignItems: "center", padding: "120px 40px", background: "radial-gradient(ellipse 900px 600px at 50% 50%, rgba(217,12,183,0.14) 0%, rgba(118,12,217,0.08) 45%, transparent 70%), #0a0a0a", overflow: "hidden" }}>
+      <div style={{ maxWidth: 1360, width: "100%", margin: "0 auto", display: "flex", justifyContent: "center" }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
