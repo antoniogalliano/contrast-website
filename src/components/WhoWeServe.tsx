@@ -301,29 +301,6 @@ function CollapsedCard({ card, hovered }: { card: CardData; hovered: boolean }) 
         {card.type === "nested" && <IllustrationNested hovered={hovered} />}
       </div>
 
-      {/* Plus hint */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: "absolute", bottom: 27, right: 27, zIndex: 6,
-              width: 40, height: 40, borderRadius: "50%",
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: "rgba(10,10,10,0.4)", backdropFilter: "blur(8px)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              pointerEvents: "none",
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -358,8 +335,9 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
   return (
     <div className="who-expanded-layout" style={{ display: "flex", height: "100%", position: "relative" }}>
 
-      {/* Close button */}
+      {/* Close button — hidden on mobile (who-toggle-btn handles it there) */}
       <button
+        className="who-close-btn"
         onClick={(e) => { e.stopPropagation(); onClose(); }}
         aria-label="Close"
         style={{
@@ -519,6 +497,43 @@ function CardItem({ card, i, expanded, setExpanded, hoveredIdx, setHoveredIdx, i
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Unified toggle button: + rotates to × when expanded. On desktop it's hidden
+          when expanded (ExpandedCard's own close btn handles that). On mobile it's
+          always the only toggle at bottom-right — same position, just rotates. */}
+      <AnimatePresence>
+        {(effectiveHovered || isActive) && !isNarrow && (
+          <motion.button
+            key="toggle"
+            className="who-toggle-btn"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isActive) { setExpanded(null); setHoveredIdx(null); }
+              else { setExpanded(i); }
+            }}
+            aria-label={isActive ? "Close" : "Expand"}
+            style={{
+              position: "absolute", bottom: 27, right: 27, zIndex: 10,
+              width: 40, height: 40, borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.2)",
+              background: "rgba(10,10,10,0.4)", backdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <svg
+              width="14" height="14" viewBox="0 0 14 14" fill="none"
+              style={{ transform: isActive ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.3s ease" }}
+            >
+              <path d="M7 1V13M1 7H13" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -637,6 +652,16 @@ export default function WhoWeServe() {
           }
           .grid-illus-wrap {
             top: calc(50% + 42px) !important;
+          }
+          /* Mobile: unified toggle btn handles open/close — hide desktop close btn */
+          .who-close-btn {
+            display: none !important;
+          }
+        }
+        /* Desktop: toggle btn hidden when expanded — ExpandedCard's close btn takes over */
+        @media (min-width: 901px) {
+          .who-expanded .who-toggle-btn {
+            display: none !important;
           }
         }
         button { outline: none; appearance: none; -webkit-appearance: none; }
