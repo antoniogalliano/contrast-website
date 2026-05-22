@@ -91,7 +91,7 @@ function TitleChar({
 
 // ── Panel layer ──────────────────────────────────────────────────────────────
 function PanelLayer({
-  project, num, index, total, sp, onBottomHoverChange,
+  project, num, index, total, sp, onBottomHoverChange, isMobile,
 }: {
   project: Project;
   num: string;
@@ -99,6 +99,7 @@ function PanelLayer({
   total: number;
   sp: MotionValue<number>;
   onBottomHoverChange: (v: boolean) => void;
+  isMobile: boolean;
 }) {
   const [bottomHovered, setBottomHovered] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -144,8 +145,10 @@ function PanelLayer({
     el.style.pointerEvents = o > 0.3 ? "auto" : "none";
   });
 
-  // Title travels bottom → top as panel scrolls
-  const titleContainerY = useTransform(lsp, [0, 1], ["88vh", "10vh"]);
+  // Title travels bottom → top as panel scrolls — compute both, pick based on isMobile
+  const titleContainerYDesktop = useTransform(lsp, [0, 1], ["88vh", "10vh"]);
+  const titleContainerYMobile  = useTransform(lsp, [0, 1], ["75vh", "32vh"]);
+  const titleContainerY = isMobile ? titleContainerYMobile : titleContainerYDesktop;
 
   const REVEAL_START   = 0.05;
   const REVEAL_STAGGER = 0.012;
@@ -164,6 +167,128 @@ function PanelLayer({
   const handleBottomEnter = () => { setBottomHovered(true);  onBottomHoverChange(true);  };
   const handleBottomLeave = () => { setBottomHovered(false); onBottomHoverChange(false); };
 
+  // ── Mobile: full-screen image story ─────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div
+        ref={wrapperRef}
+        style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
+      >
+        {/* Full-bleed image with parallax */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+          <motion.div
+            style={{
+              position: "absolute",
+              top: -60, left: 0, right: 0,
+              height: "calc(100% + 120px)",
+              y: imageParallaxY,
+            }}
+          >
+            <img
+              src={project.image}
+              alt={project.client}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+                display: "block",
+                ...project.imageStyle,
+              }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Bottom gradient overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.82) 30%, rgba(10,10,10,0.45) 55%, transparent 75%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Project counter — top right */}
+        <motion.div
+          style={{
+            position: "absolute", top: 24, right: 24, zIndex: 5,
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: 12, fontWeight: 500, letterSpacing: "0.14em",
+            color: "rgba(255,255,255,0.55)",
+            opacity: numOpacity,
+          }}
+        >
+          {num} / 0{total}
+        </motion.div>
+
+        {/* Animated text overlay — travels up from bottom */}
+        <motion.div
+          style={{
+            position: "absolute",
+            left: 24, right: 24,
+            y: titleContainerY,
+            zIndex: 5,
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: "clamp(36px, 10vw, 60px)",
+              fontWeight: 600, color: "#ffffff",
+              lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+            }}
+          >
+            {chars.map((char, i) => (
+              <TitleChar
+                key={i} char={char} sp={lsp}
+                rA={REVEAL_START + i * REVEAL_STAGGER}
+                rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
+                xA={EXIT_START + i * EXIT_STAGGER}
+                xB={EXIT_START + i * EXIT_STAGGER + EXIT_DUR}
+              />
+            ))}
+          </h3>
+
+          <motion.div style={{ marginTop: 14, opacity: subtitleOpacity }}>
+            <p
+              style={{
+                fontFamily: "var(--font-urbanist), sans-serif",
+                fontSize: 15, fontWeight: 400,
+                color: "rgba(255,255,255,0.75)",
+                margin: "0 0 18px",
+                lineHeight: 1.4,
+              }}
+            >
+              {project.title}
+            </p>
+            <a
+              href={project.href}
+              onClick={handleNavigation}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                padding: "10px 22px", borderRadius: 9999,
+                fontFamily: "var(--font-urbanist), sans-serif",
+                fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+                color: "#ffffff",
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.28)",
+                background: "rgba(255,255,255,0.08)",
+                backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+              }}
+            >
+              View Work
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </motion.div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ── Desktop: split left-text / right-image ───────────────────────────────────
   return (
     <div
       ref={wrapperRef}
@@ -290,7 +415,7 @@ function PanelLayer({
 }
 
 // ── Sticky container ─────────────────────────────────────────────────────────
-function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp: MotionValue<number> }) {
+function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: number; sp: MotionValue<number>; isMobile: boolean }) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
 
@@ -354,61 +479,73 @@ function StickyPanels({ projects, N, sp }: { projects: Project[]; N: number; sp:
           total={N}
           sp={sp}
           onBottomHoverChange={setBottomHovered}
+          isMobile={isMobile}
         />
       ))}
 
-      {/* Floating cursor button — only visible over right (image) half */}
-      <motion.div
-        style={{
-          position: "absolute",
-          left: 0, top: 0,
-          x: springX,
-          y: springY,
-          translateX: "-50%",
-          translateY: "-50%",
-          zIndex: 20,
-          pointerEvents: "none",
-        }}
-        animate={!showButton ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
-        initial={{ scale: 0.5, opacity: 0 }}
-        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-      >
+      {/* Floating cursor button — desktop only, only visible over right (image) half */}
+      {!isMobile && (
         <motion.div
-          animate={
-            bottomHovered && isHovered
-              ? { opacity: 0, filter: "blur(22px)" }
-              : { opacity: 1, filter: "blur(0px)" }
-          }
-          transition={{
-            duration: bottomHovered && isHovered ? 0.93 : 0.35,
-            ease: [0.22, 1, 0.36, 1],
+          style={{
+            position: "absolute",
+            left: 0, top: 0,
+            x: springX,
+            y: springY,
+            translateX: "-50%",
+            translateY: "-50%",
+            zIndex: 20,
+            pointerEvents: "none",
           }}
-          style={{ display: "inline-flex" }}
+          animate={!showButton ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+          initial={{ scale: 0.5, opacity: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            padding: "9px 20px", borderRadius: 9999,
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-            color: "#ffffff",
-            border: "1px solid rgba(255,255,255,0.22)",
-            background: "rgba(255,255,255,0.06)",
-            backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-            whiteSpace: "nowrap",
-          }}>
-            View Work
-            <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+          <motion.div
+            animate={
+              bottomHovered && isHovered
+                ? { opacity: 0, filter: "blur(22px)" }
+                : { opacity: 1, filter: "blur(0px)" }
+            }
+            transition={{
+              duration: bottomHovered && isHovered ? 0.93 : 0.35,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            style={{ display: "inline-flex" }}
+          >
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              padding: "9px 20px", borderRadius: 9999,
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.22)",
+              background: "rgba(255,255,255,0.06)",
+              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+              whiteSpace: "nowrap",
+            }}>
+              View Work
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </div>
   );
 }
 
 export default function SelectedWorkSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const { scrollYProgress: sp } = useScroll({
     target: scrollRef,
@@ -457,7 +594,7 @@ export default function SelectedWorkSection() {
 
       {/* Scroll container */}
       <div ref={scrollRef} style={{ height: `${N * 220}vh`, position: "relative" }}>
-        <StickyPanels projects={projects} N={N} sp={sp} />
+        <StickyPanels projects={projects} N={N} sp={sp} isMobile={isMobile} />
       </div>
 
       <div style={{ height: 120 }} />
@@ -465,9 +602,6 @@ export default function SelectedWorkSection() {
       <style jsx global>{`
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
-          .selected-work-title  { left: 24px !important; right: 24px !important; }
-          .sw-left-panel        { width: 100% !important; }
-          .sw-right-panel       { display: none !important; }
         }
         @media (max-width: 640px) {
           .selected-work-outer { padding: 60px 20px 40px !important; }
