@@ -252,7 +252,7 @@ function CollapsedCard({ card, hovered }: { card: CardData; hovered: boolean }) 
       }} />
 
       {/* Text block */}
-      <div style={{ padding: "32px 28px 0", position: "relative", zIndex: 2 }}>
+      <div className="who-card-text" style={{ padding: "32px 28px 0", position: "relative", zIndex: 2 }}>
         <h3 style={{
           fontSize: 20, fontWeight: 600, color: "#e8e8e8",
           margin: "0 0 4px", lineHeight: 1.3,
@@ -656,6 +656,10 @@ export default function WhoWeServe() {
           /* Mobile: unified toggle btn handles open/close — hide desktop close btn */
           .who-close-btn {
             display: none !important;
+          }
+          /* Give the text block enough right clearance so blurb wraps before the toggle btn */
+          .who-card-text {
+            padding-right: 76px !important;
           }
         }
         /* Desktop: toggle btn hidden when expanded — ExpandedCard's close btn takes over */
