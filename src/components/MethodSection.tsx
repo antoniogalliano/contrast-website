@@ -225,11 +225,15 @@ function DesignTriggersCard({ delay, isMobile }: { delay: number; isMobile: bool
           </AnimatePresence>
         </div>
 
-        {/* Text panel, always visible */}
-        <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
+        {/* Text panel — fades out when expanded */}
+        <motion.div
+          animate={{ opacity: expanded ? 0 : 1 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto" }}
+        >
           <p style={cardTitle}>Design Triggers</p>
           <p style={cardDesc}>Leverages decision-making psychology to drive engagement.</p>
-        </div>
+        </motion.div>
 
         {/* Plus / Close icon, visual affordance only; click handled by card wrapper */}
         <AnimatePresence>
@@ -399,11 +403,15 @@ function HeroFrameworkCard({ delay, isMobile }: { delay: number; isMobile: boole
           </AnimatePresence>
         </div>
 
-        {/* Text panel, always visible */}
-        <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2 }}>
+        {/* Text panel — fades out when expanded */}
+        <motion.div
+          animate={{ opacity: expanded ? 0 : 1 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto" }}
+        >
           <p style={cardTitle}>The Hero Framework</p>
           <p style={cardDesc}>Aligns product vision with user needs.</p>
-        </div>
+        </motion.div>
 
         {/* Plus / Close icon, appears on hover or when expanded */}
         <AnimatePresence>
