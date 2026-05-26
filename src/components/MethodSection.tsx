@@ -229,7 +229,7 @@ function DesignTriggersCard({ delay, isMobile }: { delay: number; isMobile: bool
         <motion.div
           animate={{ opacity: expanded ? 0 : 1 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto" }}
+          style={{ padding: 32, paddingRight: active && isMobile ? 80 : 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto", transition: "padding-right 0.3s ease" }}
         >
           <p style={cardTitle}>Design Triggers</p>
           <p style={cardDesc}>Leverages decision-making psychology to drive engagement.</p>
@@ -407,7 +407,7 @@ function HeroFrameworkCard({ delay, isMobile }: { delay: number; isMobile: boole
         <motion.div
           animate={{ opacity: expanded ? 0 : 1 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          style={{ padding: 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto" }}
+          style={{ padding: 32, paddingRight: active && isMobile ? 80 : 32, display: "flex", flexDirection: "column", gap: 11, flexShrink: 0, width: "100%", boxSizing: "border-box", position: "relative", zIndex: 2, pointerEvents: expanded ? "none" : "auto", transition: "padding-right 0.3s ease" }}
         >
           <p style={cardTitle}>The Hero Framework</p>
           <p style={cardDesc}>Aligns product vision with user needs.</p>
