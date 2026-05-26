@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import Logotype from "./Logotype";
 import { setLogoOrigin, shouldSkipIntro } from "@/lib/introState";
 
@@ -24,12 +25,16 @@ function smoothScrollTo(href: string) {
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [introDelay, setIntroDelay] = useState(3.8);
-  const logoRef = useRef<HTMLAnchorElement>(null);
+  const pathname = usePathname();
+  const isHomepage = pathname === "/";
 
+  // Intro delay only applies on the homepage — every other page loads immediately.
+  const [introDelay, setIntroDelay] = useState(() => (typeof window === "undefined" ? 0 : 3.8));
   useLayoutEffect(() => {
-    if (shouldSkipIntro()) setIntroDelay(0);
-  }, []);
+    if (!isHomepage || shouldSkipIntro()) setIntroDelay(0);
+  }, [isHomepage]);
+
+  const logoRef = useRef<HTMLAnchorElement>(null);
 
   // Measure the logo's natural screen position so IntroAnimation can morph into it.
   // We use opacity-only entrance (no y-slide) so the logo is already at its true
