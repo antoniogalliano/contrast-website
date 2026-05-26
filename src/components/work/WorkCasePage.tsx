@@ -539,6 +539,15 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
     return () => clearTimeout(t);
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
@@ -587,7 +596,11 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            style={{ position: "absolute", inset: 0 }}
+            style={{
+              position: "absolute",
+              top: 0, left: 0, right: 0,
+              bottom: isMobile ? "50%" : 0,
+            }}
           >
             <img
               src={data.heroImage}
@@ -602,9 +615,18 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               }}
             />
             {/* Gradient overlays */}
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.2) 25%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,0.95) 100%)" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
+            {isMobile ? (
+              <>
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.1) 40%, #0a0a0a 100%)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 18%)" }} />
+              </>
+            ) : (
+              <>
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.2) 25%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,0.95) 100%)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
+              </>
+            )}
           </motion.div>
         </motion.div>
 
@@ -697,36 +719,6 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
             >
               <WordReveal text={data.heroTitle} />
             </h1>
-
-            {/* Metadata strip, 3 key facts, fades in with pageReady */}
-            {data.metaItems.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={pageReady ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                style={{ display: "flex", gap: 32, marginBottom: 20, flexWrap: "wrap" }}
-              >
-                {data.metaItems.slice(0, 3).map((item) => (
-                  <div key={item.label}>
-                    <div style={{
-                      fontFamily: "var(--font-urbanist), sans-serif",
-                      fontSize: 10, fontWeight: 700,
-                      letterSpacing: "1.5px", textTransform: "uppercase",
-                      color: "rgba(255,255,255,0.3)", marginBottom: 4,
-                    }}>
-                      {item.label}
-                    </div>
-                    <div style={{
-                      fontFamily: "var(--font-urbanist), sans-serif",
-                      fontSize: 14, fontWeight: 500,
-                      color: item.accent ? "#d90cb7" : "rgba(255,255,255,0.72)",
-                    }}>
-                      {item.value}
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-            )}
 
             {/* Subtitle */}
             <motion.p
