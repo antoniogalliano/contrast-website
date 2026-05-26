@@ -664,7 +664,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         </motion.a>
 
         {/* ── "CASE STUDY" eyebrow, fires immediately, letter by letter ── */}
-        <div style={{
+        <div className="wcp-case-study-label" style={{
           position: "absolute", top: 96, right: 56, zIndex: 10,
           display: "flex", alignItems: "center", gap: 0,
         }}>
@@ -750,6 +750,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               left: 24px !important;
               right: 24px !important;
               bottom: 40px !important;
+            }
+            .wcp-case-study-label {
+              display: none !important;
             }
           }
         `}</style>
