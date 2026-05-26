@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Logotype from "./Logotype";
@@ -26,13 +26,14 @@ function smoothScrollTo(href: string) {
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const isHomepage = pathname === "/";
 
-  // Intro delay only applies on the homepage — every other page loads immediately.
-  const [introDelay, setIntroDelay] = useState(() => (typeof window === "undefined" ? 0 : 3.8));
-  useLayoutEffect(() => {
-    if (!isHomepage || shouldSkipIntro()) setIntroDelay(0);
-  }, [isHomepage]);
+  // Compute synchronously during render so Framer Motion sees the correct delay
+  // on its very first read — no useState race condition possible.
+  // Delay only applies on the homepage on a user's first visit this session.
+  const introDelay =
+    pathname === "/" && typeof window !== "undefined" && !shouldSkipIntro()
+      ? 3.8
+      : 0;
 
   const logoRef = useRef<HTMLAnchorElement>(null);
 
