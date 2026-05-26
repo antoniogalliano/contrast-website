@@ -57,12 +57,13 @@ const projects: Project[] = [
 
 // ── Per-letter title animation ───────────────────────────────────────────────
 function TitleChar({
-  char, sp, rA, rB, xA, xB,
+  char, sp, rA, rB, xA, xB, isMobile,
 }: {
   char: string;
   sp: MotionValue<number>;
   rA: number; rB: number;
   xA: number; xB: number;
+  isMobile: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -73,16 +74,23 @@ function TitleChar({
     const xP = xB > xA ? Math.max(0, Math.min(1, (latest - xA) / (xB - xA))) : latest >= xA ? 1 : 0;
     const opacity = rP * (1 - xP);
     const y = (1 - rP) * 44 - xP * 32;
-    const blur = (1 - rP) * 40 + xP * 40;
     el.style.opacity = String(opacity);
     el.style.transform = `translateY(${y}px)`;
-    el.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
+    // filter:blur forces CPU rasterization every frame — skip on mobile
+    if (!isMobile) {
+      const blur = (1 - rP) * 40 + xP * 40;
+      el.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
+    }
   });
 
   return (
     <span
       ref={ref}
-      style={{ display: "inline-block", opacity: 0, transform: "translateY(44px)", filter: "blur(40px)", willChange: "transform, opacity, filter" }}
+      style={{
+        display: "inline-block", opacity: 0, transform: "translateY(44px)",
+        filter: isMobile ? "none" : "blur(40px)",
+        willChange: "transform, opacity",
+      }}
     >
       {char === " " ? " " : char}
     </span>
@@ -145,7 +153,7 @@ function PanelLayer({
     el.style.pointerEvents = o > 0.3 ? "auto" : "none";
   });
 
-  // Title travels bottom → top as panel scrolls — compute both, pick based on isMobile
+  // Title travels bottom → top as panel scrolls
   const titleContainerYDesktop = useTransform(lsp, [0, 1], ["88vh", "10vh"]);
   const titleContainerYMobile  = useTransform(lsp, [0, 1], ["75vh", "32vh"]);
   const titleContainerY = isMobile ? titleContainerYMobile : titleContainerYDesktop;
@@ -161,7 +169,7 @@ function PanelLayer({
   const subtitleOpacity = useTransform(lsp, [0, REVEAL_START, REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
   const numOpacity      = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
 
-  // Image parallax: image shifts ±50px as panel progresses
+  // Image parallax (desktop only — parallax on mobile causes jank)
   const imageParallaxY = useTransform(lsp, [0, 1], [-50, 50]);
 
   const handleBottomEnter = () => { setBottomHovered(true);  onBottomHoverChange(true);  };
@@ -174,36 +182,23 @@ function PanelLayer({
         ref={wrapperRef}
         style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
       >
-        {/* Full-bleed image with parallax */}
-        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-          <motion.div
-            style={{
-              position: "absolute",
-              top: -60, left: 0, right: 0,
-              height: "calc(100% + 120px)",
-              y: imageParallaxY,
-            }}
-          >
-            <img
-              src={project.image}
-              alt={project.client}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
-                display: "block",
-                ...project.imageStyle,
-              }}
-            />
-          </motion.div>
-        </div>
+        {/* Full-bleed static image — no parallax on mobile */}
+        <img
+          src={project.image}
+          alt={project.client}
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center",
+            display: "block",
+            ...project.imageStyle,
+          }}
+        />
 
         {/* Bottom gradient overlay */}
         <div
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "absolute", inset: 0,
             background: "linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.82) 30%, rgba(10,10,10,0.45) 55%, transparent 75%)",
             pointerEvents: "none",
           }}
@@ -241,7 +236,7 @@ function PanelLayer({
           >
             {chars.map((char, i) => (
               <TitleChar
-                key={i} char={char} sp={lsp}
+                key={i} char={char} sp={lsp} isMobile={true}
                 rA={REVEAL_START + i * REVEAL_STAGGER}
                 rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
                 xA={EXIT_START + i * EXIT_STAGGER}
@@ -256,8 +251,7 @@ function PanelLayer({
                 fontFamily: "var(--font-urbanist), sans-serif",
                 fontSize: 15, fontWeight: 400,
                 color: "rgba(255,255,255,0.75)",
-                margin: "0 0 18px",
-                lineHeight: 1.4,
+                margin: "0 0 18px", lineHeight: 1.4,
               }}
             >
               {project.title}
@@ -270,8 +264,7 @@ function PanelLayer({
                 padding: "10px 22px", borderRadius: 9999,
                 fontFamily: "var(--font-urbanist), sans-serif",
                 fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                color: "#ffffff",
-                textDecoration: "none",
+                color: "#ffffff", textDecoration: "none",
                 border: "1px solid rgba(255,255,255,0.28)",
                 background: "rgba(255,255,255,0.08)",
                 backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
@@ -294,10 +287,9 @@ function PanelLayer({
       ref={wrapperRef}
       style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
     >
-      {/* ── Left panel: dark bg + animated text ── */}
+      {/* Left panel: dark bg + animated text */}
       <div className="sw-left-panel" style={{ position: "absolute", left: 0, top: 0, width: "25%", height: "100%", background: "#0a0a0a" }}>
 
-        {/* Project number */}
         <motion.div style={{
           position: "absolute", top: 44, left: 32, zIndex: 5,
           fontFamily: "var(--font-urbanist), sans-serif",
@@ -308,7 +300,6 @@ function PanelLayer({
           {num} /
         </motion.div>
 
-        {/* Client name + project info */}
         <motion.div
           className="selected-work-title"
           style={{ position: "absolute", top: 0, left: 32, right: 24, y: titleContainerY, zIndex: 5 }}
@@ -321,7 +312,7 @@ function PanelLayer({
           }}>
             {chars.map((char, i) => (
               <TitleChar
-                key={i} char={char} sp={lsp}
+                key={i} char={char} sp={lsp} isMobile={false}
                 rA={REVEAL_START + i * REVEAL_STAGGER}
                 rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
                 xA={EXIT_START + i * EXIT_STAGGER}
@@ -353,8 +344,7 @@ function PanelLayer({
                   padding: "9px 20px", borderRadius: 9999,
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                  color: "#ffffff",
-                  cursor: "pointer",
+                  color: "#ffffff", cursor: "pointer",
                   border: `1px solid ${bottomHovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
                   background: bottomHovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
                   backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
@@ -371,7 +361,7 @@ function PanelLayer({
         </motion.div>
       </div>
 
-      {/* ── Right panel: image thumbnail with parallax ── */}
+      {/* Right panel: image with parallax */}
       <a
         href={project.href}
         onClick={handleNavigation}
@@ -381,11 +371,9 @@ function PanelLayer({
           position: "absolute", right: 0, top: 0,
           width: "75%", height: "100%",
           padding: "24px 40px 24px 0",
-          textDecoration: "none",
-          cursor: "inherit",
+          textDecoration: "none", cursor: "inherit",
         }}
       >
-        {/* Rounded image container — clips the parallax overflow */}
         <div style={{ height: "100%", borderRadius: 20, overflow: "hidden", position: "relative" }}>
           <motion.div
             style={{
@@ -399,10 +387,8 @@ function PanelLayer({
               src={project.image}
               alt={project.client}
               style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
+                width: "100%", height: "100%",
+                objectFit: "cover", objectPosition: "center",
                 display: "block",
                 ...project.imageStyle,
               }}
@@ -417,6 +403,7 @@ function PanelLayer({
 // ── Sticky container ─────────────────────────────────────────────────────────
 function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: number; sp: MotionValue<number>; isMobile: boolean }) {
   const stickyRef = useRef<HTMLDivElement>(null);
+  // useInView is unreliable on iOS Safari for sticky elements — skip on mobile
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
 
   const cursorX = useMotionValue(0);
@@ -437,7 +424,6 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
     cursorX.set(x);
     cursorY.set(y);
     setIsRightHalf(x > rect.width / 2);
-
     if (!mouseMoving) setMouseMoving(true);
     if (idleTimer.current) clearTimeout(idleTimer.current);
     idleTimer.current = setTimeout(() => setMouseMoving(false), 3000);
@@ -454,7 +440,6 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
     return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
   }, []);
 
-  // Only show cursor button when hovering the image (right half)
   const showButton = isHovered && mouseMoving && isRightHalf;
 
   return (
@@ -465,8 +450,9 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
       onMouseMove={handleMouseMove}
       style={{
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
-        opacity: inView ? 1 : 0,
-        transition: "opacity 0.8s ease",
+        // On mobile: always visible (IntersectionObserver is unreliable on sticky elements in iOS Safari)
+        opacity: isMobile ? 1 : (inView ? 1 : 0),
+        transition: isMobile ? undefined : "opacity 0.8s ease",
         cursor: showButton && !bottomHovered ? "none" : "auto",
       }}
     >
@@ -483,18 +469,14 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
         />
       ))}
 
-      {/* Floating cursor button — desktop only, only visible over right (image) half */}
+      {/* Floating cursor button — desktop only */}
       {!isMobile && (
         <motion.div
           style={{
-            position: "absolute",
-            left: 0, top: 0,
-            x: springX,
-            y: springY,
-            translateX: "-50%",
-            translateY: "-50%",
-            zIndex: 20,
-            pointerEvents: "none",
+            position: "absolute", left: 0, top: 0,
+            x: springX, y: springY,
+            translateX: "-50%", translateY: "-50%",
+            zIndex: 20, pointerEvents: "none",
           }}
           animate={!showButton ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
           initial={{ scale: 0.5, opacity: 0 }}
@@ -506,10 +488,7 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
                 ? { opacity: 0, filter: "blur(22px)" }
                 : { opacity: 1, filter: "blur(0px)" }
             }
-            transition={{
-              duration: bottomHovered && isHovered ? 0.93 : 0.35,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            transition={{ duration: bottomHovered && isHovered ? 0.93 : 0.35, ease: [0.22, 1, 0.36, 1] }}
             style={{ display: "inline-flex" }}
           >
             <div style={{
