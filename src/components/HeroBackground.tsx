@@ -188,7 +188,7 @@ export default function HeroBackground() {
 
       const cx     = w * dpr / 2;
       const cy     = h * dpr / 2;
-      const radius = Math.min(w, h) * 0.28 * dpr;
+      const radius = Math.min(w, h) * 0.336 * dpr;
 
       const densityScale = Math.min(w, h) / 900;
 
@@ -201,7 +201,7 @@ export default function HeroBackground() {
       const pullNormX  = pullDist > 0 ? pullDirX / pullDist : 0;
       const pullNormY  = pullDist > 0 ? pullDirY / pullDist : 0;
 
-      const radiusLogical = Math.min(w, h) * 0.28;
+      const radiusLogical = Math.min(w, h) * 0.336;
       const distFromEdge  = Math.max(0, pullDist - radiusLogical * 0.5);
       const maxPullDist   = radiusLogical * 3;
       const pullStrength  = introComplete
