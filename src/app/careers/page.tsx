@@ -342,10 +342,10 @@ export default function CareersPage() {
       <Header />
 
       {/* ── Hero ── */}
-      <section className="careers-hero-section" style={{ paddingTop: 130, paddingBottom: 0, background: "#0a0a0a" }}>
+      <section className="careers-hero-section" style={{ padding: "130px 40px 0", background: "#0a0a0a" }}>
 
         {/* Text content */}
-        <div className="careers-hero-inner" style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px", marginBottom: 72 }}>
+        <div className="careers-hero-inner" style={{ maxWidth: 1360, margin: "0 auto", marginBottom: 72 }}>
 
           {/* Eyebrow + stats */}
           <motion.div
@@ -607,10 +607,10 @@ export default function CareersPage() {
         @media (max-width: 640px) {
           .careers-hero-section {
             padding-top: 100px !important;
-          }
-          .careers-hero-inner {
             padding-left: 20px !important;
             padding-right: 20px !important;
+          }
+          .careers-hero-inner {
             margin-bottom: 40px !important;
           }
         }
