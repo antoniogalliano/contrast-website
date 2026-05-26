@@ -8,37 +8,37 @@ import Footer from "@/components/Footer";
 // ─── Team photos ─────────────────────────────────────────────────────────────
 
 const TEAM_ROW_1 = [
-  { src: "/team/sagi-shrieber.png",        name: "Sagi Shrieber" },
-  { src: "/team/tom-harnoy.png",           name: "Tom Harnoy" },
-  { src: "/team/hila-yitzhak.png",         name: "Hila Yitzhak" },
-  { src: "/team/omri-schul.png",           name: "Omri Schul" },
-  { src: "/team/oran-ziv.png",             name: "Oran Ziv" },
-  { src: "/team/yonatan-tize.png",         name: "Yonatan Tize" },
-  { src: "/team/sarit.png",                name: "Sarit" },
-  { src: "/team/ibrahim.png",              name: "Ibrahim" },
-  { src: "/team/varant.png",               name: "Varant" },
-  { src: "/team/nik.png",                  name: "Nik" },
-  { src: "/team/aleksandar.png",           name: "Aleksandar" },
-  { src: "/team/ana-baloban.png",          name: "Ana Baloban" },
+  { src: "/team/sagi-shrieber.png",        name: "Sagi Shrieber",        role: "Product Designer" },
+  { src: "/team/tom-harnoy.png",           name: "Tom Harnoy",           role: "Product Designer" },
+  { src: "/team/hila-yitzhak.png",         name: "Hila Yitzhak",         role: "Product Designer" },
+  { src: "/team/omri-schul.png",           name: "Omri Schul",           role: "Product Designer" },
+  { src: "/team/oran-ziv.png",             name: "Oran Ziv",             role: "Product Designer" },
+  { src: "/team/yonatan-tize.png",         name: "Yonatan Tize",         role: "Product Designer" },
+  { src: "/team/sarit.png",                name: "Sarit",                role: "Product Designer" },
+  { src: "/team/ibrahim.png",              name: "Ibrahim",              role: "Product Designer" },
+  { src: "/team/varant.png",               name: "Varant",               role: "Product Designer" },
+  { src: "/team/nik.png",                  name: "Nik",                  role: "Product Designer" },
+  { src: "/team/aleksandar.png",           name: "Aleksandar",           role: "Product Designer" },
+  { src: "/team/ana-baloban.png",          name: "Ana Baloban",          role: "Product Designer" },
 ];
 
 const TEAM_ROW_2 = [
-  { src: "/team/anton-holii.png",          name: "Anton Holii" },
-  { src: "/team/beka-k.png",               name: "Beka K" },
-  { src: "/team/den-klenkov.png",          name: "Den Klenkov" },
-  { src: "/team/giorgi-labadze.png",       name: "Giorgi Labadze" },
-  { src: "/team/ivan-k.png",               name: "Ivan K" },
-  { src: "/team/keso-tchumburidze.png",    name: "Keso Tchumburidze" },
-  { src: "/team/monika-adeishvilli.png",   name: "Monika Adeishvilli" },
-  { src: "/team/natali-klimiashvilli.png", name: "Natali Klimiashvilli" },
-  { src: "/team/nena-mercep.png",          name: "Nena Mercep" },
-  { src: "/team/veronika-rovniahina.png",  name: "Veronika Rovniahina" },
-  { src: "/team/alona-g.png",              name: "Alona G." },
+  { src: "/team/anton-holii.png",          name: "Anton Holii",          role: "Product Designer" },
+  { src: "/team/beka-k.png",               name: "Beka K",               role: "Product Designer" },
+  { src: "/team/den-klenkov.png",          name: "Den Klenkov",          role: "Product Designer" },
+  { src: "/team/giorgi-labadze.png",       name: "Giorgi Labadze",       role: "Product Designer" },
+  { src: "/team/ivan-k.png",               name: "Ivan K",               role: "Product Designer" },
+  { src: "/team/keso-tchumburidze.png",    name: "Keso Tchumburidze",    role: "Product Designer" },
+  { src: "/team/monika-adeishvilli.png",   name: "Monika Adeishvilli",   role: "Product Designer" },
+  { src: "/team/natali-klimiashvilli.png", name: "Natali Klimiashvilli", role: "Product Designer" },
+  { src: "/team/nena-mercep.png",          name: "Nena Mercep",          role: "Product Designer" },
+  { src: "/team/veronika-rovniahina.png",  name: "Veronika Rovniahina",  role: "Product Designer" },
+  { src: "/team/alona-g.png",              name: "Alona G.",             role: "Product Designer" },
 ];
 
 // ─── Photo card ───────────────────────────────────────────────────────────────
 
-function PhotoCard({ src, name, height }: { src: string; name: string; height: number }) {
+function PhotoCard({ src, name, role, height }: { src: string; name: string; role: string; height: number }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -60,18 +60,26 @@ function PhotoCard({ src, name, height }: { src: string; name: string; height: n
       <img
         src={src}
         alt={name}
-        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }}
+        style={{
+          width: "100%", height: "100%",
+          objectFit: "cover", objectPosition: "top center", display: "block",
+          filter: hovered ? "grayscale(0%)" : "grayscale(100%)",
+          transition: "filter 0.4s ease",
+        }}
       />
-      {/* Name overlay */}
+      {/* Name + role overlay */}
       <div style={{
         position: "absolute", inset: 0,
         background: "linear-gradient(to top, rgba(10,10,10,0.88) 0%, transparent 55%)",
-        display: "flex", alignItems: "flex-end", padding: "14px 16px",
+        display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "14px 16px",
         opacity: hovered ? 1 : 0,
         transition: "opacity 0.3s ease",
       }}>
-        <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.1px" }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.1px", lineHeight: 1.3 }}>
           {name}
+        </span>
+        <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.3px", marginTop: 2 }}>
+          {role}
         </span>
       </div>
     </div>
@@ -104,7 +112,7 @@ function MarqueeRow({ photos, direction, height, duration }: {
         animationPlayState: paused ? "paused" : "running",
       }}>
         {doubled.map((p, i) => (
-          <PhotoCard key={i} src={p.src} name={p.name} height={height} />
+          <PhotoCard key={i} src={p.src} name={p.name} role={p.role} height={height} />
         ))}
       </div>
     </div>
