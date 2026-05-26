@@ -21,7 +21,7 @@ const projects: Project[] = [
     client: "DAZN",
     title: "Premium Sports Platform Redesign",
     tags: ["Web Design & Development", "App Design", "TV App", "Brand Design"],
-    image: "/work/dazn.jpg",
+    image: "/work/dazn.png",
     href: "/work/dazn",
     imageStyle: { objectFit: "cover" as const, objectPosition: "center center" },
   },
