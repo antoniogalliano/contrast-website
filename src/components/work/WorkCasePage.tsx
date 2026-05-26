@@ -592,10 +592,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                animates to opacity:1 in 500ms — done well before ::view-transition-new starts
                fading in at 720ms, so the hero is fully visible when the page appears. ── */}
         <motion.div style={{ opacity: imageOpacity, position: "absolute", inset: 0 }}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          <div
             style={{
               position: "absolute",
               top: 0, left: 0, right: 0,
@@ -627,7 +624,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
               </>
             )}
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* ── Back button, top left, clears the fixed header ── */}

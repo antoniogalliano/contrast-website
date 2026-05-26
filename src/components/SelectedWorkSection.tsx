@@ -331,20 +331,15 @@ function PanelLayer({
               {project.title}
             </p>
             <div onMouseEnter={handleBottomEnter} onMouseLeave={handleBottomLeave}>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const anchor = document.createElement("a");
-                  anchor.href = project.href;
-                  anchor.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-                }}
+              <a
+                href={project.href}
+                onClick={handleNavigation}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 7,
                   padding: "9px 20px", borderRadius: 9999,
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                  color: "#ffffff", cursor: "pointer",
+                  color: "#ffffff", textDecoration: "none",
                   border: `1px solid ${bottomHovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
                   background: bottomHovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
                   backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
@@ -355,7 +350,7 @@ function PanelLayer({
                 <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
                   <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </button>
+              </a>
             </div>
           </motion.div>
         </motion.div>
