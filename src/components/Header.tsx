@@ -13,6 +13,15 @@ const navLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
+function smoothScrollTo(href: string) {
+  const hash = href.startsWith("/#") ? href.slice(2) : href.startsWith("#") ? href.slice(1) : null;
+  if (!hash) return false;
+  const el = document.getElementById(hash);
+  if (!el) return false;
+  el.scrollIntoView({ behavior: "smooth" });
+  return true;
+}
+
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [introDelay, setIntroDelay] = useState(3.8);
@@ -101,6 +110,7 @@ export default function Header() {
                 <a
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => { if (smoothScrollTo(link.href)) e.preventDefault(); }}
                   style={{
                     fontSize:       14,
                     fontWeight:     400,
@@ -200,7 +210,7 @@ export default function Header() {
                     <a
                       key={link.href}
                       href={link.href}
-                      onClick={() => setMobileOpen(false)}
+                      onClick={(e) => { setMobileOpen(false); if (smoothScrollTo(link.href)) e.preventDefault(); }}
                       style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
                     >
                       {link.label}
