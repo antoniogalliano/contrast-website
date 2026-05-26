@@ -2,7 +2,6 @@
 
 import { motion, useScroll, useTransform, useInView, useMotionValue, animate } from "framer-motion";
 import React, { useState, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
-import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import CtaBanner from "@/components/CtaBanner";
@@ -206,10 +205,7 @@ function CaseCard({
   const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    if (!("startViewTransition" in document)) { router.push(href); return; }
-    (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
-      flushSync(() => { router.push(href, { scroll: false }); });
-    });
+    router.push(href);
   };
 
   const borderBg = hovered
@@ -557,10 +553,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    if (!("startViewTransition" in document)) { router.push(href); return; }
-    (document as Document & { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
-      flushSync(() => { router.push(href); });
-    });
+    router.push(href);
   };
 
   // Track scroll progress while the hero section travels off the top of the viewport.

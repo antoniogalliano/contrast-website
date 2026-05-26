@@ -2,7 +2,6 @@
 
 import { motion, useScroll, useTransform, useMotionValueEvent, useInView, useMotionValue, useSpring, type MotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 
 const ACCENT = "#d90cb7";
@@ -117,15 +116,7 @@ function PanelLayer({
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    if (!("startViewTransition" in document)) {
-      router.push(project.href, { scroll: false });
-      return;
-    }
-    (document as Document & {
-      startViewTransition: (cb: () => void) => { finished: Promise<void> };
-    }).startViewTransition(() => {
-      flushSync(() => { router.push(project.href, { scroll: false }); });
-    });
+    router.push(project.href, { scroll: false });
   };
 
   const panelStart = index / total;
