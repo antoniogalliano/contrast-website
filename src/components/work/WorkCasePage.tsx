@@ -58,10 +58,13 @@ function Tag({ label }: { label: string }) {
       style={{
         fontSize: 12,
         fontWeight: 500,
-        color: "rgba(255,255,255,0.55)",
+        color: "rgba(255,255,255,0.8)",
         padding: "5px 14px",
         borderRadius: 100,
-        border: "1px solid rgba(56,56,56,0.9)",
+        border: "1px solid rgba(255,255,255,0.18)",
+        background: "rgba(10,10,10,0.55)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
         fontFamily: "var(--font-urbanist), sans-serif",
         whiteSpace: "nowrap",
       }}
@@ -599,7 +602,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
               }}
             />
             {/* Gradient overlays */}
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.25) 35%, rgba(10,10,10,0.92) 100%)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.2) 25%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,0.95) 100%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, #0a0a0a 0%, rgba(10,10,10,0) 15%)" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0a0a0a 0%, rgba(10,10,10,0) 12%)" }} />
           </motion.div>
@@ -748,7 +751,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         <style jsx global>{`
           @media (max-width: 768px) {
             .wcp-back-btn {
-              top: 80px !important;
+              top: 100px !important;
               left: 24px !important;
             }
             .wcp-hero-bottom {
