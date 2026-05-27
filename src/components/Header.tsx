@@ -14,13 +14,18 @@ const navLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
-function smoothScrollTo(href: string) {
+function handleNavClick(href: string, e: React.MouseEvent) {
   const hash = href.startsWith("/#") ? href.slice(2) : href.startsWith("#") ? href.slice(1) : null;
-  if (!hash) return false;
+  if (!hash) return; // non-anchor link (e.g. /careers) — let browser handle it
+  e.preventDefault();
   const el = document.getElementById(hash);
-  if (!el) return false;
-  el.scrollIntoView({ behavior: "smooth" });
-  return true;
+  if (el) {
+    // Same page: smooth scroll
+    el.scrollIntoView({ behavior: "smooth" });
+  } else {
+    // Cross-page: force native navigation so the browser honors the hash
+    window.location.href = href;
+  }
 }
 
 export default function Header() {
@@ -116,7 +121,7 @@ export default function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={(e) => { if (smoothScrollTo(link.href)) e.preventDefault(); }}
+                  onClick={(e) => handleNavClick(link.href, e)}
                   style={{
                     fontSize:       14,
                     fontWeight:     400,
@@ -216,7 +221,7 @@ export default function Header() {
                     <a
                       key={link.href}
                       href={link.href}
-                      onClick={(e) => { setMobileOpen(false); if (smoothScrollTo(link.href)) e.preventDefault(); }}
+                      onClick={(e) => { setMobileOpen(false); handleNavClick(link.href, e); }}
                       style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
                     >
                       {link.label}
