@@ -240,7 +240,7 @@ export default function ServicesSection() {
 
   return (
     <>
-    <section style={{ padding: "200px 40px 120px", background: "#0a0a0a" }}>
+    <section id="services" style={{ padding: "200px 40px 120px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto" }}>
 
         {/* Section label */}
