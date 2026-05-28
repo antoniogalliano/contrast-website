@@ -148,11 +148,11 @@ const roles = [
 
 // ─── Hero stats ───────────────────────────────────────────────────────────────
 
-const heroStats = [
+const heroStats: { value: number; suffix: string; label: string; icon: (size: number) => React.ReactNode }[] = [
   {
     value: 20, suffix: "+", label: "people on the team",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    icon: (s) => (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
         <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -162,8 +162,8 @@ const heroStats = [
   },
   {
     value: 50, suffix: "+", label: "products shipped",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    icon: (s) => (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
         <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -172,8 +172,8 @@ const heroStats = [
   },
   {
     value: 100, suffix: "%", label: "remote-first",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    icon: (s) => (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
         <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -240,17 +240,16 @@ function HeroStatCard({ stat, startDelay }: { stat: typeof heroStats[0]; startDe
         pointerEvents: "none",
       }} />
 
-      {/* Icon box */}
+      {/* Background watermark icon */}
       <div style={{
-        width: 40, height: 40, borderRadius: 10,
-        border: `1px solid ${hovered ? "rgba(217,12,183,0.4)" : "rgba(56,56,56,0.8)"}`,
-        background: hovered ? "rgba(217,12,183,0.08)" : "rgba(255,255,255,0.03)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        color: hovered ? "#d90cb7" : "#888888",
-        transition: "all 0.3s ease",
-        flexShrink: 0,
+        position: "absolute",
+        top: 20, right: 20,
+        color: "#ffffff",
+        opacity: hovered ? 0.1 : 0.06,
+        transition: "opacity 0.4s ease",
+        pointerEvents: "none",
       }}>
-        {stat.icon}
+        {stat.icon(80)}
       </div>
 
       {/* Number */}
@@ -269,7 +268,7 @@ function HeroStatCard({ stat, startDelay }: { stat: typeof heroStats[0]; startDe
           fontSize: "clamp(32px, 3.2vw, 46px)",
           fontWeight: 700,
           fontFamily: "var(--font-urbanist), sans-serif",
-          color: "#d90cb7",
+          color: "#ffffff",
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           paddingBottom: 3,
