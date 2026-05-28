@@ -369,12 +369,13 @@ function PanelLayer({
                   key={h}
                   style={{
                     display: "inline-flex", alignItems: "center",
-                    padding: "5px 12px", borderRadius: 9999,
-                    fontSize: 12, fontWeight: 500, letterSpacing: "0.03em",
-                    color: "rgba(255,255,255,0.72)",
+                    padding: "3px 8px", borderRadius: 4,
+                    fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
+                    textTransform: "uppercase" as const,
+                    color: "rgba(255,255,255,0.45)",
                     fontFamily: "var(--font-urbanist), sans-serif",
-                    background: "rgba(255,255,255,0.07)",
-                    border: "1px solid rgba(255,255,255,0.13)",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.09)",
                   }}
                 >
                   {h}
