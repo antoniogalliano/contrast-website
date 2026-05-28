@@ -9,7 +9,7 @@ const ACCENT = "#d90cb7";
 type Project = {
   client: string;
   title: string;
-  highlight: string;
+  highlights: string[];
   tags: string[];
   image: string;
   href: string;
@@ -20,7 +20,7 @@ const projects: Project[] = [
   {
     client: "DAZN",
     title: "Premium Sports Platform Redesign",
-    highlight: "World's #1 dedicated live sports streamer — 8M+ paid subscribers in 200+ countries",
+    highlights: ["Global Sports Streaming", "20M+ Subscribers"],
     tags: ["Web Design & Development", "App Design", "TV App", "Brand Design"],
     image: "/work/dazn.png",
     href: "/work/dazn",
@@ -29,7 +29,7 @@ const projects: Project[] = [
   {
     client: "Down",
     title: "Dating App, 0→1 Product Design",
-    highlight: "App Store top-ranked dating app · 10M+ downloads across iOS & Android",
+    highlights: ["Casual Dating Pioneer", "17M+ Users"],
     tags: ["Web Design & Development", "App Design"],
     image: "/work/down.png",
     href: "/work/down",
@@ -37,7 +37,7 @@ const projects: Project[] = [
   {
     client: "Cymbio",
     title: "B2B Sales Dashboard",
-    highlight: "Enterprise dropship & marketplace platform powering 250+ global brands",
+    highlights: ["Enterprise B2B Platform", "800+ Retail Partners"],
     tags: ["Web Design & Development"],
     image: "/work/cymbio.png",
     href: "/work/cymbio",
@@ -45,7 +45,7 @@ const projects: Project[] = [
   {
     client: "Designrr",
     title: "Engagement & Retention Overhaul",
-    highlight: "Leading content-repurposing SaaS trusted by 100K+ creators & marketers",
+    highlights: ["#1 Ebook Creator", "320K+ Users"],
     tags: ["Web Design & Development"],
     image: "/work/designrr.png",
     href: "/work/designrr",
@@ -53,7 +53,7 @@ const projects: Project[] = [
   {
     client: "JUSTT",
     title: "Chargeback Management SaaS",
-    highlight: "AI chargeback automation platform · $70M+ raised · serving global merchants",
+    highlights: ["AI Chargeback Automation", "$100M+ Total Raised"],
     tags: ["Web Design & Development"],
     image: "/work/justt.png",
     href: "/work/justt",
@@ -362,26 +362,24 @@ function PanelLayer({
               {project.title}
             </p>
 
-            {/* Client highlight */}
-            <div style={{
-              display: "flex", alignItems: "flex-start", gap: 10,
-              marginBottom: 20,
-            }}>
-              <div style={{
-                width: 2, alignSelf: "stretch",
-                background: "linear-gradient(to bottom, #d90cb7, rgba(217,12,183,0.2))",
-                borderRadius: 1, flexShrink: 0,
-              }} />
-              <p style={{
-                margin: 0,
-                fontSize: 12,
-                lineHeight: 1.65,
-                color: "rgba(255,255,255,0.42)",
-                fontFamily: "var(--font-geist), sans-serif",
-                letterSpacing: "0.15px",
-              }}>
-                {project.highlight}
-              </p>
+            {/* Client highlight pills */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 22 }}>
+              {project.highlights.map((h) => (
+                <span
+                  key={h}
+                  style={{
+                    display: "inline-flex", alignItems: "center",
+                    padding: "5px 12px", borderRadius: 9999,
+                    fontSize: 12, fontWeight: 500, letterSpacing: "0.03em",
+                    color: "rgba(255,255,255,0.72)",
+                    fontFamily: "var(--font-urbanist), sans-serif",
+                    background: "rgba(255,255,255,0.07)",
+                    border: "1px solid rgba(255,255,255,0.13)",
+                  }}
+                >
+                  {h}
+                </span>
+              ))}
             </div>
 
             <ViewWorkButton href={project.href} onClick={handleNavigation} />
