@@ -176,7 +176,9 @@ function PanelLayer({
   const titleContainerYMobile  = useTransform(lsp, [0, 1], ["75vh", "32vh"]);
   const titleContainerY = isMobile ? titleContainerYMobile : titleContainerYDesktop;
 
-  const REVEAL_START   = 0.05;
+  // First panel reveals immediately so it syncs with the section header scrolling off;
+  // all subsequent panels keep the 0.05 lead-in gap.
+  const REVEAL_START   = index === 0 ? 0 : 0.05;
   const REVEAL_STAGGER = 0.012;
   const REVEAL_DUR     = 0.10;
   const EXIT_START     = 0.82;
@@ -184,8 +186,16 @@ function PanelLayer({
   const EXIT_DUR       = 0.07;
   const chars = project.client.split("");
 
-  const subtitleOpacity = useTransform(lsp, [0, REVEAL_START, REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
-  const numOpacity      = useTransform(lsp, [0, 0.04, 0.16, 0.80, 0.92, 1], [0, 0, 1, 1, 0, 0]);
+  const subtitleOpacity = useTransform(
+    lsp,
+    [0, Math.max(0.001, REVEAL_START), REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1],
+    [0, 0, 1, 1, 0, 0],
+  );
+  const numOpacity = useTransform(
+    lsp,
+    index === 0 ? [0, 0.08, 0.80, 0.92, 1] : [0, 0.04, 0.16, 0.80, 0.92, 1],
+    index === 0 ? [0, 1,    1,    0,    0] : [0, 0,    1,    1,    0,    0],
+  );
 
   // Image parallax (desktop only — parallax on mobile causes jank)
   const imageParallaxY = useTransform(lsp, [0, 1], [-50, 50]);
