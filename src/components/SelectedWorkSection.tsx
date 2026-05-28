@@ -96,6 +96,35 @@ function TitleChar({
   );
 }
 
+// ── View Work button with hover ──────────────────────────────────────────────
+function ViewWorkButton({ href, onClick }: { href: string; onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 7,
+        padding: "9px 20px", borderRadius: 9999,
+        fontFamily: "var(--font-urbanist), sans-serif",
+        fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+        color: "#ffffff", textDecoration: "none",
+        border: `1px solid ${hovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
+        background: hovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
+        backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+        transition: "border-color 0.3s ease, background 0.3s ease",
+      }}
+    >
+      View Work
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+        <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
+}
+
 // ── Panel layer ──────────────────────────────────────────────────────────────
 function PanelLayer({
   project, num, index, total, sp, isMobile,
@@ -316,25 +345,7 @@ function PanelLayer({
             }}>
               {project.title}
             </p>
-              <a
-                href={project.href}
-                onClick={handleNavigation}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 7,
-                  padding: "9px 20px", borderRadius: 9999,
-                  fontFamily: "var(--font-urbanist), sans-serif",
-                  fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                  color: "#ffffff", textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  background: "rgba(255,255,255,0.06)",
-                  backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-                }}
-              >
-                View Work
-                <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-                  <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
+            <ViewWorkButton href={project.href} onClick={handleNavigation} />
           </motion.div>
         </motion.div>
       </div>
@@ -349,7 +360,7 @@ function PanelLayer({
           position: "absolute", right: 0, top: 0,
           width: "75%", height: "100%",
           padding: "24px 40px 24px 0",
-          textDecoration: "none", cursor: "inherit",
+          textDecoration: "none", cursor: "pointer",
         }}
       >
         <div style={{ height: "100%", borderRadius: 20, overflow: "hidden", position: "relative" }}>

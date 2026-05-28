@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
+import { markIntroPlayed } from "@/lib/introState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -526,6 +527,9 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
+
+  // Ensure navigating from here to the homepage never re-triggers the intro
+  useEffect(() => { markIntroPlayed(); }, []);
 
   // Gate all section animations for 1 s so the user has time to settle
   // on the hero before any content below starts revealing.
