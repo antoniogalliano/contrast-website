@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValueEvent, useInView, useMotionValue, useSpring, type MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent, useInView, type MotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -98,17 +98,15 @@ function TitleChar({
 
 // ── Panel layer ──────────────────────────────────────────────────────────────
 function PanelLayer({
-  project, num, index, total, sp, onBottomHoverChange, isMobile,
+  project, num, index, total, sp, isMobile,
 }: {
   project: Project;
   num: string;
   index: number;
   total: number;
   sp: MotionValue<number>;
-  onBottomHoverChange: (v: boolean) => void;
   isMobile: boolean;
 }) {
-  const [bottomHovered, setBottomHovered] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isLast = index === total - 1;
   const router = useRouter();
@@ -162,9 +160,6 @@ function PanelLayer({
 
   // Image parallax (desktop only — parallax on mobile causes jank)
   const imageParallaxY = useTransform(lsp, [0, 1], [-50, 50]);
-
-  const handleBottomEnter = () => { setBottomHovered(true);  onBottomHoverChange(true);  };
-  const handleBottomLeave = () => { setBottomHovered(false); onBottomHoverChange(false); };
 
   // ── Mobile: full-screen image story ─────────────────────────────────────────
   if (isMobile) {
@@ -321,7 +316,6 @@ function PanelLayer({
             }}>
               {project.title}
             </p>
-            <div onMouseEnter={handleBottomEnter} onMouseLeave={handleBottomLeave}>
               <a
                 href={project.href}
                 onClick={handleNavigation}
@@ -331,10 +325,9 @@ function PanelLayer({
                   fontFamily: "var(--font-urbanist), sans-serif",
                   fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
                   color: "#ffffff", textDecoration: "none",
-                  border: `1px solid ${bottomHovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
-                  background: bottomHovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  background: "rgba(255,255,255,0.06)",
                   backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-                  transition: "border-color 0.35s ease, background 0.35s ease",
                 }}
               >
                 View Work
@@ -342,7 +335,6 @@ function PanelLayer({
                   <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
-            </div>
           </motion.div>
         </motion.div>
       </div>
@@ -389,57 +381,15 @@ function PanelLayer({
 // ── Sticky container ─────────────────────────────────────────────────────────
 function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: number; sp: MotionValue<number>; isMobile: boolean }) {
   const stickyRef = useRef<HTMLDivElement>(null);
-  // useInView is unreliable on iOS Safari for sticky elements — skip on mobile
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
-
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
-  const springX = useSpring(cursorX, { stiffness: 220, damping: 24, mass: 0.5 });
-  const springY = useSpring(cursorY, { stiffness: 220, damping: 24, mass: 0.5 });
-
-  const [isHovered,     setIsHovered]     = useState(false);
-  const [mouseMoving,   setMouseMoving]   = useState(false);
-  const [isRightHalf,   setIsRightHalf]   = useState(false);
-  const [bottomHovered, setBottomHovered] = useState(false);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    cursorX.set(x);
-    cursorY.set(y);
-    setIsRightHalf(x > rect.width / 2);
-    if (!mouseMoving) setMouseMoving(true);
-    if (idleTimer.current) clearTimeout(idleTimer.current);
-    idleTimer.current = setTimeout(() => setMouseMoving(false), 3000);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setMouseMoving(false);
-    setIsRightHalf(false);
-    if (idleTimer.current) clearTimeout(idleTimer.current);
-  };
-
-  useEffect(() => {
-    return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
-  }, []);
-
-  const showButton = isHovered && mouseMoving && isRightHalf;
 
   return (
     <div
       ref={stickyRef}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
       style={{
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
-        // On mobile: always visible (IntersectionObserver is unreliable on sticky elements in iOS Safari)
         opacity: isMobile ? 1 : (inView ? 1 : 0),
         transition: isMobile ? undefined : "opacity 0.8s ease",
-        cursor: showButton && !bottomHovered ? "none" : "auto",
       }}
     >
       {projects.map((project, i) => (
@@ -450,52 +400,9 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
           index={i}
           total={N}
           sp={sp}
-          onBottomHoverChange={setBottomHovered}
           isMobile={isMobile}
         />
       ))}
-
-      {/* Floating cursor button — desktop only */}
-      {!isMobile && (
-        <motion.div
-          style={{
-            position: "absolute", left: 0, top: 0,
-            x: springX, y: springY,
-            translateX: "-50%", translateY: "-50%",
-            zIndex: 20, pointerEvents: "none",
-          }}
-          animate={!showButton ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
-          initial={{ scale: 0.5, opacity: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.div
-            animate={
-              bottomHovered && isHovered
-                ? { opacity: 0, filter: "blur(22px)" }
-                : { opacity: 1, filter: "blur(0px)" }
-            }
-            transition={{ duration: bottomHovered && isHovered ? 0.93 : 0.35, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: "inline-flex" }}
-          >
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 7,
-              padding: "9px 20px", borderRadius: 9999,
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-              color: "#ffffff",
-              border: "1px solid rgba(255,255,255,0.22)",
-              background: "rgba(255,255,255,0.06)",
-              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-              whiteSpace: "nowrap",
-            }}>
-              View Work
-              <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-                <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 }
