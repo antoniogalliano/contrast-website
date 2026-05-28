@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Urbanist, Geist } from "next/font/google";
 import "./globals.css";
 import ScrollToTop from "@/components/ScrollToTop";
+import PageTransition from "@/components/PageTransition";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -29,7 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${urbanist.variable} ${geist.variable}`}>
       <body className="antialiased" style={{ background: "#0a0a0a" }}>
         <ScrollToTop />
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );
