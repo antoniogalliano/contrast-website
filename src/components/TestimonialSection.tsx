@@ -109,23 +109,7 @@ function NavButton({ direction, onClick }: { direction: "left" | "right"; onClic
 
 export default function TestimonialSection() {
   const [current, setCurrent] = useState(0);
-  const [wordProgress, setWordProgress] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const rafRef = useRef<number | null>(null);
-
-  // Word reveal — runs for AUTO_INTERVAL ms, resets on every slide change
-  useEffect(() => {
-    setWordProgress(0);
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const start = performance.now();
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / AUTO_INTERVAL, 1);
-      setWordProgress(progress);
-      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [current]);
 
   // Auto-play, restarts whenever the user manually navigates
   const startTimer = useCallback(() => {
@@ -148,8 +132,6 @@ export default function TestimonialSection() {
   const goNext = () => goTo((current + 1) % TESTIMONIALS.length);
 
   const t = TESTIMONIALS[current];
-  const words = t.quote.split(" ");
-  const revealedCount = Math.round(wordProgress * words.length);
 
   const quoteBase: React.CSSProperties = {
     margin: 0,
@@ -172,19 +154,9 @@ export default function TestimonialSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            style={quoteBase}
+            style={{ ...quoteBase, color: "#ffffff" }}
           >
-            {words.map((word, i) => (
-              <span
-                key={i}
-                style={{
-                  color: i < revealedCount ? "#ffffff" : "rgba(255,255,255,0.18)",
-                  transition: "color 0.2s ease",
-                }}
-              >
-                {word}{i < words.length - 1 ? " " : ""}
-              </span>
-            ))}
+            {t.quote}
           </motion.p>
         </AnimatePresence>
 
