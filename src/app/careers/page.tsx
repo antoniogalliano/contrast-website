@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -145,6 +145,153 @@ const roles = [
       "You'll work with some of the most design-focused teams in the industry, on projects where front-end quality is a genuine priority, not an afterthought. If you lose sleep over animation curves and pixel-perfect spacing, you'll fit right in.",
   },
 ];
+
+// ─── Hero stats ───────────────────────────────────────────────────────────────
+
+const heroStats = [
+  {
+    value: 20, suffix: "+", label: "people on the team",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45768C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    value: 50, suffix: "+", label: "products shipped",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    value: 100, suffix: "%", label: "remote-first",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+];
+
+function HeroStatCard({ stat, startDelay }: { stat: typeof heroStats[0]; startDelay: number }) {
+  const [count, setCount] = useState(0);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const duration = 1400;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setCount(Math.round(eased * stat.value));
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, startDelay);
+    return () => clearTimeout(t);
+  }, [stat.value, startDelay]);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        flex: 1,
+        padding: "32px 28px",
+        borderRadius: 16,
+        border: `1px solid ${hovered ? "rgba(217,12,183,0.5)" : "rgba(56,56,56,0.62)"}`,
+        background: hovered ? "rgba(217,12,183,0.04)" : "rgba(255,255,255,0.02)",
+        transition: "border-color 0.3s ease, background 0.3s ease",
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        gap: 20,
+      }}
+    >
+      {/* Bottom accent line */}
+      <div style={{
+        position: "absolute",
+        bottom: 0, left: 0, right: 0, height: 1,
+        background: hovered
+          ? "linear-gradient(to right, transparent, rgba(217,12,183,0.55), transparent)"
+          : "linear-gradient(to right, transparent, rgba(56,56,56,0.5), transparent)",
+        transition: "background 0.3s ease",
+      }} />
+
+      {/* Hover glow */}
+      <div style={{
+        position: "absolute",
+        bottom: 0, left: "50%", transform: "translateX(-50%)",
+        width: "100%", height: "50%",
+        background: "radial-gradient(ellipse at 50% 100%, rgba(217,12,183,0.1) 0%, transparent 70%)",
+        opacity: hovered ? 1 : 0,
+        transition: "opacity 0.4s ease",
+        pointerEvents: "none",
+      }} />
+
+      {/* Icon box */}
+      <div style={{
+        width: 40, height: 40, borderRadius: 10,
+        border: `1px solid ${hovered ? "rgba(217,12,183,0.4)" : "rgba(56,56,56,0.8)"}`,
+        background: hovered ? "rgba(217,12,183,0.08)" : "rgba(255,255,255,0.03)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        color: hovered ? "#d90cb7" : "#888888",
+        transition: "all 0.3s ease",
+        flexShrink: 0,
+      }}>
+        {stat.icon}
+      </div>
+
+      {/* Number */}
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
+        <span style={{
+          fontSize: "clamp(44px, 4.5vw, 64px)",
+          fontWeight: 700,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          color: "#ffffff",
+          lineHeight: 1,
+          letterSpacing: "-0.03em",
+        }}>
+          {count}
+        </span>
+        <span style={{
+          fontSize: "clamp(32px, 3.2vw, 46px)",
+          fontWeight: 700,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          color: "#d90cb7",
+          lineHeight: 1.1,
+          letterSpacing: "-0.02em",
+          paddingBottom: 3,
+        }}>
+          {stat.suffix}
+        </span>
+      </div>
+
+      {/* Label */}
+      <p style={{
+        margin: 0,
+        fontSize: 13,
+        color: "#888888",
+        fontFamily: "var(--font-geist), sans-serif",
+        letterSpacing: "0.3px",
+        lineHeight: 1.4,
+      }}>
+        {stat.label}
+      </p>
+    </div>
+  );
+}
 
 // ─── Shared label style ───────────────────────────────────────────────────────
 const sectionLabel: React.CSSProperties = {
@@ -347,27 +494,18 @@ export default function CareersPage() {
         {/* Text content */}
         <div className="careers-hero-inner" style={{ maxWidth: 1360, margin: "0 auto", marginBottom: 72 }}>
 
-          {/* Eyebrow + stats */}
+          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" }}
-            className="careers-top-row"
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 52 }}
+            style={{ marginBottom: 36 }}
           >
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, border: "1px solid rgba(217,12,183,0.35)", background: "rgba(217,12,183,0.06)" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d90cb7", display: "block", animation: "pulse-dot 2s ease-in-out infinite" }} />
               <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.84px", textTransform: "uppercase", color: "#d90cb7", fontFamily: "var(--font-urbanist), sans-serif" }}>
                 We&apos;re hiring
               </span>
-            </div>
-            <div className="careers-stats" style={{ display: "flex", alignItems: "center", gap: 48 }}>
-              {([["20+", "people on the team"], ["50+", "products shipped"], ["100%", "remote-first"]] as [string, string][]).map(([n, label]) => (
-                <div key={label} style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 26, fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1, letterSpacing: "-0.02em" }}>{n}</div>
-                  <div style={{ fontSize: 12, color: "#888888", fontFamily: "var(--font-urbanist), sans-serif", marginTop: 5 }}>{label}</div>
-                </div>
-              ))}
             </div>
           </motion.div>
 
@@ -402,6 +540,19 @@ export default function CareersPage() {
                 <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </a>
+          </motion.div>
+
+          {/* Stat cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45, ease: "easeOut" }}
+            className="careers-stats-row"
+            style={{ display: "flex", gap: 16, marginTop: 56 }}
+          >
+            {heroStats.map((stat, i) => (
+              <HeroStatCard key={stat.label} stat={stat} startDelay={600 + i * 150} />
+            ))}
           </motion.div>
         </div>
 
@@ -591,16 +742,9 @@ export default function CareersPage() {
         }
 
         @media (max-width: 768px) {
-          .careers-top-row {
+          .careers-stats-row {
             flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 24px !important;
-          }
-          .careers-stats {
-            gap: 24px !important;
-          }
-          .careers-stats > div {
-            text-align: left !important;
+            gap: 12px !important;
           }
         }
 
