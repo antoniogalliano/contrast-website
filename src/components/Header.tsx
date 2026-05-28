@@ -16,14 +16,12 @@ const navLinks = [
 
 function handleNavClick(href: string, e: React.MouseEvent) {
   const hash = href.startsWith("/#") ? href.slice(2) : href.startsWith("#") ? href.slice(1) : null;
-  if (!hash) return; // non-anchor link (e.g. /careers) — let browser handle it
+  if (!hash) return;
   e.preventDefault();
   const el = document.getElementById(hash);
   if (el) {
-    // Same page: smooth scroll
     el.scrollIntoView({ behavior: "smooth" });
   } else {
-    // Cross-page: force native navigation so the browser honors the hash
     window.location.href = href;
   }
 }
@@ -32,9 +30,6 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  // Compute synchronously during render so Framer Motion sees the correct delay
-  // on its very first read — no useState race condition possible.
-  // Delay only applies on the homepage on a user's first visit this session.
   const introDelay =
     pathname === "/" && typeof window !== "undefined" && !shouldSkipIntro()
       ? 3.8
@@ -42,16 +37,12 @@ export default function Header() {
 
   const logoRef = useRef<HTMLAnchorElement>(null);
 
-  // Measure the logo's natural screen position so IntroAnimation can morph into it.
-  // We use opacity-only entrance (no y-slide) so the logo is already at its true
-  // layout position the moment it's mounted, no transform offset to compensate for.
   useEffect(() => {
     const measure = () => {
       if (!logoRef.current) return;
       const r = logoRef.current.getBoundingClientRect();
       setLogoOrigin({ cx: r.left + r.width / 2, cy: r.top + r.height / 2, width: r.width });
     };
-    // rAF to let the browser finish the first paint
     const id = requestAnimationFrame(measure);
     return () => {
       cancelAnimationFrame(id);
@@ -76,21 +67,17 @@ export default function Header() {
         pointerEvents:  "none",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 1360, pointerEvents: "auto" }}>
+      {/* position:relative so the dropdown is anchored to this container */}
+      <div style={{ width: "100%", maxWidth: 1360, pointerEvents: "auto", position: "relative" }}>
 
-        {/* Opacity-only entrance, no y-slide so logo sits at its true layout position from mount */}
+        {/* Pill — always pill-shaped, never changes form */}
         <motion.header
-          initial={{ opacity: 0, borderRadius: 9999 }}
-          animate={{
-            opacity:      1,
-            borderRadius: mobileOpen ? 24 : 9999,
-          }}
-          transition={{
-            opacity:      { duration: 0.6, delay: introDelay, ease: "easeOut" },
-            borderRadius: { duration: 0.32, ease: [0.32, 0.72, 0, 1] },
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: introDelay, ease: "easeOut" }}
           style={{
             width:                "100%",
+            borderRadius:         9999,
             background:           "rgba(10, 10, 10, 0.55)",
             backdropFilter:       "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
@@ -99,7 +86,6 @@ export default function Header() {
             overflow:             "hidden",
           }}
         >
-          {/* Main bar */}
           <div
             style={{
               display:        "flex",
@@ -109,7 +95,6 @@ export default function Header() {
               height:         68,
             }}
           >
-            {/* Logo, ref lets IntroAnimation measure its exact position */}
             <a
               ref={logoRef}
               href="/"
@@ -188,7 +173,7 @@ export default function Header() {
                     height:     1.5,
                     width:      22,
                     background: "#fff",
-                    transition: "all 0.3s",
+                    transition: "transform 0.28s ease, opacity 0.2s ease",
                     transform:
                       i === 0 && mobileOpen ? "translateY(6.5px) rotate(45deg)"
                       : i === 2 && mobileOpen ? "translateY(-6.5px) rotate(-45deg)"
@@ -199,77 +184,90 @@ export default function Header() {
               ))}
             </button>
           </div>
+        </motion.header>
 
-          {/* Mobile menu */}
-          <AnimatePresence>
-            {mobileOpen && (
-              <motion.nav
-                key="mobile-nav"
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                exit={{ height: 0 }}
-                transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
-                style={{ overflow: "hidden" }}
+        {/* Mobile dropdown — separate panel below the pill, no shape morph */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.nav
+              key="mobile-nav"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
+              style={{
+                position:             "absolute",
+                top:                  "calc(100% + 8px)",
+                left:                 0,
+                right:                0,
+                borderRadius:         20,
+                background:           "rgba(10, 10, 10, 0.82)",
+                backdropFilter:       "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
+                border:               "1px solid rgba(255, 255, 255, 0.08)",
+                boxShadow:            "0 8px 32px rgba(0, 0, 0, 0.5)",
+                overflow:             "hidden",
+              }}
+            >
+              <div
+                style={{
+                  display:       "flex",
+                  flexDirection: "column",
+                  alignItems:    "center",
+                  gap:           20,
+                  padding:       "24px 28px 28px",
+                }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: -12 }}
+                {navLinks.map((link, i) => (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => { setMobileOpen(false); handleNavClick(link.href, e); }}
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.04 + i * 0.04, duration: 0.18, ease: "easeOut" }}
+                    style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
+                  >
+                    {link.label}
+                  </motion.a>
+                ))}
+                <motion.a
+                  href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-gradient-border"
+                  initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  transition={{ delay: 0.04 + navLinks.length * 0.04, duration: 0.18, ease: "easeOut" }}
                   style={{
-                    display:       "flex",
-                    flexDirection: "column",
-                    alignItems:    "center",
-                    gap:           20,
-                    padding:       "16px 28px 28px",
-                    borderTop:     "1px solid rgba(255,255,255,0.06)",
+                    display:        "flex",
+                    alignItems:     "center",
+                    gap:            6,
+                    borderRadius:   9999,
+                    padding:        "0 20px",
+                    height:         42,
+                    fontSize:       13,
+                    fontWeight:     500,
+                    color:          "#ffffff",
+                    textDecoration: "none",
+                    marginTop:      4,
                   }}
                 >
-                  {navLinks.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      onClick={(e) => { setMobileOpen(false); handleNavClick(link.href, e); }}
-                      style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                  <a
-                    href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-gradient-border"
-                    style={{
-                      display:        "flex",
-                      alignItems:     "center",
-                      gap:            6,
-                      borderRadius:   9999,
-                      padding:        "0 20px",
-                      height:         42,
-                      fontSize:       13,
-                      fontWeight:     500,
-                      color:          "#ffffff",
-                      textDecoration: "none",
-                      marginTop:      4,
-                    }}
-                  >
-                    Book a call
-                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                      <path
-                        d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
-                </motion.div>
-              </motion.nav>
-            )}
-          </AnimatePresence>
-        </motion.header>
+                  Book a call
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <path
+                      d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.a>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>
