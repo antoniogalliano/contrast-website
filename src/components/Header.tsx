@@ -80,18 +80,22 @@ export default function Header() {
 
         {/* Opacity-only entrance, no y-slide so logo sits at its true layout position from mount */}
         <motion.header
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: introDelay, ease: "easeOut" }}
+          initial={{ opacity: 0, borderRadius: 9999 }}
+          animate={{
+            opacity:      1,
+            borderRadius: mobileOpen ? 24 : 9999,
+          }}
+          transition={{
+            opacity:      { duration: 0.6, delay: introDelay, ease: "easeOut" },
+            borderRadius: { duration: 0.32, ease: [0.32, 0.72, 0, 1] },
+          }}
           style={{
             width:                "100%",
-            borderRadius:         mobileOpen ? 24 : 9999,
             background:           "rgba(10, 10, 10, 0.55)",
             backdropFilter:       "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
             border:               "1px solid rgba(255, 255, 255, 0.08)",
             boxShadow:            "0 8px 32px rgba(0, 0, 0, 0.4)",
-            transition:           "border-radius 0.35s ease",
             overflow:             "hidden",
           }}
         >
@@ -201,13 +205,17 @@ export default function Header() {
             {mobileOpen && (
               <motion.nav
                 key="mobile-nav"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                initial={{ height: 0 }}
+                animate={{ height: "auto" }}
+                exit={{ height: 0 }}
+                transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
                 style={{ overflow: "hidden" }}
               >
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: -12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
                   style={{
                     display:       "flex",
                     flexDirection: "column",
@@ -257,7 +265,7 @@ export default function Header() {
                       />
                     </svg>
                   </a>
-                </div>
+                </motion.div>
               </motion.nav>
             )}
           </AnimatePresence>
