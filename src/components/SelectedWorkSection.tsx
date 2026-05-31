@@ -226,7 +226,7 @@ function PanelLayer({
               fontFamily: "var(--font-urbanist), sans-serif",
               fontSize: "clamp(36px, 10vw, 60px)",
               fontWeight: 600, color: "#ffffff",
-              lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+              lineHeight: 1.15, letterSpacing: "-0.03em", margin: 0,
               y: titleY, opacity: titleOp,
             }}>
               {project.client}
@@ -353,7 +353,7 @@ function PanelLayer({
             fontFamily: "var(--font-urbanist), sans-serif",
             fontSize: "clamp(48px, 5.5vw, 88px)",
             fontWeight: 600, color: "#ffffff",
-            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+            lineHeight: 1.15, letterSpacing: "-0.03em", margin: 0,
             y: titleY, opacity: titleOp,
           }}>
             {project.client}
