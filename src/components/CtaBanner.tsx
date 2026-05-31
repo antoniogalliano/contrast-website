@@ -241,7 +241,7 @@ export default function CtaBanner() {
           left: 0,
           top: 0,
           width: "100%",
-          height: 508,
+          height: "100%",
           overflow: "hidden",
           pointerEvents: "none",
           zIndex: 1,

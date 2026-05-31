@@ -49,7 +49,7 @@ export default function Footer() {
     <footer
       style={{
         background: "#0a0a0a",
-        padding: "48px 40px 48px",
+        padding: "64px 40px 48px",
       }}
     >
       <div
