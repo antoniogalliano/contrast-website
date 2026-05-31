@@ -60,49 +60,7 @@ const projects: Project[] = [
   },
 ];
 
-// ── Per-letter title animation ───────────────────────────────────────────────
-function TitleChar({
-  char, sp, rA, rB, xA, xB, isMobile,
-}: {
-  char: string;
-  sp: MotionValue<number>;
-  rA: number; rB: number;
-  xA: number; xB: number;
-  isMobile: boolean;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useMotionValueEvent(sp, "change", (latest) => {
-    const el = ref.current;
-    if (!el) return;
-    const rP = rB > rA ? Math.max(0, Math.min(1, (latest - rA) / (rB - rA))) : latest >= rA ? 1 : 0;
-    const xP = xB > xA ? Math.max(0, Math.min(1, (latest - xA) / (xB - xA))) : latest >= xA ? 1 : 0;
-    const opacity = rP * (1 - xP);
-    const y = (1 - rP) * 44 - xP * 32;
-    el.style.opacity = String(opacity);
-    el.style.transform = `translateY(${y}px)`;
-    // filter:blur forces CPU rasterization every frame — skip on mobile
-    if (!isMobile) {
-      const blur = (1 - rP) * 40 + xP * 40;
-      el.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
-    }
-  });
-
-  return (
-    <span
-      ref={ref}
-      style={{
-        display: "inline-block", opacity: 0, transform: "translateY(44px)",
-        filter: isMobile ? "none" : "blur(40px)",
-        willChange: "transform, opacity",
-      }}
-    >
-      {char === " " ? " " : char}
-    </span>
-  );
-}
-
-// ── View Work button with hover ──────────────────────────────────────────────
+// ── View Work button ──────────────────────────────────────────────────────────
 function ViewWorkButton({ href, onClick }: { href: string; onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -131,7 +89,7 @@ function ViewWorkButton({ href, onClick }: { href: string; onClick: (e: React.Mo
   );
 }
 
-// ── Panel layer ──────────────────────────────────────────────────────────────
+// ── Panel layer ───────────────────────────────────────────────────────────────
 function PanelLayer({
   project, num, index, total, sp, isMobile,
 }: {
@@ -156,7 +114,7 @@ function PanelLayer({
   const panelEnd   = (index + 1) / total;
   const lsp = useTransform(sp, [panelStart, panelEnd], [0, 1]);
 
-  // Cross-fade opacity between panels
+  // Cross-fade between panels
   const XFADE = 0.04;
   useMotionValueEvent(sp, "change", (latest) => {
     const el = wrapperRef.current;
@@ -177,43 +135,48 @@ function PanelLayer({
     el.style.pointerEvents = o > 0.3 ? "auto" : "none";
   });
 
-  // Title travels bottom → top as panel scrolls
-  const titleContainerYDesktop = useTransform(lsp, [0, 1], ["88vh", "10vh"]);
-  const titleContainerYMobile  = useTransform(lsp, [0, 1], ["75vh", "32vh"]);
-  const titleContainerY = isMobile ? titleContainerYMobile : titleContainerYDesktop;
+  // Ken Burns: slow zoom-out across the panel's entire scroll range.
+  // The image breathes from 1.06× down to 1.0× — cinematic feel,
+  // distinct from the vertical-parallax approach used before.
+  const imageScale = useTransform(lsp, [0, 1], [1.06, 1.0]);
 
-  // First panel reveals immediately so it syncs with the section header scrolling off;
-  // all subsequent panels keep the 0.05 lead-in gap.
-  const REVEAL_START   = index === 0 ? 0 : 0.05;
-  const REVEAL_STAGGER = 0.012;
-  const REVEAL_DUR     = 0.10;
-  const EXIT_START     = 0.82;
-  const EXIT_STAGGER   = 0.008;
-  const EXIT_DUR       = 0.07;
-  const chars = project.client.split("");
-
-  const subtitleOpacity = useTransform(
-    lsp,
-    [0, Math.max(0.001, REVEAL_START), REVEAL_START + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1],
-    [0, 0, 1, 1, 0, 0],
-  );
+  // Counter
   const numOpacity = useTransform(
     lsp,
     index === 0 ? [0, 0.08, 0.80, 0.92, 1] : [0, 0.04, 0.16, 0.80, 0.92, 1],
     index === 0 ? [0, 1,    1,    0,    0] : [0, 0,    1,    1,    0,    0],
   );
 
-  // Image parallax (desktop only — parallax on mobile causes jank)
-  const imageParallaxY = useTransform(lsp, [0, 1], [-50, 50]);
+  // Staggered line-reveal animation: each row independently slides up from
+  // behind an overflow:hidden clip boundary — no per-character loops.
+  const REVEAL_START = index === 0 ? 0 : 0.06;
+  const REVEAL_DUR   = 0.16;
+  const EXIT_START   = 0.82;
+  const EXIT_DUR     = 0.08;
+  const k0 = Math.max(0.001, REVEAL_START);
 
-  // ── Mobile: full-screen image story ─────────────────────────────────────────
+  const titleY  = useTransform(lsp, [0, k0, k0 + REVEAL_DUR, EXIT_START, 1], [68, 68, 0, 0, -24]);
+  const titleOp = useTransform(lsp, [0, k0, k0 + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
+
+  const k0s = Math.max(0.001, REVEAL_START + 0.05);
+  const subY  = useTransform(lsp, [0, k0s, k0s + REVEAL_DUR, EXIT_START, 1], [44, 44, 0, 0, -16]);
+  const subOp = useTransform(lsp, [0, k0s, k0s + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
+
+  const k0p = Math.max(0.001, REVEAL_START + 0.09);
+  const pillsY  = useTransform(lsp, [0, k0p, k0p + REVEAL_DUR, EXIT_START, 1], [32, 32, 0, 0, -12]);
+  const pillsOp = useTransform(lsp, [0, k0p, k0p + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
+
+  const k0c = Math.max(0.001, REVEAL_START + 0.13);
+  const ctaY  = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, 1], [20, 20, 0, 0, -8]);
+  const ctaOp = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
+
+  // ── Mobile ───────────────────────────────────────────────────────────────────
   if (isMobile) {
     return (
       <div
         ref={wrapperRef}
         style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
       >
-        {/* Full-bleed static image — no parallax on mobile */}
         <img
           src={project.image}
           alt={project.client}
@@ -225,209 +188,185 @@ function PanelLayer({
             ...project.imageStyle,
           }}
         />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.82) 32%, rgba(10,10,10,0.45) 56%, transparent 76%)",
+          pointerEvents: "none",
+        }} />
 
-        {/* Bottom gradient overlay */}
-        <div
-          style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.82) 30%, rgba(10,10,10,0.45) 55%, transparent 75%)",
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* Project counter — top right */}
-        <motion.div
-          style={{
-            position: "absolute", top: 24, right: 24, zIndex: 5,
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: 12, fontWeight: 500, letterSpacing: "0.14em",
-            color: "rgba(255,255,255,0.55)",
-            opacity: numOpacity,
-          }}
-        >
+        <motion.div style={{
+          position: "absolute", top: 24, right: 24, zIndex: 5,
+          fontFamily: "var(--font-urbanist), sans-serif",
+          fontSize: 12, fontWeight: 500, letterSpacing: "0.14em",
+          color: "rgba(255,255,255,0.55)",
+          opacity: numOpacity,
+        }}>
           {num} / 0{total}
         </motion.div>
 
-        {/* Animated text overlay — travels up from bottom */}
-        <motion.div
-          style={{
-            position: "absolute",
-            left: 24, right: 24,
-            y: titleContainerY,
-            zIndex: 5,
-          }}
-        >
-          <h3
-            style={{
+        <div style={{ position: "absolute", left: 24, right: 24, bottom: 36, zIndex: 5 }}>
+          <div style={{ overflow: "hidden", marginBottom: 10 }}>
+            <motion.h3 style={{
               fontFamily: "var(--font-urbanist), sans-serif",
               fontSize: "clamp(36px, 10vw, 60px)",
               fontWeight: 600, color: "#ffffff",
               lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+              y: titleY, opacity: titleOp,
+            }}>
+              {project.client}
+            </motion.h3>
+          </div>
+          <div style={{ overflow: "hidden", marginBottom: 18 }}>
+            <motion.p style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 15, fontWeight: 400,
+              color: "rgba(255,255,255,0.75)",
+              margin: 0, lineHeight: 1.4,
+              y: subY, opacity: subOp,
+            }}>
+              {project.title}
+            </motion.p>
+          </div>
+          <motion.a
+            href={project.href}
+            onClick={handleNavigation}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              padding: "10px 22px", borderRadius: 9999,
+              fontFamily: "var(--font-urbanist), sans-serif",
+              fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
+              color: "#ffffff", textDecoration: "none",
+              border: "1px solid rgba(255,255,255,0.28)",
+              background: "rgba(255,255,255,0.08)",
+              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+              y: ctaY, opacity: ctaOp,
             }}
           >
-            {chars.map((char, i) => (
-              <TitleChar
-                key={i} char={char} sp={lsp} isMobile={true}
-                rA={REVEAL_START + i * REVEAL_STAGGER}
-                rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
-                xA={EXIT_START + i * EXIT_STAGGER}
-                xB={EXIT_START + i * EXIT_STAGGER + EXIT_DUR}
-              />
-            ))}
-          </h3>
-
-          <motion.div style={{ marginTop: 14, opacity: subtitleOpacity }}>
-            <p
-              style={{
-                fontFamily: "var(--font-urbanist), sans-serif",
-                fontSize: 15, fontWeight: 400,
-                color: "rgba(255,255,255,0.75)",
-                margin: "0 0 18px", lineHeight: 1.4,
-              }}
-            >
-              {project.title}
-            </p>
-            <a
-              href={project.href}
-              onClick={handleNavigation}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 7,
-                padding: "10px 22px", borderRadius: 9999,
-                fontFamily: "var(--font-urbanist), sans-serif",
-                fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                color: "#ffffff", textDecoration: "none",
-                border: "1px solid rgba(255,255,255,0.28)",
-                background: "rgba(255,255,255,0.08)",
-                backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-              }}
-            >
-              View Work
-              <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-                <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-          </motion.div>
-        </motion.div>
+            View Work
+            <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </motion.a>
+        </div>
       </div>
     );
   }
 
-  // ── Desktop: split left-text / right-image ───────────────────────────────────
+  // ── Desktop: full-bleed + left overlay ───────────────────────────────────────
   return (
     <div
       ref={wrapperRef}
       style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
     >
-      {/* Left panel: dark bg + animated text */}
-      <div className="sw-left-panel" style={{ position: "absolute", left: 0, top: 0, width: "25%", height: "100%", background: "#0a0a0a" }}>
-
-        <motion.div style={{
-          position: "absolute", top: 44, left: 32, zIndex: 5,
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontSize: 13, fontWeight: 500, letterSpacing: "0.14em",
-          color: "rgba(255,255,255,0.38)",
-          opacity: numOpacity,
-        }}>
-          {num} /
-        </motion.div>
-
-        <motion.div
-          className="selected-work-title"
-          style={{ position: "absolute", top: 0, left: 32, right: 24, y: titleContainerY, zIndex: 5 }}
-        >
-          <h3 style={{
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: "clamp(44px, 7vw, 100px)",
-            fontWeight: 600, color: "#ffffff",
-            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
-          }}>
-            {chars.map((char, i) => (
-              <TitleChar
-                key={i} char={char} sp={lsp} isMobile={false}
-                rA={REVEAL_START + i * REVEAL_STAGGER}
-                rB={REVEAL_START + i * REVEAL_STAGGER + REVEAL_DUR}
-                xA={EXIT_START + i * EXIT_STAGGER}
-                xB={EXIT_START + i * EXIT_STAGGER + EXIT_DUR}
-              />
-            ))}
-          </h3>
-
-          <motion.div style={{ marginTop: 20, opacity: subtitleOpacity }}>
-            <p style={{
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 17, fontWeight: 400,
-              color: "rgba(255,255,255,0.72)",
-              margin: "0 0 20px",
-            }}>
-              {project.title}
-            </p>
-
-            {/* Client highlight pills */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 22 }}>
-              {project.highlights.map((h) => (
-                <span
-                  key={h}
-                  style={{
-                    display: "inline-flex", alignItems: "center",
-                    padding: "3px 8px", borderRadius: 4,
-                    fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
-                    textTransform: "uppercase" as const,
-                    color: "rgba(255,255,255,0.45)",
-                    fontFamily: "var(--font-urbanist), sans-serif",
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.09)",
-                  }}
-                >
-                  {h}
-                </span>
-              ))}
-            </div>
-
-            <ViewWorkButton href={project.href} onClick={handleNavigation} />
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Right panel: image with parallax */}
+      {/* Full-bleed image — Ken Burns zoom-out while active */}
       <a
         href={project.href}
         onClick={handleNavigation}
-        className="sw-right-panel"
-        style={{
-          display: "block",
-          position: "absolute", right: 0, top: 0,
-          width: "75%", height: "100%",
-          padding: "24px 40px 24px 0",
-          textDecoration: "none", cursor: "pointer",
-        }}
+        style={{ display: "block", position: "absolute", inset: 0, textDecoration: "none", cursor: "pointer", zIndex: 1 }}
+        aria-label={`View ${project.client} case study`}
       >
-        <div style={{ height: "100%", borderRadius: 20, overflow: "hidden", position: "relative" }}>
-          <motion.div
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+          <motion.img
+            src={project.image}
+            alt={project.client}
             style={{
-              position: "absolute",
-              top: -60, left: 0, right: 0,
-              height: "calc(100% + 120px)",
-              y: imageParallaxY,
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%",
+              objectFit: "cover", objectPosition: "center",
+              display: "block",
+              scale: imageScale,
+              ...(project.imageStyle ?? {}),
             }}
-          >
-            <img
-              src={project.image}
-              alt={project.client}
-              style={{
-                width: "100%", height: "100%",
-                objectFit: "cover", objectPosition: "center",
-                display: "block",
-                ...project.imageStyle,
-              }}
-            />
-          </motion.div>
+          />
         </div>
       </a>
+
+      {/* Gradient: dark-left → transparent ~65% across */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2,
+        background: "linear-gradient(90deg, rgba(10,10,10,0.93) 0%, rgba(10,10,10,0.72) 26%, rgba(10,10,10,0.20) 50%, transparent 66%)",
+      }} />
+      {/* Bottom vignette */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, height: "28%",
+        pointerEvents: "none", zIndex: 2,
+        background: "linear-gradient(to top, rgba(10,10,10,0.38) 0%, transparent 100%)",
+      }} />
+
+      {/* Counter — top right */}
+      <motion.div style={{
+        position: "absolute", top: 48, right: 56, zIndex: 5,
+        fontFamily: "var(--font-urbanist), sans-serif",
+        fontSize: 13, fontWeight: 500, letterSpacing: "0.14em",
+        color: "rgba(255,255,255,0.4)",
+        opacity: numOpacity,
+      }}>
+        {num} / 0{total}
+      </motion.div>
+
+      {/* Text block — vertically centered on the left */}
+      <div style={{
+        position: "absolute",
+        left: 64, top: "50%",
+        transform: "translateY(-50%)",
+        maxWidth: 480,
+        zIndex: 5,
+        pointerEvents: "none",
+      }}>
+        {/* Client name — line reveal */}
+        <div style={{ overflow: "hidden", marginBottom: 14 }}>
+          <motion.h3 style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(48px, 5.5vw, 88px)",
+            fontWeight: 600, color: "#ffffff",
+            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+            y: titleY, opacity: titleOp,
+          }}>
+            {project.client}
+          </motion.h3>
+        </div>
+
+        {/* Subtitle — line reveal with slight delay */}
+        <div style={{ overflow: "hidden", marginBottom: 22 }}>
+          <motion.p style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: 18, fontWeight: 400,
+            color: "rgba(255,255,255,0.70)",
+            margin: 0,
+            y: subY, opacity: subOp,
+          }}>
+            {project.title}
+          </motion.p>
+        </div>
+
+        {/* Highlight pills */}
+        <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 28, y: pillsY, opacity: pillsOp }}>
+          {project.highlights.map((h) => (
+            <span key={h} style={{
+              display: "inline-flex", alignItems: "center",
+              padding: "3px 8px", borderRadius: 4,
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+              color: "rgba(255,255,255,0.45)",
+              fontFamily: "var(--font-urbanist), sans-serif",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.09)",
+            }}>
+              {h}
+            </span>
+          ))}
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div style={{ y: ctaY, opacity: ctaOp, pointerEvents: "auto" }}>
+          <ViewWorkButton href={project.href} onClick={handleNavigation} />
+        </motion.div>
+      </div>
     </div>
   );
 }
 
-// ── Sticky container ─────────────────────────────────────────────────────────
+// ── Sticky container ──────────────────────────────────────────────────────────
 function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: number; sp: MotionValue<number>; isMobile: boolean }) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const inView = useInView(stickyRef, { once: true, amount: 0.01 });
