@@ -503,18 +503,6 @@ export default function MethodSection() {
           </p>
         </motion.div>
 
-        {/* Feature cards */}
-        <div
-          className="method-cards"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}
-        >
-          {/* Design Triggers, full interactive 3-state card */}
-          <DesignTriggersCard delay={0} isMobile={isMobile} />
-
-          {/* Hero Framework */}
-          <HeroFrameworkCard delay={0.15} isMobile={isMobile} />
-        </div>
-
         {/* Video card */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -587,6 +575,15 @@ export default function MethodSection() {
 
           <VideoPlayer />
         </motion.div>
+
+        {/* Feature cards — Hero Framework left, Design Triggers right */}
+        <div
+          className="method-cards"
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}
+        >
+          <HeroFrameworkCard delay={0} isMobile={isMobile} />
+          <DesignTriggersCard delay={0.15} isMobile={isMobile} />
+        </div>
       </div>
 
       <style jsx global>{`
