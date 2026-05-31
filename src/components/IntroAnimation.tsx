@@ -2,7 +2,7 @@
 
 import { useState, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { setDotOrigin, shouldSkipIntro, markIntroPlayed } from "@/lib/introState";
+import { setDotOrigin, shouldSkipIntro, clearSoftNavFlag, markIntroPlayed } from "@/lib/introState";
 
 // ── Logo vectors, identical to Logotype.tsx ──────────────────────────────────
 const VECTORS = [
@@ -54,6 +54,7 @@ export default function IntroAnimation() {
 
   useLayoutEffect(() => {
     if (shouldSkipIntro()) {
+      clearSoftNavFlag();
       setShow(false);
       return;
     }

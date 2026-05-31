@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
-import { markIntroPlayed } from "@/lib/introState";
+import { markIntroPlayed, markSoftNavToHome } from "@/lib/introState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -557,6 +557,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
   const navigateWithTransition = (href: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
+    if (href === "/" || href.startsWith("/#")) markSoftNavToHome();
     router.push(href);
   };
 
