@@ -205,6 +205,22 @@ function PanelLayer({
         </motion.div>
 
         <div style={{ position: "absolute", left: 24, right: 24, bottom: 36, zIndex: 5 }}>
+          <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14, y: pillsY, opacity: pillsOp }}>
+            {project.highlights.map((h) => (
+              <span key={h} style={{
+                display: "inline-flex", alignItems: "center",
+                padding: "3px 8px", borderRadius: 4,
+                fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                color: "rgba(255,255,255,0.45)",
+                fontFamily: "var(--font-urbanist), sans-serif",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.09)",
+              }}>
+                {h}
+              </span>
+            ))}
+          </motion.div>
           <div style={{ overflow: "hidden", marginBottom: 10 }}>
             <motion.h3 style={{
               fontFamily: "var(--font-urbanist), sans-serif",
@@ -313,34 +329,8 @@ function PanelLayer({
         zIndex: 5,
         pointerEvents: "none",
       }}>
-        {/* Client name — line reveal */}
-        <div style={{ overflow: "hidden", marginBottom: 14 }}>
-          <motion.h3 style={{
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: "clamp(48px, 5.5vw, 88px)",
-            fontWeight: 600, color: "#ffffff",
-            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
-            y: titleY, opacity: titleOp,
-          }}>
-            {project.client}
-          </motion.h3>
-        </div>
-
-        {/* Subtitle — line reveal with slight delay */}
-        <div style={{ overflow: "hidden", marginBottom: 22 }}>
-          <motion.p style={{
-            fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: 18, fontWeight: 400,
-            color: "rgba(255,255,255,0.70)",
-            margin: 0,
-            y: subY, opacity: subOp,
-          }}>
-            {project.title}
-          </motion.p>
-        </div>
-
-        {/* Highlight pills */}
-        <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 28, y: pillsY, opacity: pillsOp }}>
+        {/* Highlight pills — above the title */}
+        <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 20, y: pillsY, opacity: pillsOp }}>
           {project.highlights.map((h) => (
             <span key={h} style={{
               display: "inline-flex", alignItems: "center",
@@ -356,6 +346,32 @@ function PanelLayer({
             </span>
           ))}
         </motion.div>
+
+        {/* Client name — line reveal */}
+        <div style={{ overflow: "hidden", marginBottom: 14 }}>
+          <motion.h3 style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(48px, 5.5vw, 88px)",
+            fontWeight: 600, color: "#ffffff",
+            lineHeight: 1.0, letterSpacing: "-0.03em", margin: 0,
+            y: titleY, opacity: titleOp,
+          }}>
+            {project.client}
+          </motion.h3>
+        </div>
+
+        {/* Subtitle — line reveal with slight delay */}
+        <div style={{ overflow: "hidden", marginBottom: 28 }}>
+          <motion.p style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: 18, fontWeight: 400,
+            color: "rgba(255,255,255,0.70)",
+            margin: 0,
+            y: subY, opacity: subOp,
+          }}>
+            {project.title}
+          </motion.p>
+        </div>
 
         {/* CTA */}
         <motion.div style={{ y: ctaY, opacity: ctaOp, pointerEvents: "auto" }}>
