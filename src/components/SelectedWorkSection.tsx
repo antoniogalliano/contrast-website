@@ -208,14 +208,14 @@ function PanelLayer({
           <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14, y: pillsY, opacity: pillsOp }}>
             {project.highlights.map((h) => (
               <span key={h} style={{
-                display: "inline-flex", alignItems: "center",
-                padding: "3px 8px", borderRadius: 4,
-                fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
-                textTransform: "uppercase" as const,
-                color: "rgba(255,255,255,0.45)",
+                fontSize: 12, fontWeight: 500,
+                color: "rgba(255,255,255,0.8)",
+                padding: "5px 14px", borderRadius: 100,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(10,10,10,0.55)",
+                backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
                 fontFamily: "var(--font-urbanist), sans-serif",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.09)",
+                whiteSpace: "nowrap" as const,
               }}>
                 {h}
               </span>
@@ -333,14 +333,14 @@ function PanelLayer({
         <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 20, y: pillsY, opacity: pillsOp }}>
           {project.highlights.map((h) => (
             <span key={h} style={{
-              display: "inline-flex", alignItems: "center",
-              padding: "3px 8px", borderRadius: 4,
-              fontSize: 10, fontWeight: 600, letterSpacing: "0.08em",
-              textTransform: "uppercase" as const,
-              color: "rgba(255,255,255,0.45)",
+              fontSize: 12, fontWeight: 500,
+              color: "rgba(255,255,255,0.8)",
+              padding: "5px 14px", borderRadius: 100,
+              border: "1px solid rgba(255,255,255,0.18)",
+              background: "rgba(10,10,10,0.55)",
+              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
               fontFamily: "var(--font-urbanist), sans-serif",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.09)",
+              whiteSpace: "nowrap" as const,
             }}>
               {h}
             </span>
