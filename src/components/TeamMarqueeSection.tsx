@@ -99,7 +99,7 @@ function MarqueeRow({ photos, direction, height, duration }: {
 
   return (
     <div
-      style={{ overflow: "hidden", width: "100%" }}
+      style={{ overflow: "hidden", width: "100%", paddingTop: 16, marginTop: -16 }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
