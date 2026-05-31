@@ -170,12 +170,17 @@ function PanelLayer({
   const ctaY  = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, 1], [20, 20, 0, 0, -8]);
   const ctaOp = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
 
-  // ── Mobile ───────────────────────────────────────────────────────────────────
+  // ── Mobile: no per-frame motion elements — only the cross-fade runs on scroll ──
   if (isMobile) {
     return (
       <div
         ref={wrapperRef}
-        style={{ position: "absolute", inset: 0, opacity: index === 0 ? 1 : 0, pointerEvents: index === 0 ? "auto" : "none" }}
+        style={{
+          position: "absolute", inset: 0,
+          opacity: index === 0 ? 1 : 0,
+          pointerEvents: index === 0 ? "auto" : "none",
+          willChange: "opacity",
+        }}
       >
         <img
           src={project.image}
@@ -194,56 +199,50 @@ function PanelLayer({
           pointerEvents: "none",
         }} />
 
-        <motion.div style={{
+        {/* Counter — static span, no motion */}
+        <span style={{
           position: "absolute", top: 24, right: 24, zIndex: 5,
           fontFamily: "var(--font-urbanist), sans-serif",
           fontSize: 12, fontWeight: 500, letterSpacing: "0.14em",
           color: "rgba(255,255,255,0.55)",
-          opacity: numOpacity,
         }}>
           {num} / 0{total}
-        </motion.div>
+        </span>
 
+        {/* Text block — plain HTML, zero per-frame work */}
         <div style={{ position: "absolute", left: 24, right: 24, bottom: 36, zIndex: 5 }}>
-          <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14, y: pillsY, opacity: pillsOp }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
             {project.highlights.map((h) => (
               <span key={h} style={{
                 fontSize: 12, fontWeight: 500,
                 color: "rgba(255,255,255,0.8)",
                 padding: "5px 14px", borderRadius: 100,
                 border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(10,10,10,0.55)",
-                backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+                background: "rgba(10,10,10,0.7)",
                 fontFamily: "var(--font-urbanist), sans-serif",
                 whiteSpace: "nowrap" as const,
               }}>
                 {h}
               </span>
             ))}
-          </motion.div>
-          <div style={{ overflow: "hidden", marginBottom: 10 }}>
-            <motion.h3 style={{
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: "clamp(36px, 10vw, 60px)",
-              fontWeight: 600, color: "#ffffff",
-              lineHeight: 1.3, letterSpacing: "-0.03em", margin: 0,
-              y: titleY, opacity: titleOp,
-            }}>
-              {project.client}
-            </motion.h3>
           </div>
-          <div style={{ overflow: "hidden", marginBottom: 18 }}>
-            <motion.p style={{
-              fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 15, fontWeight: 400,
-              color: "rgba(255,255,255,0.75)",
-              margin: 0, lineHeight: 1.4,
-              y: subY, opacity: subOp,
-            }}>
-              {project.title}
-            </motion.p>
-          </div>
-          <motion.a
+          <h3 style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(36px, 10vw, 60px)",
+            fontWeight: 600, color: "#ffffff",
+            lineHeight: 1.3, letterSpacing: "-0.03em", margin: "0 0 10px",
+          }}>
+            {project.client}
+          </h3>
+          <p style={{
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: 15, fontWeight: 400,
+            color: "rgba(255,255,255,0.75)",
+            margin: "0 0 18px", lineHeight: 1.4,
+          }}>
+            {project.title}
+          </p>
+          <a
             href={project.href}
             onClick={handleNavigation}
             style={{
@@ -254,15 +253,13 @@ function PanelLayer({
               color: "#ffffff", textDecoration: "none",
               border: "1px solid rgba(255,255,255,0.28)",
               background: "rgba(255,255,255,0.08)",
-              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-              y: ctaY, opacity: ctaOp,
             }}
           >
             View Work
             <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
               <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </motion.a>
+          </a>
         </div>
       </div>
     );
@@ -392,6 +389,7 @@ function StickyPanels({ projects, N, sp, isMobile }: { projects: Project[]; N: n
       ref={stickyRef}
       style={{
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
+        transform: "translateZ(0)",
         opacity: isMobile ? 1 : (inView ? 1 : 0),
         transition: isMobile ? undefined : "opacity 0.8s ease",
       }}
@@ -468,8 +466,8 @@ export default function SelectedWorkSection() {
         </motion.div>
       </div>
 
-      {/* Scroll container */}
-      <div ref={scrollRef} style={{ height: `${N * 220}vh`, position: "relative" }}>
+      {/* Scroll container — shorter on mobile so panels flip faster */}
+      <div ref={scrollRef} style={{ height: `${N * (isMobile ? 160 : 220)}vh`, position: "relative" }}>
         <StickyPanels projects={projects} N={N} sp={sp} isMobile={isMobile} />
       </div>
 
