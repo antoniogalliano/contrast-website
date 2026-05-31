@@ -221,14 +221,14 @@ export default function CtaBanner() {
       style={{
         position: "relative",
         width: "100%",
-        minHeight: 508,
+        minHeight: 380,
         background: "#0a0a0a",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        paddingTop: 115,
-        paddingBottom: 300,
+        paddingTop: 100,
+        paddingBottom: 140,
       }}
     >
       {/* ── Sparkle field ── */}
@@ -297,31 +297,7 @@ export default function CtaBanner() {
       {/* ── Cycling headline ── */}
       <CyclingHeadline />
 
-      {/* ── CTA button ── */}
-      <motion.a
-        href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-        className="btn-gradient-border"
-        style={{
-          position: "relative", zIndex: 2,
-          marginTop: 56, display: "inline-flex", alignItems: "center", gap: 8,
-          padding: "12px 24px", borderRadius: 52, textDecoration: "none",
-          fontSize: 14, fontWeight: 600, letterSpacing: "0.14px",
-          color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif",
-          whiteSpace: "nowrap",
-        }}
-      >
-        Book a call
-        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.5 8.5L8.5 1.5M8.5 1.5H2.5M8.5 1.5V7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </motion.a>
-      <style jsx global>{`
+<style jsx global>{`
         @media (max-width: 768px) {
           .cta-label {
             font-size: 22px !important;
