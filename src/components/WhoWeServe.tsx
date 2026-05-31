@@ -335,6 +335,19 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
   return (
     <div className="who-expanded-layout" style={{ display: "flex", height: "100%", position: "relative" }}>
 
+      {/* Glow lives at root level so it bleeds freely across the left/right split.
+          The card's own overflow:hidden clips it at the card boundary. */}
+      <div style={{
+        position: "absolute", width: 560, height: 560,
+        right: "8%", top: "50%",
+        transform: "translateY(-50%)",
+        borderRadius: "50%",
+        background: "rgba(217,12,183,0.28)",
+        filter: "blur(130px)",
+        pointerEvents: "none",
+        zIndex: 0,
+      }} />
+
       {/* Close button — hidden on mobile (who-toggle-btn handles it there) */}
       <button
         className="who-close-btn"
@@ -359,6 +372,7 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
         width: "46%", flexShrink: 0,
         display: "flex", flexDirection: "column", justifyContent: "center",
         padding: "56px 48px 56px 44px", gap: 20,
+        position: "relative", zIndex: 1,
       }}>
         <h3 style={{
           fontSize: "clamp(20px, 1.8vw, 28px)", fontWeight: 600,
@@ -381,16 +395,8 @@ function ExpandedCard({ card, onClose }: { card: CardData; onClose: () => void }
       <div className="who-expanded-illus" style={{
         flex: 1, position: "relative", overflow: "hidden",
         display: "flex", alignItems: "center", justifyContent: "center",
+        zIndex: 1,
       }}>
-        {/* Glow */}
-        <div style={{
-          position: "absolute", width: 440, height: 440,
-          left: "50%", top: "50%",
-          transform: "translate(-50%, -15%)",
-          borderRadius: "50%", background: "rgba(217,12,183,0.32)", filter: "blur(110px)",
-          pointerEvents: "none",
-        }} />
-
         <div style={{
           position: "relative", zIndex: 2,
           width: card.type === "cubes" ? "82%" : undefined,
