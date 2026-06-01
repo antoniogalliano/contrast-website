@@ -473,10 +473,9 @@ export default function CareersPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            style={{ margin: "0 0 40px", fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 700, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.03em" }}
+            style={{ margin: "0 0 40px", fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.025em", color: "#ffffff" }}
           >
-            <span style={{ color: "#888888" }}>Where great design</span><br />
-            <span style={{ color: "#ffffff" }}>meets real impact.</span>
+            Where great design meets real impact.
           </motion.h1>
 
           {/* Description + CTA */}
@@ -548,15 +547,15 @@ export default function CareersPage() {
             <h2
               style={{
                 margin: 0,
-                fontSize: "clamp(32px, 4vw, 52px)",
-                fontWeight: 700,
+                fontSize: "clamp(32px, 4.5vw, 64px)",
+                fontWeight: 600,
                 fontFamily: "var(--font-urbanist), sans-serif",
-                lineHeight: 1.1,
-                letterSpacing: "-0.02em",
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
+                color: "#ffffff",
               }}
             >
-              <span style={{ color: "#888888" }}>A place where </span>
-              <span style={{ color: "#ffffff" }}>craft thrives.</span>
+              A place where craft thrives.
             </h2>
           </motion.div>
 
@@ -594,15 +593,15 @@ export default function CareersPage() {
             <h2
               style={{
                 margin: 0,
-                fontSize: "clamp(32px, 4vw, 52px)",
-                fontWeight: 700,
+                fontSize: "clamp(32px, 4.5vw, 64px)",
+                fontWeight: 600,
                 fontFamily: "var(--font-urbanist), sans-serif",
-                lineHeight: 1.1,
-                letterSpacing: "-0.02em",
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
+                color: "#ffffff",
               }}
             >
-              <span style={{ color: "#888888" }}>We&apos;re looking for </span>
-              <span style={{ color: "#ffffff" }}>great people.</span>
+              We&apos;re looking for great people.
             </h2>
           </motion.div>
 
