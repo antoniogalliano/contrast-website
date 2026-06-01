@@ -225,13 +225,13 @@ export default function SuccessStoriesSection() {
             style={{
               fontSize: "clamp(32px, 4.5vw, 64px)",
               fontWeight: 600,
-              lineHeight: 1.17,
-              letterSpacing: "-0.01em",
+              lineHeight: 1.05,
+              letterSpacing: "-0.025em",
               margin: "0 auto",
+              color: "#ffffff",
             }}
           >
-            <span style={{ color: "#888888" }}>Success Stories: </span>
-            <span style={{ color: "#ffffff" }}>Real UX Wins</span>
+            Success Stories: Real UX Wins
           </h2>
         </motion.div>
 

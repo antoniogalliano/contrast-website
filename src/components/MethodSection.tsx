@@ -483,11 +483,11 @@ export default function MethodSection() {
             Our Method
           </p>
           <h2 style={{
-            fontSize: "clamp(36px, 4.5vw, 64px)",
+            fontSize: "clamp(32px, 4.5vw, 64px)",
             fontWeight: 600,
             color: "#ffffff",
-            lineHeight: 1.17,
-            letterSpacing: "-0.01em",
+            lineHeight: 1.05,
+            letterSpacing: "-0.025em",
             margin: "0 auto 20px",
           }}>
             The Method Behind Every Result

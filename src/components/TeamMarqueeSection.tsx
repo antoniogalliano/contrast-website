@@ -159,9 +159,9 @@ export default function TeamMarqueeSection() {
             fontFamily: "var(--font-urbanist), sans-serif",
             lineHeight: 1.05,
             letterSpacing: "-0.025em",
+            color: "#ffffff",
           }}>
-            <span style={{ color: "#888888" }}>People who make </span>
-            <span style={{ color: "#ffffff" }}>great work happen.</span>
+            People who make great work happen.
           </h2>
         </motion.div>
 

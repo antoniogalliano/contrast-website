@@ -597,9 +597,9 @@ export default function WhoWeServe() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           style={{
-            fontSize: "clamp(36px, 4.5vw, 64px)", fontWeight: 600,
+            fontSize: "clamp(32px, 4.5vw, 64px)", fontWeight: 600,
             color: "#ffffff", textAlign: "center",
-            letterSpacing: "-0.64px", lineHeight: "normal",
+            letterSpacing: "-0.025em", lineHeight: 1.05,
             margin: "0 0 64px",
             fontFamily: "var(--font-urbanist), sans-serif",
           }}
