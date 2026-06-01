@@ -212,12 +212,13 @@ function PanelLayer({
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
             {project.highlights.map((h) => (
               <span key={h} style={{
-                fontSize: 12, fontWeight: 500,
-                color: "rgba(255,255,255,0.8)",
-                padding: "5px 14px", borderRadius: 100,
-                border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(10,10,10,0.7)",
+                fontSize: 11, fontWeight: 500,
+                color: "rgba(255,255,255,0.7)",
+                padding: "4px 10px", borderRadius: 5,
+                border: "1px solid rgba(255,255,255,0.14)",
+                background: "rgba(255,255,255,0.05)",
                 fontFamily: "var(--font-urbanist), sans-serif",
+                letterSpacing: "0.3px",
                 whiteSpace: "nowrap" as const,
               }}>
                 {h}
@@ -328,13 +329,13 @@ function PanelLayer({
         <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 20, y: pillsY, opacity: pillsOp }}>
           {project.highlights.map((h) => (
             <span key={h} style={{
-              fontSize: 12, fontWeight: 500,
-              color: "rgba(255,255,255,0.8)",
-              padding: "5px 14px", borderRadius: 100,
-              border: "1px solid rgba(255,255,255,0.18)",
-              background: "rgba(10,10,10,0.55)",
-              backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+              fontSize: 11, fontWeight: 500,
+              color: "rgba(255,255,255,0.7)",
+              padding: "4px 10px", borderRadius: 5,
+              border: "1px solid rgba(255,255,255,0.14)",
+              background: "rgba(255,255,255,0.05)",
               fontFamily: "var(--font-urbanist), sans-serif",
+              letterSpacing: "0.3px",
               whiteSpace: "nowrap" as const,
             }}>
               {h}
