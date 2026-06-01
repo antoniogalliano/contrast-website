@@ -176,9 +176,9 @@ export default function Header() {
                   <motion.svg
                     key="close"
                     width="20" height="20" viewBox="0 0 20 20" fill="none"
-                    initial={{ opacity: 0, rotate: -45 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: 45 }}
+                    initial={{ opacity: 0, scale: 0.75 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.75 }}
                     transition={{ duration: 0.18, ease: "easeOut" }}
                   >
                     <path d="M4 4L16 16" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>

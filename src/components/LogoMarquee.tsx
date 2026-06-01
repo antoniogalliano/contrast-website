@@ -12,6 +12,7 @@ const logos = [
 export default function LogoMarquee() {
   return (
     <section
+      className="logo-marquee-section"
       style={{
         position: "relative",
         overflow: "hidden",
@@ -55,6 +56,7 @@ export default function LogoMarquee() {
                 key={`${copy}-${j}`}
                 src={src}
                 alt=""
+                className="logo-marquee-img"
                 style={{
                   width: 200,
                   height: 159,
@@ -70,12 +72,12 @@ export default function LogoMarquee() {
 
       <style jsx global>{`
         @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-25%);
-          }
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-25%); }
+        }
+        @media (max-width: 768px) {
+          .logo-marquee-section { height: 125px !important; }
+          .logo-marquee-img     { height: 124px !important; width: auto !important; }
         }
       `}</style>
     </section>

@@ -453,11 +453,12 @@ export default function SelectedWorkSection() {
         <StickyPanels projects={projects} N={N} sp={sp} isMobile={isMobile} />
       </div>
 
-      <div style={{ height: 120 }} />
+      <div className="selected-work-spacer" style={{ height: 120 }} />
 
       <style jsx global>{`
         @media (max-width: 768px) {
           .selected-work-header { flex-direction: column !important; align-items: flex-start !important; }
+          .selected-work-spacer { height: 60px !important; }
         }
         @media (max-width: 640px) {
           .selected-work-outer { padding: 60px 20px 40px !important; }

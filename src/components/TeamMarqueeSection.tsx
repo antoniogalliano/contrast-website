@@ -40,10 +40,15 @@ const TEAM_ROW_2: TeamMember[] = [
 
 function PhotoCard({ src, name, role, height }: TeamMember & { height: number }) {
   const [hovered, setHovered] = useState(false);
+  const [toggled, setToggled] = useState(false);
+  const show = hovered || toggled;
+
   return (
     <div
+      className="team-photo-card"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => setToggled(t => !t)}
       style={{
         position: "relative",
         flexShrink: 0,
@@ -63,17 +68,20 @@ function PhotoCard({ src, name, role, height }: TeamMember & { height: number })
         style={{
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "top center", display: "block",
-          filter: hovered ? "grayscale(0%)" : "grayscale(100%)",
+          filter: show ? "grayscale(0%)" : "grayscale(100%)",
           transition: "filter 0.4s ease",
         }}
       />
-      <div style={{
-        position: "absolute", inset: 0,
-        background: "linear-gradient(to top, rgba(10,10,10,0.88) 0%, transparent 55%)",
-        display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "14px 16px",
-        opacity: hovered ? 1 : 0,
-        transition: "opacity 0.3s ease",
-      }}>
+      <div
+        className="team-card-overlay"
+        style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.55) 50%, rgba(10,10,10,0.1) 100%)",
+          display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "14px 16px",
+          opacity: show ? 1 : 0,
+          transition: "opacity 0.3s ease",
+        }}
+      >
         <span style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.1px", lineHeight: 1.3 }}>
           {name}
         </span>
@@ -123,7 +131,7 @@ function MarqueeRow({ photos, direction, height, duration }: {
 export default function TeamMarqueeSection() {
   return (
     <>
-      <section style={{ padding: "120px 0 100px", background: "#0a0a0a" }}>
+      <section className="team-section" style={{ padding: "120px 0 100px", background: "#0a0a0a" }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -176,6 +184,13 @@ export default function TeamMarqueeSection() {
       </section>
 
       <style jsx global>{`
+        @media (max-width: 768px) {
+          .team-section { padding-top: 60px !important; }
+          .team-photo-card {
+            transform: none !important;
+            transition: none !important;
+          }
+        }
         @keyframes marquee-left {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
