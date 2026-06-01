@@ -390,6 +390,22 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
           >
             <div style={{ borderTop: "1px solid rgba(56,56,56,0.4)", padding: "32px 32px 36px", display: "flex", flexDirection: "column", gap: 32 }}>
 
+              {/* 0, About Contrast UX */}
+              <div style={{ padding: "24px 28px", borderRadius: 12, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(56,56,56,0.5)" }}>
+                <p style={sectionLabel}>About Contrast UX</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
+                    Contrast UX is a design agency focused on creating exceptional digital products that are clear, effective, and grounded in real user and business needs. We blend strong design fundamentals with strategic thinking to deliver experiences that resonate with users and drive measurable impact.
+                  </p>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
+                    We partner with a wide range of clients, from ambitious startups to established enterprises, working closely with product and engineering teams to turn complex ideas into scalable, well-crafted products. Collaboration is central to how we work — we operate as true partners, not vendors, embedding ourselves in teams to deeply understand context, constraints, and goals.
+                  </p>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.75, color: "#b0b0b0", fontFamily: "var(--font-geist), sans-serif", maxWidth: 740 }}>
+                    We actively push our practice forward by integrating AI into both how we design and what we design. For us, innovation is not about novelty — it is about using the right tools to think more clearly, move faster, and create smarter, more human-centered digital experiences that exceed expectations.
+                  </p>
+                </div>
+              </div>
+
               {/* 1, About the Job */}
               <div>
                 <p style={sectionLabel}>About the Job</p>
