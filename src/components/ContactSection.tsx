@@ -50,7 +50,7 @@ export default function ContactSection() {
             style={{
               position: "relative", zIndex: 1,
               display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "16px 40px",
+              padding: "14px 32px",
               borderRadius: 9999,
               borderWidth: 1,
               borderStyle: "solid",
@@ -58,7 +58,7 @@ export default function ContactSection() {
               backgroundColor: "rgba(10, 10, 10, 0.01)",
               textDecoration: "none",
               fontFamily: "var(--font-urbanist), sans-serif",
-              fontWeight: 600, fontSize: 16,
+              fontWeight: 600, fontSize: 15,
               color: "#ffffff",
               whiteSpace: "nowrap",
             }}

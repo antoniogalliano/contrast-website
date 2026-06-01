@@ -491,7 +491,7 @@ export default function CareersPage() {
             <a
               href="#open-roles"
               className="btn-gradient-border"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 9999, color: "#ffffff", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, whiteSpace: "nowrap" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 9999, color: "#ffffff", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 15, whiteSpace: "nowrap" }}
             >
               See open roles
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -660,15 +660,15 @@ export default function CareersPage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "12px 24px",
+                padding: "14px 32px",
                 borderRadius: 9999,
                 border: "1px solid rgba(56,56,56,0.8)",
                 background: "transparent",
                 color: "#ffffff",
                 textDecoration: "none",
                 fontFamily: "var(--font-urbanist), sans-serif",
-                fontWeight: 500,
-                fontSize: 13,
+                fontWeight: 600,
+                fontSize: 15,
                 whiteSpace: "nowrap",
                 transition: "border-color 0.25s ease, color 0.25s ease",
                 flexShrink: 0,

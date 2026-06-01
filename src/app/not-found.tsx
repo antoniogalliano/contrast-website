@@ -320,7 +320,7 @@ export default function NotFound() {
             display: "inline-flex", alignItems: "center", gap: 8,
             padding: "14px 32px", borderRadius: 9999,
             fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: 14, fontWeight: 600, color: "#ffffff",
+            fontSize: 15, fontWeight: 600, color: "#ffffff",
             textDecoration: "none", whiteSpace: "nowrap",
           }}
         >
