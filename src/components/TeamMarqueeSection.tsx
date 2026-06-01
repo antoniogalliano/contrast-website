@@ -170,7 +170,7 @@ export default function TeamMarqueeSection() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <MarqueeRow photos={TEAM_ROW_1} direction="left"  height={300} duration={55} />
-            <MarqueeRow photos={TEAM_ROW_2} direction="right" height={260} duration={45} />
+            <MarqueeRow photos={TEAM_ROW_2} direction="right" height={300} duration={45} />
           </div>
         </motion.div>
       </section>

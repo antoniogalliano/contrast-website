@@ -31,14 +31,14 @@ function SocialIcons() {
       >
         <img src="/social/linkedin.svg" alt="LinkedIn" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       </a>
-      {/* YouTube, 30×27.273px, radius 1.364px, inner frame 19.091px centered */}
+      {/* YouTube, 30×27.273px */}
       <a href="https://www.youtube.com/@contrastux" aria-label="YouTube" target="_blank" rel="noopener noreferrer"
-        style={{ display: "block", width: 30, height: 27.273, position: "relative", flexShrink: 0, borderRadius: 1.364, overflow: "clip", opacity: 0.85, transition: "opacity 0.2s" }}
+        style={{ display: "block", width: 30, height: 27.273, position: "relative", flexShrink: 0, opacity: 0.85, transition: "opacity 0.2s" }}
         onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
         onMouseLeave={e => (e.currentTarget.style.opacity = "0.85")}
       >
         <img src="/social/youtube.svg" alt="YouTube"
-          style={{ position: "absolute", width: 19.091, height: 19.091, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          style={{ position: "absolute", width: 22, height: 22, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
       </a>
     </div>
   );

@@ -158,34 +158,47 @@ export default function Header() {
               </svg>
             </a>
 
-            {/* Mobile burger */}
+            {/* Mobile burger / close */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="flex flex-col lg:hidden"
+              className="flex lg:hidden"
               style={{
-                gap: 5, background: "none", border: "none", cursor: "pointer", padding: 4,
+                alignItems: "center", justifyContent: "center",
+                width: 36, height: 36,
+                background: "none", border: "none", cursor: "pointer", padding: 0,
                 outline: "none", WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation",
+                touchAction: "manipulation", flexShrink: 0,
               }}
-              aria-label="Toggle menu"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  style={{
-                    display:    "block",
-                    height:     1.5,
-                    width:      22,
-                    background: "#fff",
-                    transition: "transform 0.28s ease, opacity 0.2s ease",
-                    transform:
-                      i === 0 && mobileOpen ? "translateY(6.5px) rotate(45deg)"
-                      : i === 2 && mobileOpen ? "translateY(-6.5px) rotate(-45deg)"
-                      : "none",
-                    opacity: i === 1 && mobileOpen ? 0 : 1,
-                  }}
-                />
-              ))}
+              <AnimatePresence mode="wait" initial={false}>
+                {mobileOpen ? (
+                  <motion.svg
+                    key="close"
+                    width="20" height="20" viewBox="0 0 20 20" fill="none"
+                    initial={{ opacity: 0, rotate: -45 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: 45 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                  >
+                    <path d="M4 4L16 16" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M16 4L4 16" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                  </motion.svg>
+                ) : (
+                  <motion.svg
+                    key="menu"
+                    width="22" height="14" viewBox="0 0 22 14" fill="none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                  >
+                    <rect x="0" y="0"    width="22" height="1.5" rx="0.75" fill="white"/>
+                    <rect x="0" y="6.25" width="22" height="1.5" rx="0.75" fill="white"/>
+                    <rect x="0" y="12.5" width="22" height="1.5" rx="0.75" fill="white"/>
+                  </motion.svg>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </motion.header>

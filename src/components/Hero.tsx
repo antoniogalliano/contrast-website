@@ -33,6 +33,7 @@ export default function Hero() {
   const fadeOut = Math.max(0, 1 - scrollY * 3.5);
 
   return (
+    <>
     <section
       ref={sectionRef}
       style={{
@@ -63,6 +64,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 3.9, ease: "easeOut" }}
+        className="hero-heading"
         style={{
           position: "relative",
           zIndex: 1,
@@ -79,9 +81,9 @@ export default function Hero() {
         }}
       >
         AI Can Generate a Design.
-        <br />
+        <br className="title-br" />
         It Can&apos;t Tell You If It&apos;s the
-        <br />
+        <br className="title-br" />
         Right One.
       </motion.h1>
 
@@ -90,6 +92,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 4.1, ease: "easeOut" }}
+        className="hero-subtitle"
         style={{
           position: "relative",
           zIndex: 1,
@@ -107,7 +110,6 @@ export default function Hero() {
         }}
       >
         Any team can use AI tools to create. The difference is knowing what to build,
-        <br />
         why it works, and how to turn it into outcomes.
         <br />
         That&apos;s not a tool. That&apos;s what we do.
@@ -206,5 +208,15 @@ export default function Hero() {
         </motion.svg>
       </motion.div>
     </section>
+
+    <style jsx global>{`
+      .hero-heading { text-wrap: balance; }
+      .hero-subtitle { text-wrap: balance; }
+
+      @media (max-width: 768px) {
+        .title-br { display: none; }
+      }
+    `}</style>
+    </>
   );
 }

@@ -437,8 +437,6 @@ export default function SelectedWorkSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}
-          className="selected-work-header"
         >
           <h2 style={{
             fontSize: "clamp(36px, 5vw, 72px)", fontWeight: 600,
@@ -447,22 +445,6 @@ export default function SelectedWorkSection() {
           }}>
             Selected Work
           </h2>
-          <a
-            href="#contact"
-            className="btn-gradient-border"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              padding: "12px 24px", borderRadius: 9999,
-              fontSize: 14, fontWeight: 600, color: "#ffffff",
-              textDecoration: "none", flexShrink: 0,
-              fontFamily: "var(--font-urbanist), sans-serif",
-            }}
-          >
-            Start a Project
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
         </motion.div>
       </div>
 
