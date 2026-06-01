@@ -223,6 +223,7 @@ export default function SuccessStoriesSection() {
         >
           <h2
             style={{
+              fontFamily: "var(--font-urbanist), sans-serif",
               fontSize: "clamp(32px, 4.5vw, 64px)",
               fontWeight: 600,
               lineHeight: 1.05,

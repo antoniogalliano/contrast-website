@@ -435,11 +435,13 @@ export default function SelectedWorkSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+          style={{ textAlign: "center" }}
         >
           <h2 style={{
-            fontSize: "clamp(36px, 5vw, 72px)", fontWeight: 600,
+            fontFamily: "var(--font-urbanist), sans-serif",
+            fontSize: "clamp(32px, 4.5vw, 64px)", fontWeight: 600,
             color: "#ffffff", lineHeight: 1.05, letterSpacing: "-0.025em",
-            margin: 0, fontFamily: "var(--font-urbanist), sans-serif",
+            margin: 0,
           }}>
             Selected Work
           </h2>

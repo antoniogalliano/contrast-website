@@ -138,7 +138,7 @@ export default function TeamMarqueeSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.65, ease: "easeOut" }}
-          style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px", marginBottom: 56 }}
+          style={{ maxWidth: 1360, margin: "0 auto", padding: "0 40px", marginBottom: 56, textAlign: "center" }}
         >
           <span style={{
             display: "block",
@@ -154,9 +154,9 @@ export default function TeamMarqueeSection() {
           </span>
           <h2 style={{
             margin: 0,
+            fontFamily: "var(--font-urbanist), sans-serif",
             fontSize: "clamp(32px, 4.5vw, 64px)",
             fontWeight: 600,
-            fontFamily: "var(--font-urbanist), sans-serif",
             lineHeight: 1.05,
             letterSpacing: "-0.025em",
             color: "#ffffff",
