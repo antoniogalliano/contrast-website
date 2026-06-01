@@ -73,7 +73,7 @@ const benefits = [
 
 const roles = [
   {
-    title: "AI Product Designer",
+    title: "AI Driven Freelance Product Designer (UX UI)",
     type: "Freelance",
     location: "Remote",
     tags: ["AI Workflow", "Product Design", "Figma"],
