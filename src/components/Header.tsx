@@ -208,9 +208,14 @@ export default function Header() {
           {mobileOpen && (
             <motion.nav
               key="mobile-nav"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
+              initial={{ opacity: 0, y: -10, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{
+                opacity: 0,
+                y: -10,
+                scale: 0.97,
+                transition: { duration: 0.2, ease: [0.4, 0, 1, 1] },
+              }}
               transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
               style={{
                 position:             "absolute",
@@ -242,7 +247,11 @@ export default function Header() {
                     onClick={(e) => { setMobileOpen(false); handleNavClick(link.href, e); }}
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
+                    exit={{
+                      opacity: 0,
+                      y: -4,
+                      transition: { duration: 0.12, ease: "easeIn", delay: (navLinks.length - i) * 0.02 },
+                    }}
                     transition={{ delay: 0.04 + i * 0.04, duration: 0.18, ease: "easeOut" }}
                     style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
                   >
@@ -256,7 +265,11 @@ export default function Header() {
                   className="btn-gradient-border"
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
+                  exit={{
+                    opacity: 0,
+                    y: -4,
+                    transition: { duration: 0.12, ease: "easeIn", delay: 0 },
+                  }}
                   transition={{ delay: 0.04 + navLinks.length * 0.04, duration: 0.18, ease: "easeOut" }}
                   style={{
                     display:        "flex",
