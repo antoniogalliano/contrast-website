@@ -25,7 +25,7 @@ function VideoPlayer() {
       {playing ? (
         <iframe
           src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0`}
-          title="The 3-Minute Breakdown"
+          title="The Hero Breakdown"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
@@ -34,7 +34,7 @@ function VideoPlayer() {
         <>
           <img
             src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`}
-            alt="The 3-Minute Breakdown"
+            alt="The Hero Breakdown"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
           />
           <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)" }} />
@@ -556,7 +556,7 @@ export default function MethodSection() {
                   margin: 0,
                   fontFamily: "var(--font-urbanist), sans-serif",
                 }}>
-                  The 3-Minute Breakdown
+                  The Hero Breakdown
                 </h3>
               </div>
               <p style={{
