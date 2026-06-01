@@ -28,7 +28,7 @@ const TEAM_ROW_2: TeamMember[] = [
   { src: "/team/den-klenkov.png",          name: "Den Klenkov",          role: "Product Designer" },
   { src: "/team/giorgi-labadze.png",       name: "Giorgi Labadze",       role: "Product Designer" },
   { src: "/team/ivan-k.png",               name: "Ivan K",               role: "Product Designer" },
-  { src: "/team/keso-tchumburidze.png",    name: "Keso Tchumburidze",    role: "Product Designer" },
+  { src: "/team/keso-tchumburidze.jpg",    name: "Keso Tchumburidze",    role: "Product Designer" },
   { src: "/team/monika-adeishvilli.png",   name: "Monika Adeishvilli",   role: "Product Designer" },
   { src: "/team/natali-klimiashvilli.png", name: "Natali Klimiashvilli", role: "Product Designer" },
   { src: "/team/nena-mercep.png",          name: "Nena Mercep",          role: "Product Designer" },
@@ -68,7 +68,7 @@ function PhotoCard({ src, name, role, height }: TeamMember & { height: number })
         style={{
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "top center", display: "block",
-          filter: show ? "grayscale(0%)" : "grayscale(100%)",
+          filter: "grayscale(100%)",
           transition: "filter 0.4s ease",
         }}
       />
@@ -173,10 +173,10 @@ export default function TeamMarqueeSection() {
           transition={{ duration: 0.9, ease: "easeOut" }}
           style={{ position: "relative" }}
         >
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to right, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to left, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
+          <div className="team-fade-left" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to right, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
+          <div className="team-fade-right" style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(to left, #0a0a0a 20%, transparent)", zIndex: 10, pointerEvents: "none" }} />
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="team-rows" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <MarqueeRow photos={TEAM_ROW_1} direction="left"  height={300} duration={55} />
             <MarqueeRow photos={TEAM_ROW_2} direction="right" height={300} duration={45} />
           </div>
@@ -189,6 +189,12 @@ export default function TeamMarqueeSection() {
           .team-photo-card {
             transform: none !important;
             transition: none !important;
+            height: 160px !important;
+            width: 116px !important;
+          }
+          .team-fade-left,
+          .team-fade-right {
+            display: none !important;
           }
         }
         @keyframes marquee-left {
