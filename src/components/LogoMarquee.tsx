@@ -1,23 +1,25 @@
 "use client";
 
-const logos = [
-  // Existing
-  "/Logo_Cymbio.svg",
-  "/Logo_DAZN.svg",
-  "/Logo_Down.svg",
-  "/Logo_Fiverr.svg",
-  "/Logo_Post.svg",
-  "/Logo_Similar.svg",
-  // New
-  "/Logo_SpeakingPal.png",
-  "/Logo_8fig.png",
-  "/Logo_FIDO.png",
-  "/Logo_JUSTT.png",
-  "/Logo_LaborIQ.png",
-  "/Logo_Pillar.png",
-  "/Logo_SafebooksAI.png",
-  "/Logo_Spear.png",
-  "/Logo_CymbioPng.png",
+type Logo = { src: string; h: number };
+
+const logos: Logo[] = [
+  // Legacy SVGs: 200×159 viewBox with logo artwork centered inside — needs full height to appear correctly
+  { src: "/Logo_Cymbio.svg",      h: 159 },
+  { src: "/Logo_DAZN.svg",        h: 159 },
+  { src: "/Logo_Down.svg",        h: 159 },
+  { src: "/Logo_Fiverr.svg",      h: 159 },
+  { src: "/Logo_Post.svg",        h: 159 },
+  { src: "/Logo_Similar.svg",     h: 159 },
+  // New PNGs: tightly cropped around the logo mark
+  { src: "/Logo_SpeakingPal.png", h: 36 },
+  { src: "/Logo_8fig.png",        h: 36 },
+  { src: "/Logo_FIDO.png",        h: 36 },
+  { src: "/Logo_JUSTT.png",       h: 36 },
+  { src: "/Logo_LaborIQ.png",     h: 36 },
+  { src: "/Logo_Pillar.png",      h: 36 },
+  { src: "/Logo_SafebooksAI.png", h: 36 },
+  { src: "/Logo_Spear.png",       h: 36 },
+  { src: "/Logo_CymbioPng.png",   h: 36 },
 ];
 
 export default function LogoMarquee() {
@@ -52,17 +54,12 @@ export default function LogoMarquee() {
           animation: "marquee 65s linear infinite",
         }}
       >
-        {/* Four copies for seamless loop on wide/ultrawide screens */}
         {[0, 1, 2, 3].map((copy) => (
           <div
             key={copy}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-            }}
+            style={{ display: "flex", alignItems: "center", height: "100%" }}
           >
-            {logos.map((src, j) => (
+            {logos.map((logo, j) => (
               <div
                 key={`${copy}-${j}`}
                 style={{
@@ -75,11 +72,11 @@ export default function LogoMarquee() {
                 }}
               >
                 <img
-                  src={src}
+                  src={logo.src}
                   alt=""
                   className="logo-marquee-img"
                   style={{
-                    height: 36,
+                    height: logo.h,
                     width: "auto",
                     objectFit: "contain",
                     opacity: 0.85,
@@ -99,7 +96,6 @@ export default function LogoMarquee() {
         }
         @media (max-width: 768px) {
           .logo-marquee-section { height: 90px !important; }
-          .logo-marquee-img     { height: 28px !important; }
         }
       `}</style>
     </section>
