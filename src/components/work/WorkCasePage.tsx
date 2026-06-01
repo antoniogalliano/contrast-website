@@ -738,7 +738,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
         <style jsx global>{`
           @media (max-width: 768px) {
             .wcp-back-btn {
-              top: 100px !important;
+              top: 136px !important;
               left: 24px !important;
             }
             .wcp-hero-bottom {

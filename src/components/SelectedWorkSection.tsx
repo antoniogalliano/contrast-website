@@ -199,16 +199,6 @@ function PanelLayer({
           pointerEvents: "none",
         }} />
 
-        {/* Counter — static span, no motion */}
-        <span style={{
-          position: "absolute", top: 24, right: 24, zIndex: 5,
-          fontFamily: "var(--font-urbanist), sans-serif",
-          fontSize: 12, fontWeight: 500, letterSpacing: "0.14em",
-          color: "rgba(255,255,255,0.55)",
-        }}>
-          {num} / 0{total}
-        </span>
-
         {/* Text block — plain HTML, zero per-frame work */}
         <div style={{ position: "absolute", left: 24, right: 24, bottom: 36, zIndex: 5 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
