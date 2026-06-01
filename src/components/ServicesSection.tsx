@@ -275,7 +275,7 @@ export default function ServicesSection() {
           style={{ marginTop: 48, display: "flex", justifyContent: "center" }}
         >
           <a
-            href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+            href="https://tidycal.com/sagishrieber/strategy-call"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-gradient-border"

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const MOTION_URL = "https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call";
+const MOTION_URL = "https://tidycal.com/sagishrieber/strategy-call";
 
 export default function ContactSection() {
   return (

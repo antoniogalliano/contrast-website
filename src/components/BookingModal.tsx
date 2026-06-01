@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const MONTHS    = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-const MOTION_BASE = "https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call";
+const MOTION_BASE = "https://tidycal.com/sagishrieber/strategy-call";
 
 interface SelectedDate { day: number; month: number; year: number; }
 interface Props {

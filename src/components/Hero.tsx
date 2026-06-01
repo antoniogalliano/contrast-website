@@ -117,7 +117,7 @@ export default function Hero() {
 
       {/* CTA Button */}
       <motion.a
-        href="https://app.usemotion.com/meet/sagi-shrieber/ux-strategy-call"
+        href="https://tidycal.com/sagishrieber/strategy-call"
         target="_blank"
         rel="noopener noreferrer"
         initial={{ opacity: 0, y: 20 }}
