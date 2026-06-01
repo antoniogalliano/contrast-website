@@ -150,7 +150,7 @@ const roles = [
 
 const heroStats: { value: number; suffix: string; label: string }[] = [
   { value: 20, suffix: "+", label: "people on the team" },
-  { value: 50, suffix: "+", label: "products shipped" },
+  { value: 100, suffix: "+", label: "products shipped" },
   { value: 100, suffix: "%", label: "remote-first" },
 ];
 
