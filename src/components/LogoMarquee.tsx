@@ -1,12 +1,23 @@
 "use client";
 
 const logos = [
+  // Existing
   "/Logo_Cymbio.svg",
   "/Logo_DAZN.svg",
   "/Logo_Down.svg",
   "/Logo_Fiverr.svg",
   "/Logo_Post.svg",
   "/Logo_Similar.svg",
+  // New
+  "/Logo_SpeakingPal.png",
+  "/Logo_8fig.png",
+  "/Logo_FIDO.png",
+  "/Logo_JUSTT.png",
+  "/Logo_LaborIQ.png",
+  "/Logo_Pillar.png",
+  "/Logo_SafebooksAI.png",
+  "/Logo_Spear.png",
+  "/Logo_CymbioPng.png",
 ];
 
 export default function LogoMarquee() {
@@ -16,7 +27,7 @@ export default function LogoMarquee() {
       style={{
         position: "relative",
         overflow: "hidden",
-        height: 160,
+        height: 120,
         background: "#0a0a0a",
       }}
     >
@@ -38,7 +49,7 @@ export default function LogoMarquee() {
           display: "flex",
           width: "max-content",
           height: "100%",
-          animation: "marquee 30s linear infinite",
+          animation: "marquee 65s linear infinite",
         }}
       >
         {/* Four copies for seamless loop on wide/ultrawide screens */}
@@ -52,19 +63,30 @@ export default function LogoMarquee() {
             }}
           >
             {logos.map((src, j) => (
-              <img
+              <div
                 key={`${copy}-${j}`}
-                src={src}
-                alt=""
-                className="logo-marquee-img"
                 style={{
-                  width: 200,
-                  height: 159,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 48px",
+                  height: "100%",
                   flexShrink: 0,
-                  opacity: 0.85,
-                  display: "block",
                 }}
-              />
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="logo-marquee-img"
+                  style={{
+                    height: 36,
+                    width: "auto",
+                    objectFit: "contain",
+                    opacity: 0.85,
+                    display: "block",
+                  }}
+                />
+              </div>
             ))}
           </div>
         ))}
@@ -76,8 +98,8 @@ export default function LogoMarquee() {
           100% { transform: translateX(-25%); }
         }
         @media (max-width: 768px) {
-          .logo-marquee-section { height: 125px !important; }
-          .logo-marquee-img     { height: 124px !important; width: auto !important; }
+          .logo-marquee-section { height: 90px !important; }
+          .logo-marquee-img     { height: 28px !important; }
         }
       `}</style>
     </section>
