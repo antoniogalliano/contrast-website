@@ -80,9 +80,9 @@ export default function Hero() {
           willChange: "transform, opacity",
         }}
       >
-        AI Can Generate a Design.
+        AI Can Generate a Design.{" "}
         <br className="title-br" />
-        It Can&apos;t Tell You If It&apos;s the
+        It Can&apos;t Tell You If It&apos;s the{" "}
         <br className="title-br" />
         Right One.
       </motion.h1>
