@@ -3,14 +3,12 @@
 type Logo = { src: string; h: number };
 
 const logos: Logo[] = [
-  // Legacy SVGs: 200×159 viewBox with logo artwork centered inside — needs full height to appear correctly
-  { src: "/Logo_Cymbio.svg",      h: 159 },
-  { src: "/Logo_DAZN.svg",        h: 159 },
-  { src: "/Logo_Down.svg",        h: 159 },
-  { src: "/Logo_Fiverr.svg",      h: 159 },
-  { src: "/Logo_Post.svg",        h: 159 },
-  { src: "/Logo_Similar.svg",     h: 159 },
-  // New PNGs: tightly cropped around the logo mark
+  { src: "/Logo_Cymbio.svg",      h: 36 },
+  { src: "/Logo_DAZN.svg",        h: 36 },
+  { src: "/Logo_Down.svg",        h: 36 },
+  { src: "/Logo_Fiverr.svg",      h: 36 },
+  { src: "/Logo_Post.svg",        h: 36 },
+  { src: "/Logo_Similar.svg",     h: 36 },
   { src: "/Logo_SpeakingPal.png", h: 36 },
   { src: "/Logo_8fig.png",        h: 36 },
   { src: "/Logo_FIDO.png",        h: 36 },
