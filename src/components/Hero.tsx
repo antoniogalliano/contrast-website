@@ -122,8 +122,19 @@ export default function Hero() {
         rel="noopener noreferrer"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 4.3, ease: "easeOut" }}
-        className="btn-gradient-border"
+        whileHover={{
+          backgroundColor: "rgba(217, 12, 183, 0.12)",
+          borderColor: "#d90cb7",
+          boxShadow: "0px 6px 32px -8px rgba(217, 12, 183, 0.35)",
+        }}
+        transition={{
+          duration: 0.9,
+          delay: 4.3,
+          ease: "easeOut",
+          backgroundColor: { duration: 0.3, ease: "easeOut", delay: 0 },
+          borderColor: { duration: 0.3, ease: "easeOut", delay: 0 },
+          boxShadow: { duration: 0.3, ease: "easeOut", delay: 0 },
+        }}
         style={{
           position: "relative",
           zIndex: 1,
@@ -132,6 +143,10 @@ export default function Hero() {
           alignItems: "center",
           gap: 4,
           borderRadius: 9999,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: "rgba(255, 255, 255, 0.24)",
+          backgroundColor: "rgba(10, 10, 10, 0.01)",
           padding: "0 24px",
           height: 48,
           fontSize: 14,

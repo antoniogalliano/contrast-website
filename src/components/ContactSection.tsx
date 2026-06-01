@@ -31,16 +31,31 @@ export default function ContactSection() {
             href={MOTION_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-gradient-border"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{
+              backgroundColor: "rgba(217, 12, 183, 0.12)",
+              borderColor: "#d90cb7",
+              boxShadow: "0px 6px 32px -8px rgba(217, 12, 183, 0.35)",
+            }}
+            transition={{
+              duration: 0.6,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+              backgroundColor: { duration: 0.3, ease: "easeOut", delay: 0 },
+              borderColor: { duration: 0.3, ease: "easeOut", delay: 0 },
+              boxShadow: { duration: 0.3, ease: "easeOut", delay: 0 },
+            }}
             style={{
               position: "relative", zIndex: 1,
               display: "inline-flex", alignItems: "center", gap: 10,
               padding: "16px 40px",
               borderRadius: 9999,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: "rgba(255, 255, 255, 0.24)",
+              backgroundColor: "rgba(10, 10, 10, 0.01)",
               textDecoration: "none",
               fontFamily: "var(--font-urbanist), sans-serif",
               fontWeight: 600, fontSize: 16,
