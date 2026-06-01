@@ -663,7 +663,9 @@ export default function CareersPage() {
               </p>
             </div>
             <a
-              href="mailto:hello@contrast.studio?subject=General Application"
+              href="https://wkf.ms/4gE1ydY"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
