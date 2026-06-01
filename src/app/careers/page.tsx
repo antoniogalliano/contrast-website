@@ -136,30 +136,6 @@ const roles = [
     whyThisRole:
       "A flexible freelance engagement embedded within a major client organization, with the stability of ongoing work and direct access to senior stakeholders. You'll own presentation design end to end, working in a fast-moving environment where design quality is taken seriously. You'll collaborate closely with the Contrast UX team — with guidance and support from experienced senior designers — and gain exposure to diverse projects through our broader client portfolio. To apply, send your CV and a portfolio with clear examples of executive presentation work. Applications without a presentation design portfolio will not be considered.",
   },
-  {
-    title: "Frontend Developer",
-    type: "Contract",
-    location: "Remote",
-    tags: ["React", "TypeScript", "Animation"],
-    about:
-      "Turn pixel-perfect Figma designs into high-performance, accessible, and beautifully animated web experiences. You'll work on marketing sites and product interfaces for design-forward clients who notice the difference between good and exceptional.",
-    requirements: [
-      "4+ years in frontend development",
-      "Expert-level React and TypeScript",
-      "Strong feel for animation (Framer Motion, GSAP)",
-      "Eye for design, you care about the gap between spec and output",
-      "Experience with Next.js and headless CMS platforms",
-    ],
-    duties: [
-      "Implement high-fidelity designs with meticulous attention to spacing, animation, and interaction",
-      "Build performant, accessible web applications using React and Next.js",
-      "Create reusable component libraries and design system implementations",
-      "Optimize Core Web Vitals and ensure smooth rendering across all devices and browsers",
-      "Collaborate directly with designers to close the gap between Figma and production",
-    ],
-    whyThisRole:
-      "You'll work with some of the most design-focused teams in the industry, on projects where front-end quality is a genuine priority, not an afterthought. If you lose sleep over animation curves and pixel-perfect spacing, you'll fit right in.",
-  },
 ];
 
 // ─── Hero stats ───────────────────────────────────────────────────────────────
