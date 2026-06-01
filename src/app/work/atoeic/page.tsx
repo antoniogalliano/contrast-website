@@ -5,7 +5,7 @@ import WorkCasePage, { WorkCaseData } from "@/components/work/WorkCasePage";
 const data: WorkCaseData = {
   // Hero
   heroTags: ["EdTech", "Language Learning", "App Design", "AI Speaking Coach"],
-  heroTitle: "A TOEIC®",
+  heroTitle: "SpeakingPal",
   heroSubtitle:
     "Speaking platform designed to guide how people actually learn and improve.",
   heroImage: "/work/atoeic-1.png",

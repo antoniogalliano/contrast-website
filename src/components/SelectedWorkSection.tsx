@@ -59,7 +59,7 @@ const projects: Project[] = [
     href: "/work/justt",
   },
   {
-    client: "A TOEIC",
+    client: "SpeakingPal",
     title: "Speaking with Confidence",
     highlights: ["AI Speaking Coach", "TOEIC Platform"],
     tags: ["App Design", "Product Design"],
