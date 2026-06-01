@@ -113,6 +113,7 @@ export default function Footer() {
               href="https://tidycal.com/sagishrieber/strategy-call"
               target="_blank"
               rel="noopener noreferrer"
+              className="btn-white-pill"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -128,10 +129,7 @@ export default function Footer() {
                 letterSpacing: "0.14px",
                 color: "#000000",
                 whiteSpace: "nowrap",
-                transition: "opacity 0.2s",
               }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = "0.88")}
-              onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
             >
               Book a Call
               <ArrowIcon />
