@@ -13,7 +13,7 @@ type RegisterRef = (index: number, el: HTMLDivElement | null) => void;
 
 // iconW matches Figma's rendered icon size within the 48px container
 const ROW1: ServiceCard[] = [
-  { label: "UX Strategy",                 icon: "/services/ux-strategy.svg",     iconW: 29 },
+  { label: "AIX Strategy",                 icon: "/services/aix-strategy.svg",    iconW: 32 },
   { label: "Embedded Design Team",         icon: "/services/embedded-design.svg", iconW: 35 },
   { label: "The Hero Framework Workshop",  icon: "/services/hero-framework.svg",  iconW: 29 },
   { label: "Product BI and Analytics",     icon: "/services/product-bi.svg",      iconW: 40 },
