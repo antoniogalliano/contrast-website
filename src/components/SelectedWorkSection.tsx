@@ -39,7 +39,7 @@ const projects: Project[] = [
     title: "Speaking with Confidence",
     highlights: ["AI Speaking Coach", "TOEIC Platform"],
     tags: ["App Design", "Product Design"],
-    image: "/work/atoeic-1.png",
+    image: "/work/speakingpal.png",
     href: "/work/atoeic",
   },
 ];

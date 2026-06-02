@@ -80,7 +80,7 @@ const data: WorkCaseData = {
       client: "SpeakingPal",
       title: "Speaking with Confidence",
       tags: ["App Design", "Product Design"],
-      image: "/work/atoeic-1.png",
+      image: "/work/speakingpal.png",
       href: "/work/atoeic",
     },
   ],

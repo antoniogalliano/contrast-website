@@ -8,7 +8,7 @@ const data: WorkCaseData = {
   heroTitle: "SpeakingPal",
   heroSubtitle:
     "Speaking platform designed to guide how people actually learn and improve.",
-  heroImage: "/work/atoeic-1.png",
+  heroImage: "/work/speakingpal.png",
   heroImageAlt: "A TOEIC SpeakingPal speaking platform",
   heroObjectPosition: "top center",
 
@@ -26,7 +26,7 @@ const data: WorkCaseData = {
 
   // Gallery
   gallery: [
-    { src: "/work/atoeic-1.png", alt: "A TOEIC SpeakingPal — home & practice flow" },
+    { src: "/work/speakingpal.png", alt: "SpeakingPal — home & practice flow" },
     { src: "/work/atoeic-2.png", alt: "A TOEIC SpeakingPal — speaking session" },
     { src: "/work/atoeic-3.png", alt: "A TOEIC SpeakingPal — test simulation" },
   ],
