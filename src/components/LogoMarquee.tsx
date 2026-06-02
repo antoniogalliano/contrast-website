@@ -11,10 +11,10 @@ const logos: Logo[] = [
   { src: "/Logo_Similar.svg",     h: 36 },
   { src: "/Logo_SpeakingPal.png", h: 36 },
   { src: "/Logo_8fig.png",        h: 36 },
-  { src: "/Logo_FIDO.png",        h: 36 },
+  { src: "/Logo_FIDO.png",        h: 26 },
   { src: "/Logo_JUSTT.png",       h: 36 },
   { src: "/Logo_LaborIQ.png",     h: 36 },
-  { src: "/Logo_Pillar.png",      h: 36 },
+  { src: "/Logo_Pillar.png",      h: 26 },
   { src: "/Logo_SafebooksAI.png", h: 36 },
   { src: "/Logo_Spear.png",       h: 36 },
 ];
