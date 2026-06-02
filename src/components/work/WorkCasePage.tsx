@@ -133,7 +133,7 @@ function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
       style={{ display: "flex", flexWrap: "wrap", columnGap: "0.3em", rowGap: "0.05em" }}
     >
       {text.split(" ").map((word, i) => (
-        <span key={i} style={{ overflow: "hidden", display: "inline-block" }}>
+        <span key={i} style={{ overflow: "hidden", display: "inline-block", paddingBottom: "0.1em", marginBottom: "-0.1em" }}>
           <motion.span
             style={{ display: "inline-block" }}
             initial={{ y: "110%", opacity: 0 }}
@@ -704,7 +704,7 @@ export default function WorkCasePage({ data }: { data: WorkCaseData }) {
                 fontFamily: "var(--font-urbanist), sans-serif",
                 fontWeight: 700,
                 fontSize: "clamp(52px, 7.5vw, 112px)",
-                lineHeight: 1.0,
+                lineHeight: 1.15,
                 letterSpacing: "-0.03em",
                 color: "#ffffff",
                 margin: "0 0 24px",
