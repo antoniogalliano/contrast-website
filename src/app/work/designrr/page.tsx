@@ -69,18 +69,18 @@ const data: WorkCaseData = {
   // More Work
   moreWork: [
     {
-      client: "JUSTT",
-      title: "Chargeback Management SaaS",
-      tags: ["Web Design & Development"],
-      image: "/work/justt.png",
-      href: "/work/justt",
-    },
-    {
       client: "DAZN",
       title: "Premium Sports Platform Redesign",
       tags: ["Web Design & Development", "App Design", "TV App", "Brand Design"],
       image: "/work/dazn.png",
       href: "/work/dazn",
+    },
+    {
+      client: "SpeakingPal",
+      title: "Speaking with Confidence",
+      tags: ["App Design", "Product Design"],
+      image: "/work/atoeic-1.png",
+      href: "/work/atoeic",
     },
   ],
 };

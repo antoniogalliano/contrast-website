@@ -70,18 +70,18 @@ const data: WorkCaseData = {
   // More Work
   moreWork: [
     {
-      client: "Down",
-      title: "Dating App, 0→1 Product Design",
-      tags: ["Web Design & Development", "App Design"],
-      image: "/work/down.png",
-      href: "/work/down",
+      client: "Designrr",
+      title: "Engagement & Retention Overhaul",
+      tags: ["Web Design & Development"],
+      image: "/work/designrr.png",
+      href: "/work/designrr",
     },
     {
-      client: "Cymbio",
-      title: "B2B Sales Dashboard",
-      tags: ["Web Design & Development"],
-      image: "/work/cymbio.png",
-      href: "/work/cymbio",
+      client: "SpeakingPal",
+      title: "Speaking with Confidence",
+      tags: ["App Design", "Product Design"],
+      image: "/work/atoeic-1.png",
+      href: "/work/atoeic",
     },
   ],
 };
