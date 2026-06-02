@@ -17,7 +17,6 @@ const logos: Logo[] = [
   { src: "/Logo_Pillar.png",      h: 36 },
   { src: "/Logo_SafebooksAI.png", h: 36 },
   { src: "/Logo_Spear.png",       h: 36 },
-  { src: "/Logo_CymbioPng.png",   h: 36 },
 ];
 
 export default function LogoMarquee() {
