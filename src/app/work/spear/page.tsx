@@ -26,6 +26,7 @@ const data: WorkCaseData = {
 
   // Gallery
   gallery: [
+    { src: "/work/spear-home.png",        alt: "Spear — home dashboard" },
     { src: "/work/spear-analytics.png",   alt: "Spear — analytics view" },
     { src: "/work/spear-suggestions.png", alt: "Spear — AI suggestions" },
     { src: "/work/spear-trigger.png",     alt: "Spear — trigger management" },
