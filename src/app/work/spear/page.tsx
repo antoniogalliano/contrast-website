@@ -8,7 +8,7 @@ const data: WorkCaseData = {
   heroTitle: "Spear",
   heroSubtitle:
     "Empowering B2B revenue teams to identify buying signals, personalize outreach, and turn intent into pipeline at scale.",
-  heroImage: "/work/spear-home.png",
+  heroImage: "/work/spear.png",
   heroImageAlt: "Spear AI-powered outreach platform",
   heroObjectPosition: "top center",
 
@@ -26,7 +26,7 @@ const data: WorkCaseData = {
 
   // Gallery
   gallery: [
-    { src: "/work/spear-home.png",        alt: "Spear — home dashboard" },
+    { src: "/work/spear.png",              alt: "Spear — overview" },
     { src: "/work/spear-analytics.png",   alt: "Spear — analytics view" },
     { src: "/work/spear-suggestions.png", alt: "Spear — AI suggestions" },
     { src: "/work/spear-trigger.png",     alt: "Spear — trigger management" },
