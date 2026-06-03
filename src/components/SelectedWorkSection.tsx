@@ -35,7 +35,7 @@ const projects: Project[] = [
     href: "/work/designrr",
   },
   {
-    client: "SpeakingPal",
+    client: "ToeicPal",
     title: "Speaking with Confidence",
     highlights: ["AI Speaking Coach", "TOEIC Platform"],
     tags: ["App Design", "Product Design"],

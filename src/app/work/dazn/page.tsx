@@ -77,7 +77,7 @@ const data: WorkCaseData = {
       href: "/work/designrr",
     },
     {
-      client: "SpeakingPal",
+      client: "ToeicPal",
       title: "Speaking with Confidence",
       tags: ["App Design", "Product Design"],
       image: "/work/speakingpal.png",

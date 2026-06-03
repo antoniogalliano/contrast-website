@@ -76,7 +76,7 @@ const data: WorkCaseData = {
       href: "/work/dazn",
     },
     {
-      client: "SpeakingPal",
+      client: "ToeicPal",
       title: "Speaking with Confidence",
       tags: ["App Design", "Product Design"],
       image: "/work/speakingpal.png",

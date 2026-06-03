@@ -5,30 +5,30 @@ import WorkCasePage, { WorkCaseData } from "@/components/work/WorkCasePage";
 const data: WorkCaseData = {
   // Hero
   heroTags: ["EdTech", "Language Learning", "App Design", "AI Speaking Coach"],
-  heroTitle: "SpeakingPal",
+  heroTitle: "ToeicPal",
   heroSubtitle:
     "Speaking platform designed to guide how people actually learn and improve.",
   heroImage: "/work/speakingpal.png",
-  heroImageAlt: "A TOEIC SpeakingPal speaking platform",
+  heroImageAlt: "A TOEIC ToeicPal speaking platform",
   heroObjectPosition: "top center",
 
   // Overview
   overviewHeading: "Built to simulate the exam while strengthening real communication skills",
   overviewBody: [
-    "SpeakingPal helps learners prepare with more structure, clarity, and confidence. Instead of relying on repetitive drills and generic exercises, the platform guides users through each TOEIC Speaking task with practical strategies, clear feedback, and focused practice designed around how real improvement happens.",
-    "From full TOEIC Speaking test simulations and instant scoring to AI-powered speaking sessions and personalized practice plans, SpeakingPal gives learners the tools to improve both their test performance and their ability to communicate naturally in professional, everyday situations.",
+    "ToeicPal helps learners prepare with more structure, clarity, and confidence. Instead of relying on repetitive drills and generic exercises, the platform guides users through each TOEIC Speaking task with practical strategies, clear feedback, and focused practice designed around how real improvement happens.",
+    "From full TOEIC Speaking test simulations and instant scoring to AI-powered speaking sessions and personalized practice plans, ToeicPal gives learners the tools to improve both their test performance and their ability to communicate naturally in professional, everyday situations.",
   ],
   metaItems: [
-    { label: "Client", value: "SpeakingPal" },
+    { label: "Client", value: "ToeicPal" },
     { label: "Industry", value: "EdTech · Language Learning" },
     { label: "Year", value: "2024" },
   ],
 
   // Gallery
   gallery: [
-    { src: "/work/speakingpal.png", alt: "SpeakingPal — home & practice flow" },
-    { src: "/work/atoeic-2.png", alt: "A TOEIC SpeakingPal — speaking session" },
-    { src: "/work/atoeic-3.png", alt: "A TOEIC SpeakingPal — test simulation" },
+    { src: "/work/speakingpal.png", alt: "ToeicPal — home & practice flow" },
+    { src: "/work/atoeic-2.png", alt: "A TOEIC ToeicPal — speaking session" },
+    { src: "/work/atoeic-3.png", alt: "A TOEIC ToeicPal — test simulation" },
   ],
 
   // What We Did
@@ -37,7 +37,7 @@ const data: WorkCaseData = {
     {
       num: "01",
       title: "Product Strategy",
-      desc: "Mapped the learner journey from first open to exam confidence, identifying where existing tools failed and where SpeakingPal could deliver meaningful differentiation.",
+      desc: "Mapped the learner journey from first open to exam confidence, identifying where existing tools failed and where ToeicPal could deliver meaningful differentiation.",
     },
     {
       num: "02",
