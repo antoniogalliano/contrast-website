@@ -8,7 +8,7 @@ const logos: Logo[] = [
   { src: "/Logo_Down.svg",        h: 36 },
   { src: "/Logo_Fiverr.svg",      h: 36 },
   { src: "/Logo_Post.svg",        h: 36 },
-  { src: "/Logo_Similar.svg",     h: 36 },
+  { src: "/Logo_Similar.svg",     h: 43 },
   { src: "/Logo_SpeakingPal.png", h: 36 },
   { src: "/Logo_8fig.png",        h: 36 },
   { src: "/Logo_FIDO.png",        h: 26 },
