@@ -42,6 +42,14 @@ const projects: Project[] = [
     image: "/work/speakingpal.png",
     href: "/work/atoeic",
   },
+  {
+    client: "Spear",
+    title: "AI-Powered B2B Outreach Platform",
+    highlights: ["Revenue Intelligence", "B2B SaaS"],
+    tags: ["Product Design", "AI Platform"],
+    image: "/work/spear.png",
+    href: "/work/spear",
+  },
 ];
 
 // ── View Work button ──────────────────────────────────────────────────────────
