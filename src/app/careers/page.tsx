@@ -524,57 +524,6 @@ export default function CareersPage() {
 
       </section>
 
-      {/* ── Divider ── */}
-      <div style={{ padding: "0 40px", marginTop: 80 }}>
-        <div style={{ maxWidth: 1360, margin: "0 auto", height: 1, background: "#383838" }} />
-      </div>
-
-      {/* ── Benefits ── */}
-      <section style={{ padding: "120px 40px" }}>
-        <div style={{ maxWidth: 1360, margin: "0 auto" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            style={{ marginBottom: 64 }}
-          >
-            <p
-              style={{
-                margin: "0 0 16px",
-                fontSize: 13,
-                fontWeight: 500,
-                letterSpacing: "0.84px",
-                textTransform: "uppercase",
-                color: "#888888",
-                fontFamily: "var(--font-urbanist), sans-serif",
-              }}
-            >
-              Why Contrast
-            </p>
-            <h2
-              style={{
-                margin: 0,
-                fontSize: "clamp(32px, 4.5vw, 64px)",
-                fontWeight: 600,
-                fontFamily: "var(--font-urbanist), sans-serif",
-                lineHeight: 1.05,
-                letterSpacing: "-0.025em",
-                color: "#ffffff",
-              }}
-            >
-              A place where craft thrives.
-            </h2>
-          </motion.div>
-
-          <div className="careers-benefits-grid">
-            {benefits.map((b, i) => (
-              <BenefitCard key={b.title} benefit={b} i={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Open Roles ── */}
       <section id="open-roles" style={{ padding: "0 40px 120px" }}>
         <div style={{ maxWidth: 1360, margin: "0 auto" }}>
