@@ -3,7 +3,7 @@
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
-const YT_ID = "dXev23xFw4A";
+const YT_ID = "nyS3mZk7K6k";
 
 // ── VideoPlayer ───────────────────────────────────────────────────────────────
 function VideoPlayer() {
