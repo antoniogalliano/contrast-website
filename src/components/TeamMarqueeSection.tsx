@@ -8,18 +8,18 @@ import { motion } from "framer-motion";
 type TeamMember = { src: string; name: string; role: string };
 
 const TEAM_ROW_1: TeamMember[] = [
-  { src: "/team/sagi-shrieber.png",        name: "Sagi Shrieber",        role: "Product Designer" },
-  { src: "/team/tom-harnoy.png",           name: "Tom Harnoy",           role: "Product Designer" },
+  { src: "/team/sagi-shrieber.png",        name: "Sagi Shrieber",        role: "Founder and CEO" },
+  { src: "/team/tom-harnoy.png",           name: "Tom Harnoy",           role: "Brand and Web Designer" },
   { src: "/team/hila-yitzhak.png",         name: "Hila Yitzhak",         role: "Product Designer" },
-  { src: "/team/omri-schul.png",           name: "Omri Schul",           role: "Product Designer" },
-  { src: "/team/oran-ziv.png",             name: "Oran Ziv",             role: "Product Designer" },
-  { src: "/team/yonatan-tize.png",         name: "Yonatan Tize",         role: "Product Designer" },
+  { src: "/team/omri-schul.png",           name: "Omri Schul",           role: "Operations Manager" },
+  { src: "/team/oran-ziv.png",             name: "Oran Ziv",             role: "VP Design" },
+  { src: "/team/yonatan-tize.png",         name: "Yonatan Tize",         role: "Full Stack Developer" },
   { src: "/team/sarit.png",                name: "Sarit",                role: "Product Designer" },
-  { src: "/team/ibrahim.png",              name: "Ibrahim",              role: "Product Designer" },
+  { src: "/team/ibrahim.png",              name: "Ibrahim",              role: "Full Stack Developer" },
   { src: "/team/varant.png",               name: "Varant",               role: "Product Designer" },
-  { src: "/team/nik.png",                  name: "Nik",                  role: "Product Designer" },
+  { src: "/team/nik.png",                  name: "Nik",                  role: "Front End Developer" },
   { src: "/team/aleksandar.png",           name: "Aleksandar",           role: "Product Designer" },
-  { src: "/team/ana-baloban.png",          name: "Ana Baloban",          role: "Product Designer" },
+  { src: "/team/ana-baloban.png",          name: "Ana Baloban",          role: "Marketing Designer" },
 ];
 
 const TEAM_ROW_2: TeamMember[] = [
@@ -33,7 +33,7 @@ const TEAM_ROW_2: TeamMember[] = [
   { src: "/team/natali-klimiashvilli.png", name: "Natali Klimiashvilli", role: "Product Designer" },
   { src: "/team/nena-mercep.png",          name: "Nena Mercep",          role: "Product Designer" },
   { src: "/team/veronika-rovniahina.png",  name: "Veronika Rovniahina",  role: "Product Designer" },
-  { src: "/team/alona-g.png",              name: "Alona G.",             role: "Product Designer" },
+  { src: "/team/alona-g.png",              name: "Alona G.",             role: "Design System Specialist" },
 ];
 
 // ─── Photo card ───────────────────────────────────────────────────────────────
