@@ -432,7 +432,7 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-gradient-border"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "0 24px", height: 46, borderRadius: 9999, fontSize: 13, fontWeight: 500, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", textDecoration: "none", width: "fit-content" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 9999, fontSize: 15, fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", textDecoration: "none", width: "fit-content" }}
               >
                 Apply for this role
                 <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
