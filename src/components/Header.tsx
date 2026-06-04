@@ -11,7 +11,6 @@ const navLinks = [
   { label: "Work", href: "/#work" },
   { label: "Our services", href: "/#services" },
   { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/#contact" },
 ];
 
 function handleNavClick(href: string, e: React.MouseEvent) {
