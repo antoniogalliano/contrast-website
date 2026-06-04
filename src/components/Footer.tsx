@@ -155,7 +155,7 @@ export default function Footer() {
               width: 244,
             }}
           >
-            © {new Date().getFullYear()} CONTRAST Studio
+            © {new Date().getFullYear()} CONTRAST
           </p>
           <p
             style={{
