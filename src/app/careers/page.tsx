@@ -11,24 +11,37 @@ const benefits = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M12 8V12L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    title: "Async-first, remote forever",
-    desc: "Work from wherever you do your best thinking. We're distributed by design, no mandatory check-ins, no location requirements.",
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45768C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-    title: "Small, senior team",
-    desc: "No layers of management. You'll work directly alongside experienced designers and engineers who take craft seriously.",
+    title: "Small team. Real impact.",
+    desc: "No layers of management. You'll work closely with founders, product leaders, and clients, helping shape decisions from strategy through execution.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    title: "Building with what's next",
+    desc: "AI isn't a side project here. We actively help clients identify opportunities, validate ideas, and bring AI-powered experiences into their products.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M12 2C9.33 6 8 9 8 12C8 15 9.33 18 12 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M12 2C14.67 6 16 9 16 12C16 15 14.67 18 12 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    title: "Remote by design",
+    desc: "Work from wherever you're most productive. We focus on outcomes, not hours online or time spent in meetings.",
   },
   {
     icon: (
@@ -36,29 +49,8 @@ const benefits = [
         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-    title: "Work that sets the standard",
-    desc: "Every project we take on is a chance to raise the bar. Our clients are leaders in their spaces, so the stakes are real.",
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M9 9H9.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M15 9H15.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: "Craft-first culture",
-    desc: "Pixels matter here. We care deeply about quality, from system architecture down to hover states. No rush-and-ship.",
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2V6M12 18V22M6.34 6.34L3.51 3.51M20.49 20.49L17.66 17.66M2 12H6M18 12H22M6.34 17.66L3.51 20.49M20.49 3.51L17.66 6.34" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: "Generous time off",
-    desc: "Unlimited PTO with a real minimum. We close for two weeks every December. Rest is part of doing great work.",
+    title: "Craft matters",
+    desc: "We care about details, systems, usability, and thoughtful execution. Good enough is rarely good enough.",
   },
   {
     icon: (
@@ -66,8 +58,18 @@ const benefits = [
         <path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-    title: "Equipment & learning budget",
-    desc: "Top-spec MacBook, your choice of peripherals, and an annual budget for courses, conferences, and tools.",
+    title: "Room to grow",
+    desc: "Whether it's learning a new skill, leading a workshop, improving a process, or mentoring others, growth is part of the job.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M9 11L12 14L22 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    title: "Solve meaningful problems",
+    desc: "We partner with companies building real products with real business challenges. Your work influences outcomes, not just screens.",
   },
 ];
 
@@ -522,6 +524,37 @@ export default function CareersPage() {
           </motion.div>
         </div>
 
+      </section>
+
+      {/* ── Divider ── */}
+      <div style={{ padding: "0 40px", marginTop: 80 }}>
+        <div style={{ maxWidth: 1360, margin: "0 auto", height: 1, background: "#383838" }} />
+      </div>
+
+      {/* ── Why Contrast ── */}
+      <section style={{ padding: "120px 40px" }}>
+        <div style={{ maxWidth: 1360, margin: "0 auto" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ marginBottom: 64 }}
+          >
+            <p style={{ margin: "0 0 16px", fontSize: 13, fontWeight: 500, letterSpacing: "0.84px", textTransform: "uppercase", color: "#888888", fontFamily: "var(--font-urbanist), sans-serif" }}>
+              Why Contrast
+            </p>
+            <h2 style={{ margin: 0, fontSize: "clamp(32px, 4.5vw, 64px)", fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", lineHeight: 1.05, letterSpacing: "-0.025em", color: "#ffffff" }}>
+              A place where craft thrives.
+            </h2>
+          </motion.div>
+
+          <div className="careers-benefits-grid">
+            {benefits.map((b, i) => (
+              <BenefitCard key={b.title} benefit={b} i={i} />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── Open Roles ── */}
