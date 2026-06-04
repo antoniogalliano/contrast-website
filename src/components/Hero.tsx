@@ -230,7 +230,7 @@ export default function Hero() {
 
       @media (max-width: 768px) {
         .title-br { display: none; }
-        .hero-scroll-indicator { bottom: 100px !important; }
+        .hero-scroll-indicator { bottom: 140px !important; }
       }
     `}</style>
     </>
