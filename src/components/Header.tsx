@@ -8,8 +8,9 @@ import { setLogoOrigin, shouldSkipIntro, markSoftNavToHome } from "@/lib/introSt
 
 const navLinks = [
   { label: "The Hero Framework", href: "/#framework" },
-  { label: "Work", href: "/#work" },
+  { label: "Selected Work", href: "/#work" },
   { label: "Our services", href: "/#services" },
+  { label: "Testimonials", href: "/#testimonials" },
   { label: "Careers", href: "/careers" },
 ];
 

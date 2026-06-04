@@ -143,7 +143,7 @@ export default function TestimonialSection() {
   };
 
   return (
-    <section className="testimonial-section" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
+    <section id="testimonials" className="testimonial-section" style={{ padding: "120px 40px", background: "#0a0a0a" }}>
       <div style={{ maxWidth: 1360, margin: "0 auto", display: "flex", flexDirection: "column", gap: 96 }}>
 
         {/* Quote */}
