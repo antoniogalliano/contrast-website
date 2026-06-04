@@ -180,6 +180,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: Math.max(0, 1 - scrollY * 5) }}
         transition={{ duration: scrollY > 0 ? 0 : 0.8, delay: scrollY > 0 ? 0 : 4.5 }}
+        className="hero-scroll-indicator"
         style={{
           position: "absolute",
           zIndex: 1,
@@ -229,6 +230,7 @@ export default function Hero() {
 
       @media (max-width: 768px) {
         .title-br { display: none; }
+        .hero-scroll-indicator { bottom: 100px !important; }
       }
     `}</style>
     </>
