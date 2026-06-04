@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -42,13 +42,32 @@ function PhotoCard({ src, name, role, height }: TeamMember & { height: number })
   const [hovered, setHovered] = useState(false);
   const [toggled, setToggled] = useState(false);
   const show = hovered || toggled;
+  const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handlePointerEnter = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse") setHovered(true);
+  };
+  const handlePointerLeave = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse") setHovered(false);
+  };
+  const handleClick = () => {
+    if (dismissTimer.current) clearTimeout(dismissTimer.current);
+    setToggled(prev => {
+      if (!prev) {
+        // Auto-dismiss after 2 s on touch
+        dismissTimer.current = setTimeout(() => setToggled(false), 2000);
+        return true;
+      }
+      return false;
+    });
+  };
 
   return (
     <div
       className="team-photo-card"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => setToggled(t => !t)}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onClick={handleClick}
       style={{
         position: "relative",
         flexShrink: 0,
@@ -59,7 +78,7 @@ function PhotoCard({ src, name, role, height }: TeamMember & { height: number })
         border: "1px solid #1e1e1e",
         transform: hovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
         transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
-        cursor: "default",
+        cursor: "pointer",
       }}
     >
       <img
@@ -108,8 +127,8 @@ function MarqueeRow({ photos, direction, height, duration }: {
   return (
     <div
       style={{ overflow: "hidden", width: "100%", paddingTop: 16, marginTop: -16 }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onPointerEnter={(e) => { if (e.pointerType === "mouse") setPaused(true); }}
+      onPointerLeave={(e) => { if (e.pointerType === "mouse") setPaused(false); }}
     >
       <div style={{
         display: "flex",
