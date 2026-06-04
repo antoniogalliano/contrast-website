@@ -83,7 +83,7 @@ function PhotoCard({ src, name, role, height }: TeamMember & { height: number })
         }}
       >
         <span style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.1px", lineHeight: 1.3 }}>
-          {name}
+          {name.split(" ")[0]}
         </span>
         <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-urbanist), sans-serif", letterSpacing: "0.3px", marginTop: 2 }}>
           {role}
