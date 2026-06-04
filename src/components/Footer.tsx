@@ -80,9 +80,10 @@ export default function Footer() {
             {/* Nav */}
             <nav className="footer-nav" style={{ display: "flex", alignItems: "center", gap: 24 }}>
               {[
-                { label: "The Hero Framework", href: "#the-hero-framework" },
-                { label: "Work", href: "#work" },
-                { label: "Our services", href: "#our-services" },
+                { label: "The Hero Framework", href: "#framework" },
+                { label: "Selected Work", href: "#work" },
+                { label: "Our services", href: "#services" },
+                { label: "Testimonials", href: "#testimonials" },
                 { label: "Careers", href: "/careers" },
               ].map(({ label, href }) => (
                 <a
