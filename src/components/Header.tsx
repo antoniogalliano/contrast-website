@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Logotype from "./Logotype";
-import { setLogoOrigin, shouldSkipIntro } from "@/lib/introState";
+import { setLogoOrigin, shouldSkipIntro, markSoftNavToHome } from "@/lib/introState";
 
 const navLinks = [
   { label: "The Hero Framework", href: "/#framework" },
@@ -21,6 +21,7 @@ function handleNavClick(href: string, e: React.MouseEvent) {
   if (el) {
     el.scrollIntoView({ behavior: "smooth" });
   } else {
+    markSoftNavToHome();
     window.location.href = href;
   }
 }
