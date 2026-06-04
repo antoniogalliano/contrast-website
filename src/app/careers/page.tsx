@@ -432,7 +432,7 @@ function RoleCard({ role, i }: { role: typeof roles[0]; i: number }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-gradient-border"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 9999, fontSize: 15, fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", textDecoration: "none", width: "fit-content" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "11px 26px", borderRadius: 9999, fontSize: 14, fontWeight: 600, fontFamily: "var(--font-urbanist), sans-serif", color: "#ffffff", textDecoration: "none", width: "fit-content" }}
               >
                 Apply for this role
                 <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -499,7 +499,7 @@ export default function CareersPage() {
             <a
               href="#open-roles"
               className="btn-gradient-border"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 9999, color: "#ffffff", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 15, whiteSpace: "nowrap" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "11px 26px", borderRadius: 9999, color: "#ffffff", textDecoration: "none", fontFamily: "var(--font-urbanist), sans-serif", fontWeight: 600, fontSize: 14, whiteSpace: "nowrap" }}
             >
               See open roles
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -619,7 +619,7 @@ export default function CareersPage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "14px 32px",
+                padding: "11px 26px",
                 borderRadius: 9999,
                 border: "1px solid rgba(56,56,56,0.8)",
                 background: "transparent",
@@ -627,7 +627,7 @@ export default function CareersPage() {
                 textDecoration: "none",
                 fontFamily: "var(--font-urbanist), sans-serif",
                 fontWeight: 600,
-                fontSize: 15,
+                fontSize: 14,
                 whiteSpace: "nowrap",
                 transition: "border-color 0.25s ease, color 0.25s ease",
                 flexShrink: 0,

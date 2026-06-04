@@ -318,9 +318,9 @@ export default function NotFound() {
           transition={{ duration: 0.6, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
           style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "14px 32px", borderRadius: 9999,
+            padding: "11px 26px", borderRadius: 9999,
             fontFamily: "var(--font-urbanist), sans-serif",
-            fontSize: 15, fontWeight: 600, color: "#ffffff",
+            fontSize: 14, fontWeight: 600, color: "#ffffff",
             textDecoration: "none", whiteSpace: "nowrap",
           }}
         >

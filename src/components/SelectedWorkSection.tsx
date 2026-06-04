@@ -63,9 +63,9 @@ function ViewWorkButton({ href, onClick }: { href: string; onClick: (e: React.Mo
       onMouseLeave={() => setHovered(false)}
       style={{
         display: "inline-flex", alignItems: "center", gap: 7,
-        padding: "14px 32px", borderRadius: 9999,
+        padding: "11px 26px", borderRadius: 9999,
         fontFamily: "var(--font-urbanist), sans-serif",
-        fontSize: 15, fontWeight: 600, letterSpacing: "0.04em",
+        fontSize: 14, fontWeight: 600, letterSpacing: "0.04em",
         color: "#ffffff", textDecoration: "none",
         border: `1px solid ${hovered ? ACCENT : "rgba(255,255,255,0.22)"}`,
         background: hovered ? "rgba(217,12,183,0.12)" : "rgba(255,255,255,0.06)",
@@ -230,9 +230,9 @@ function PanelLayer({
             onClick={handleNavigation}
             style={{
               display: "inline-flex", alignItems: "center", gap: 7,
-              padding: "14px 32px", borderRadius: 9999,
+              padding: "11px 26px", borderRadius: 9999,
               fontFamily: "var(--font-urbanist), sans-serif",
-              fontSize: 15, fontWeight: 600, letterSpacing: "0.04em",
+              fontSize: 14, fontWeight: 600, letterSpacing: "0.04em",
               color: "#ffffff", textDecoration: "none",
               border: "1px solid rgba(255,255,255,0.28)",
               background: "rgba(255,255,255,0.08)",
