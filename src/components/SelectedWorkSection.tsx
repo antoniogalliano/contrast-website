@@ -162,7 +162,9 @@ function PanelLayer({
   const ctaY  = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, 1], [20, 20, 0, 0, -8]);
   const ctaOp = useTransform(lsp, [0, k0c, k0c + REVEAL_DUR, EXIT_START, EXIT_START + EXIT_DUR, 1], [0, 0, 1, 1, 0, 0]);
 
-  // ── Mobile: no per-frame motion elements — only the cross-fade runs on scroll ──
+  // ── Mobile: cross-fade + vertical parallax on the image ──────────────────────
+  const imageParallaxY = useTransform(lsp, [0, 1], [0, -60]);
+
   if (isMobile) {
     return (
       <div
@@ -172,17 +174,22 @@ function PanelLayer({
           opacity: index === 0 ? 1 : 0,
           pointerEvents: index === 0 ? "auto" : "none",
           willChange: "opacity",
+          overflow: "hidden",
         }}
       >
-        <img
+        {/* Oversized by ~12% top+bottom so parallax travel never shows edges */}
+        <motion.img
           src={project.image}
           alt={project.client}
           style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
+            position: "absolute",
+            top: "-6%", left: 0,
+            width: "100%", height: "112%",
             objectFit: "cover", objectPosition: "center",
             display: "block",
-            ...project.imageStyle,
+            y: imageParallaxY,
+            willChange: "transform",
+            ...(project.imageStyle ?? {}),
           }}
         />
         <div style={{
