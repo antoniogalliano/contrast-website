@@ -568,7 +568,7 @@ export default function MethodSection() {
                 fontWeight: 300,
                 opacity: 0.85,
               }}>
-                See how the Hero Framework transforms product metrics in under 3 minutes. Real results, real clients, real methodology.
+                See how the Hero Framework transforms product metrics. Real results, real clients, real methodology.
               </p>
             </div>
           </div>
