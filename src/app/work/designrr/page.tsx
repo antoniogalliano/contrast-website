@@ -26,11 +26,10 @@ const data: WorkCaseData = {
 
   // Gallery
   gallery: [
-    { src: "/work/designrr-1.png", alt: "Designrr — overview" },
+    { src: "/work/designrr-4.png", alt: "Designrr — template chooser" },
     { src: "/work/designrr-2.png", alt: "Designrr — editor experience" },
     { src: "/work/designrr-3.png", alt: "Designrr — layout selection" },
-    { src: "/work/designrr-4.png", alt: "Designrr — template chooser" },
-    { src: "/work/designrr-5.png", alt: "Designrr — onboarding flow" },
+    { src: "/work/designrr-1.png", alt: "Designrr — overview" },
   ],
 
   // What We Did
