@@ -26,9 +26,8 @@ const data: WorkCaseData = {
 
   // Gallery
   gallery: [
-    { src: "/work/speakingpal.png", alt: "ToeicPal — home & practice flow" },
-    { src: "/work/atoeic-2.png", alt: "A TOEIC ToeicPal — speaking session" },
-    { src: "/work/atoeic-3.png", alt: "A TOEIC ToeicPal — test simulation" },
+    { src: "/work/atoeic-2.png", alt: "ToeicPal — speaking session" },
+    { src: "/work/atoeic-3.png", alt: "ToeicPal — test simulation" },
   ],
 
   // What We Did
